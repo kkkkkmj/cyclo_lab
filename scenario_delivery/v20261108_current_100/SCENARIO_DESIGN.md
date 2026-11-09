@@ -92,7 +92,7 @@ A/B 각 50개, 하위 그룹 각 25개다. T=toaster, P=plate, S=bread_shelf.
 ## 재현과 선택
 
 생성 seed **20261108**, 배정 seed **20261109**(생성 seed+1).
-설치는 [메인 README](../../README_TOAST_QUEST.md)를 따른다. numpy/scipy/torch/pxr가 설치된
+설치는 [Changes](../../CHANGES.md)를 따른다. numpy/scipy/torch/pxr가 설치된
 Python 실행 파일을 `TOAST_PYTHON`으로 지정하고 checkout 루트에서 실행한다.
 
 ```bash

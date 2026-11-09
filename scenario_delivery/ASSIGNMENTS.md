@@ -1,10 +1,12 @@
-# Scenario Assignments
+# 과거 버전 배정표 — batch02_toast
+
+> 이 표는 이전 A/B 각 50개 배정이며 하위 그룹이 없습니다. 현재 네 그룹 배정은 [v20261108_current_100](v20261108_current_100/ASSIGNMENTS.md)을 사용하세요. 기존 ID·배정은 변경하지 않았습니다.
 
 Each operator has 50 scenarios. Use your assigned IDs below; the assignments are not split into the first and last 50 IDs.
 
 Object order is shown from robot left to right (+Y → −Y). A/B identify the operators, not the recording equipment or collection method.
 
-Source: [assignments.csv](assignments.csv). See [README.md](README.md) for layout details and loading instructions.
+Source: [assignments.csv](assignments.csv). See [과거 안내](../docs/toast_quest/history/SCENARIOS_BATCH02.md) for the original layout description.
 
 ## operator_A — 50 scenarios
 

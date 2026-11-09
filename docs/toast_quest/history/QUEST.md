@@ -1,11 +1,13 @@
-> 현재 실행 진입점: [README_TOAST_QUEST.md](README_TOAST_QUEST.md). 아래 단계별 작업·측정 기록의 과거 값은 당시 설정입니다. 현재 v2 상승 목표/상한은 +35 mm이며 하한은 -45 mm입니다. 기록 속 PC IP·호스트 절대 경로·컨테이너 이름은 실행 환경에 맞게 설정해야 합니다. 최신 문서의 변수 기반 명령을 사용하세요.
+> **과거 작업 기록**: 원래 설명·수치·실행 결과를 보존한 자료이며 현재 실행 안내가 아닙니다. 최신 설정과 명령은 [Changes](../../../CHANGES.md)를 따르세요. 특히 2/0.5 gain은 원본 v2 기본값이 아니라 중간 비교 설정이며, 거치대 안정 지지와 실기 검증 주장은 최신 진단 상태와 함께 읽어야 합니다. 본문의 호스트 경로·logs는 당시 로컬 증거 위치입니다.
+
+> 현재 실행 진입점: [README_TOAST_QUEST.md](../../../CHANGES.md). 아래 단계별 작업·측정 기록의 과거 값은 당시 설정입니다. 현재 v2 상승 목표/상한은 +35 mm이며 하한은 -45 mm입니다. 기록 속 PC IP·호스트 절대 경로·컨테이너 이름은 실행 환경에 맞게 설정해야 합니다. 최신 문서의 변수 기반 명령을 사용하세요.
 
 현재 v2의 좌우 master joint1 속도 상한은 기본 6.5 rad/s이며 별도 속도 옵션이 필요 없다.
-[설정/검증 보고서](README_GRIPPER_SPEED.md) 참조. 아래 과거 속도 비교 기록의 2.2는 당시 값이다.
+[설정/검증 보고서](GRIPPER_SPEED.md) 참조. 아래 과거 속도 비교 기록의 2.2는 당시 값이다.
 
 현재 v2 그리퍼 설정: 좌우 master joint1 및 slave joint2/3/4 모두 stiffness=100.0,
 damping=4.0이다. 과거 `--gripper-slave-gains-official`(2/0.5 비교) 옵션은 이제 거부된다.
-현재 실행·readback 검증 결과는 [README_GRIPPER_GAINS.md](README_GRIPPER_GAINS.md) 참조.
+현재 실행·readback 검증 결과는 [README_GRIPPER_GAINS.md](GRIPPER_GAINS.md) 참조.
 아래 기존 실험 기록은 당시 결과이며 현재 기본값을 뜻하지 않는다.
 
 # Quest Touch Plus → Toast v2: bounded two-arm test

@@ -1,0 +1,75 @@
+{
+  "scope": "Documentation-only validation; no simulator/VR/runtime launched",
+  "compared_head": "87d971f1cf8ec5799c672f0ee8038c4319f1ab8d",
+  "baseline": "5f5086d11f664494119086de30a9e925b12022ad",
+  "protected_readme_sha256": {
+    "README.md": "83c2defcea7a20254b96a3b134a2a5b52931850cbbfe613630fcd43205ae0363",
+    "README_TOAST.md": "192e44baeb86fcbae51c4246b1d9aace84cfccdca04b05cf94163b8e6f1d2473"
+  },
+  "shell_blocks_syntax_checked": 5,
+  "local_markdown_links_checked": 113,
+  "documented_cli_options": "PASS: literal declarations, practice parser, viewer group resolution and server help",
+  "scenario_counts": [
+    [
+      5,
+      4,
+      4,
+      4
+    ],
+    [
+      4,
+      4,
+      5,
+      4
+    ],
+    [
+      4,
+      5,
+      4,
+      4
+    ],
+    [
+      4,
+      4,
+      4,
+      5
+    ],
+    [
+      4,
+      4,
+      4,
+      4
+    ],
+    [
+      4,
+      4,
+      4,
+      4
+    ]
+  ],
+  "private_key_token_pattern_scan": "PASS",
+  "runtime": "NOT_RUN: CPU/parser/source checks only",
+  "historical_validation": "docs/toast_quest/VALIDATION.json preserved, not reported as newly executed",
+  "scenario_consistency": {
+    "scope": "CPU data/index/metadata verification; no scenario regeneration/reassignment/pose edits",
+    "groups": {
+      "operator_A_1": 25,
+      "operator_B_1": 25,
+      "operator_A_2": 25,
+      "operator_B_2": 25
+    },
+    "operators": {
+      "operator_A": 50,
+      "operator_B": 50
+    },
+    "unique_ids": 100,
+    "group_and_parent_selection_checks": 200,
+    "metadata_roundtrips": 100,
+    "pose_rows_verified": 700,
+    "card_payloads_verified": 100,
+    "svg_labels_verified": 100,
+    "filters": "Static code/options verified; browser not launched",
+    "protected_data_code_files": 141,
+    "legacy_preview_script_unchanged": true
+  }
+}

@@ -1,8 +1,10 @@
-> 현재 실행 진입점: [README_TOAST_QUEST.md](README_TOAST_QUEST.md). 아래 단계별 작업·측정 기록의 과거 값은 당시 설정입니다. 현재 v2 상승 목표/상한은 +35 mm이며 하한은 -45 mm입니다. 기록 속 PC IP·호스트 절대 경로·컨테이너 이름은 실행 환경에 맞게 설정해야 합니다. 최신 문서의 변수 기반 명령을 사용하세요.
+> **과거 작업 기록**: 원래 설명·수치·실행 결과를 보존한 자료이며 현재 실행 안내가 아닙니다. 최신 설정과 명령은 [Changes](../../../CHANGES.md)를 따르세요. 특히 2/0.5 gain은 원본 v2 기본값이 아니라 중간 비교 설정이며, 거치대 안정 지지와 실기 검증 주장은 최신 진단 상태와 함께 읽어야 합니다. 본문의 호스트 경로·logs는 당시 로컬 증거 위치입니다.
+
+> 현재 실행 진입점: [README_TOAST_QUEST.md](../../../CHANGES.md). 아래 단계별 작업·측정 기록의 과거 값은 당시 설정입니다. 현재 v2 상승 목표/상한은 +35 mm이며 하한은 -45 mm입니다. 기록 속 PC IP·호스트 절대 경로·컨테이너 이름은 실행 환경에 맞게 설정해야 합니다. 최신 문서의 변수 기반 명령을 사용하세요.
 
 현재 v2 속도 상한은 좌우 master joint1 모두 6.5 rad/s다(기존 2.2에서 변경).
 slave 기본 속도와 gain 100/4는 유지했다. 상세 근거와 검증:
-[README_GRIPPER_SPEED.md](README_GRIPPER_SPEED.md).
+[README_GRIPPER_SPEED.md](GRIPPER_SPEED.md).
 
 # v2 토스트 / Quest 그리퍼 gain 100/4
 
@@ -79,7 +81,7 @@ commit/push 없음.
 ## 실행 / 재검증
 
 기존 수정본 명령을 그대로 사용하되 `--gripper-slave-gains-official`은 넣지 않는다.
-GUI와 Quest 전체 명령은 [README_TOASTER_LED.md](README_TOASTER_LED.md) 참조.
+GUI와 Quest 전체 명령은 [README_TOASTER_LED.md](TOASTER_LED.md) 참조.
 새 프로세스에서 적용된다.
 
 ```bash
