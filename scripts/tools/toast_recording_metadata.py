@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -52,13 +53,25 @@ def create_diagnostic(directory, manifest, operator, scenario_id, scenario_index
     entries = [s for s in data['scenarios'] if s['id'] == scenario_id]
     if len(entries) != 1 or entries[0]['operator'] != operator:
         raise ValueError('Selected scenario/operator does not match manifest')
-    metadata = dict(schema_version=1, kind='quest_diagnostic_not_success_demonstration',
+    metadata = dict(schema_version=1, kind='quest_teleop_raw_demonstration',
                     task=TASK, operator=operator, scenario_index=scenario_index, seed=seed,
                     scenario_id=scenario_id, manifest_sha256=hashlib.sha256(raw).hexdigest(),
-                    manifest_file='manifest.json', initial_static_rack_pose=entries[0]['poses']['bread_shelf'],
+                    manifest_file='manifest.json', manifest_source=str(Path(manifest).resolve()), initial_static_rack_pose=entries[0]['poses']['bread_shelf'],
                     action_order=['left_wrist_delta_6','right_wrist_delta_6','left_gripper','right_gripper','lift'],
                     observation_timing='pre_action', state_timing='post_action',
-                    recording_state='WAITING_FOR_START', diagnostic_success=False)
+                    sample_alignment='timing[i] is action start; states[i] is after action i; video uses obs[i]',
+                    recording_state='WAITING_FOR_START', training_ready=False,
+                    success_label_source='pre_reset_task_terms_with_episode_outcome_priority',
+                    record_directory=str(Path(directory).resolve()))
+    def git(*args):
+        return subprocess.check_output(['git','-c',f'safe.directory={ROOT.resolve()}',*args],cwd=ROOT,text=True).strip()
+    metadata['code_version']=dict(commit=git('rev-parse','HEAD'),
+                                  dirty=bool(git('status','--porcelain')),
+                                  tracked_diff_sha256=hashlib.sha256(git('diff','HEAD').encode()).hexdigest())
+    metadata['code_version']['recording_sources_sha256']={
+        str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in [ROOT/'scripts/tools/toast_recording_metadata.py',
+                  *sorted((ROOT/'scripts/quest_diagnostic').glob('*.py'))]}
     if 'scenario_group' in entries[0]:
         metadata.update({k: entries[0][k] for k in ('scenario_group','group_index','operator_index')})
     directory = Path(directory).resolve()
@@ -117,9 +130,9 @@ def finalize_diagnostic(directory, metadata):
     if dataset_file.exists():
         with h5py.File(dataset_file,'r+') as dataset:
             for episode in dataset['data'].values():
-                # Keep the actual task outcome separately; diagnostic export never claims a success demo.
+                # Preserve the original task outcome; provenance does not imply training readiness.
                 episode.attrs['task_success_observed']=bool(episode.attrs.get('task_success_observed',episode.attrs.get('success',False)))
-                episode.attrs['success']=False
+                episode.attrs['success']=bool(episode.attrs['task_success_observed'])
                 episode.attrs['diagnostic']=True
                 for key in ('operator','scenario_id','manifest_sha256'):
                     episode.attrs[key]=metadata[key]
@@ -143,7 +156,9 @@ def inspect_diagnostic(dataset_file):
         report['metadata']=metadata
         for name,ep in dataset['data'].items():
             n=len(ep['actions']);assert n>0 and ep['actions'].shape==(n,15)
-            assert not bool(ep.attrs['success']) and bool(ep.attrs['diagnostic'])
+            assert len(ep['processed_actions'])==n
+            assert bool(ep.attrs['success'])==bool(ep.attrs['task_success_observed'])
+            assert bool(ep.attrs['diagnostic'])
             for key in ('scenario_id','manifest_sha256','seed'):
                 assert ep.attrs[key]==metadata[key],(name,key,'metadata mismatch')
             assert 'toast_episode_metadata' in ep.attrs
@@ -164,8 +179,22 @@ def inspect_diagnostic(dataset_file):
             for cam in ('head_cam','left_wrist_cam','right_wrist_cam'):
                 image=ep['obs/'+cam];assert image.shape==(n,244,244,3) and image.dtype==np.uint8
                 frame=image[0];cameras[cam]={'first_min':int(frame.min()),'first_max':int(frame.max()),'first_std':float(frame.std())}
+            video_report=None
+            if 'episode_id' in ep.attrs:
+                video_dir=Path(dataset_file).parent/ep.attrs['episode_id']
+                video_report=json.loads((video_dir/'video.json').read_text())
+                rows=[json.loads(line) for line in (video_dir/'frames.jsonl').read_text().splitlines()]
+                assert video_report['encoded']==len(rows)
+                assert video_report['submitted']==video_report['encoded']+video_report['dropped']
+                assert video_report['submitted']==n
+                previous=-1
+                for row in rows:
+                    i=row['sample_index'];assert previous<i<n;previous=i
+                    assert np.isclose(row['wall_monotonic'],ep['timing/wall_monotonic'][i].item())
+                    assert np.isclose(row['simulation_time'],ep['timing/simulation_time'][i].item())
+                if rows:assert (video_dir/'video.mp4').stat().st_size>0
             action=ep['actions'][:];assert np.isfinite(action).all()
-            report['episodes'][name]={'frames':n,'shapes':shapes,'cameras':cameras,
+            report['episodes'][name]={'frames':n,'video':video_report,'success':bool(ep.attrs['success']),'shapes':shapes,'cameras':cameras,
                                      'max_abs_arm_action':float(np.abs(action[:,:12]).max()),
                                      'nonzero_arm_action_frames':int(np.any(np.abs(action[:,:12])>1e-8,axis=1).sum())}
         assert report['episodes'],'No episodes saved'

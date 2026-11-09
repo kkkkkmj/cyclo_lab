@@ -19,6 +19,17 @@ class RecordingContract(unittest.TestCase):
         self.assertEqual(sid,'toast_v20261108_041')
         return m.create_diagnostic(root/'new',m.DEFAULT_MANIFEST,args.operator,sid,args.scenario_index,seed=7)
 
+    def test_git_trust_is_scoped_to_each_query(self):
+        original=m.subprocess.check_output
+        with tempfile.TemporaryDirectory() as tmp, patch.object(m.subprocess,'check_output',wraps=original) as run:
+            self.make(Path(tmp))
+            self.assertGreaterEqual(run.call_count,3)
+            for call in run.call_args_list:
+                self.assertEqual(call.args[0][:3],['git','-c',f'safe.directory={m.ROOT.resolve()}'])
+                self.assertEqual(call.kwargs['cwd'],m.ROOT)
+                self.assertNotIn('--global',call.args[0])
+                self.assertNotIn('safe.directory=*',call.args[0])
+
     def test_recording_arguments_and_start_guard(self):
         with tempfile.TemporaryDirectory() as tmp:
             args=SimpleNamespace(record_dir=Path(tmp)/'new',operator='operator_B',scenario_index=1,
@@ -42,7 +53,7 @@ class RecordingContract(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             out,meta=self.make(Path(tmp))
             self.assertEqual((out/'manifest.json').read_bytes(),m.DEFAULT_MANIFEST.read_bytes())
-            self.assertFalse(meta['diagnostic_success'])
+            self.assertFalse(meta['training_ready'])
             other=Path(tmp)/'different name';out.rename(other)
             sid,path=m.scenario_for_replay(other,meta,m.TASK)
             self.assertEqual(sid,'toast_v20261108_041');self.assertEqual(Path(path),other/'manifest.json')

@@ -29,6 +29,8 @@ INSTALL_REQUIRES = [
     # automate
     "scikit-learn",
     "pynput",
+    # Quest episode MP4 encoder (includes the platform FFmpeg binary).
+    "imageio-ffmpeg==0.6.0",
 ]
 
 PYTORCH_INDEX_URL = ["https://download.pytorch.org/whl/cu118"]

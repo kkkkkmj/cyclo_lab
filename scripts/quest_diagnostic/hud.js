@@ -1,5 +1,5 @@
 /* Display-only settings; never change control coordinates or camera observations. */
-const HUD_REVISION='practice-interruption-9';
+const HUD_REVISION='episode-result-10';
 function hudSettings(input={}) {
   const number=(v,fallback,lo,hi)=>Number.isFinite(Number(v))?Math.max(lo,Math.min(hi,Number(v))):fallback;
   const casting=input.mode==='casting';
@@ -137,6 +137,37 @@ function recordingBadge(status,fresh){
   if(!fresh||typeof status?.recording!=='boolean')return {text:'Checking',color:'#a3aab3'};
   return status.recording?{text:'● REC',color:'#ff6565'}:{text:'NO REC',color:'#a3aab3'};
 }
+function episodeResultBadge(status){
+  // A completed result is historical, not a connectivity/recording verdict.
+  const result=status?.episode_result;
+  if(!result)return {text:'',color:'#a3aab3'};
+  return {text:result.label||result.reason||'',color:result.success?'#61e993':'#ffc477'};
+}
+function drawEpisodeBadges(c,status,fresh,panel){
+  const recording=recordingBadge(status,fresh),result=episodeResultBadge(status);
+  c.font='26px sans-serif';c.fillStyle=recording.color;
+  c.fillText(recording.text,panel.x+16,panel.y+68,160);
+  c.font='bold 32px sans-serif';c.fillStyle=result.color;
+  c.fillText(result.text,panel.x+200,panel.y+69,panel.w-216);
+  return {recording:recording.text,result:result.text,resultColor:result.color,
+    resultBox:{x:panel.x+200,y:panel.y+38,w:panel.w-216,h:36}};
+}
+function drawPCPreview(canvas,image,status,fresh){
+  const c=canvas.getContext('2d');
+  c.fillStyle='#101c2b';c.fillRect(0,0,1024,1024);
+  const native=image?.width===768&&image?.height===256;
+  const supported=native||(image?.width===960&&image?.height===936);
+  c.font='18px sans-serif';c.fillStyle='white';
+  for(const tile of cameraTiles(native)){
+    c.fillText(tile.name,...tile.label);
+    if(image&&fresh&&supported)c.drawImage(image,...tile.source,...tile.destination);
+  }
+  const panel={x:108,y:56,w:808,h:80};
+  c.fillStyle='#06121f';c.fillRect(panel.x,panel.y,panel.w,panel.h);
+  c.font='24px sans-serif';c.fillStyle='#d3dce6';
+  c.fillText(`Input: ${fresh&&status?.live?'LIVE':'NOT LIVE'} | ${status?.episode_state||'Checking'}`,panel.x+16,panel.y+27,panel.w-32);
+  return drawEpisodeBadges(c,status,fresh,panel);
+}
 /* A small, head-fixed diagnostic panel, not immersive simulation streaming. */
 function makeHUD(gl, options={}) {
   options=hudSettings(options);
@@ -180,18 +211,22 @@ function makeHUD(gl, options={}) {
       if(!image||!previewFresh||!supported){
         c.fillStyle='#adbecd';c.fillText('Waiting for video',300,360);
       }
-      const panel={x:108,y:96,w:808,h:40};
+      const panel={x:108,y:56,w:808,h:80};
       const connections={left:receivedHands===null?null:controllerConnected(hands.left,receivedHands.left,network),
                          right:receivedHands===null?null:controllerConnected(hands.right,receivedHands.right,network)};
-      draw.info.status_panel=lastPanel={...panel,placement:'above-head',rendered:true,lines:1,connections};
+      draw.info.status_panel=lastPanel={...panel,placement:'above-head',rendered:true,lines:2,connections};
       c.fillStyle='#06121f';c.fillRect(panel.x,panel.y,panel.w,panel.h);
       c.font='26px sans-serif';
       ['left','right'].forEach((side,i)=>{
         c.fillStyle=connections[side]?'#61e993':'#a3aab3';
         c.fillText(`${i===0?'Left':'Right'}: ${connections[side]===null?'Checking':connections[side]?'Connected':'Disconnected'}`,panel.x+16+i*300,panel.y+29);
       });
-      const recording=recordingBadge(teleop,previewFresh);
-      c.fillStyle=recording.color;c.fillText(recording.text,panel.x+634,panel.y+29);
+      Object.assign(lastPanel,drawEpisodeBadges(c,teleop,previewFresh,panel));
+      if(previewFresh&&teleop?.record_path){
+        c.font='16px sans-serif';c.fillStyle='#d3dce6';
+        c.fillText(`${teleop.record_episode_id||'WAITING'} | ${teleop.record_path}`,panel.x,panel.y-12,panel.w);
+        if(teleop.video_error)c.fillText('VIDEO ERROR: see terminal / video.json',panel.x,panel.y-32,panel.w);
+      }
       if(options.diagnostic){
         c.save();c.strokeStyle='#00ffff';c.lineWidth=6;c.strokeRect(4,4,1016,1016);
         c.font='bold 24px sans-serif';

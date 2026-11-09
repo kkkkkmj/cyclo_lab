@@ -59,6 +59,6 @@ def display_status(snapshot, controller, lifecycle, preview_only=False, start_bl
         preview_guard_reason=p.get('preview_guard_reason'), preview=p.get('preview_status'),
         producer_age_at_receive_ms=p.get('producer_age_at_receive_ms'),
         basis_ready=controller.basis is not None, safety_epoch=p.get('safety_epoch'),
-        episode_state=lifecycle.state, preview_only=preview_only,
+        episode_state=lifecycle.state, episode_result=getattr(lifecycle,'result',None), preview_only=preview_only,
         live=bool(snapshot.get('live')), hands=hands, start_blocked=start_blocked,
         start_blockers=start_blockers(snapshot) if lifecycle.state == 'WAITING' else [])

@@ -19,7 +19,7 @@ from bridge import read_input
 from preview import publish_preview,stop_preview
 from preview_encoding import encode_native_preview
 from control import BoundedTeleop,norm,sub,qrotate,qinv
-from episode_control import EpisodeLifecycle,ButtonEdges,can_start
+from episode_control import EpisodeLifecycle,ButtonEdges,can_start,capture_termination_results
 from display_status import display_status,start_blockers
 from diagnostic_recorder import DiagnosticRecorder
 from practice_options import add_arguments,options,configure
@@ -52,8 +52,8 @@ add_group_arguments(parser)
 parser.add_argument('--seed',type=int,default=1)
 parser.add_argument('--contact-diagnostic',type=Path,help='Opt-in per-physics-step gripper audit JSONL; new file only')
 parser.add_argument('--diagnostic-log',type=Path,help='New JSONL trace of decision inputs/states; not demonstration data')
-parser.add_argument('--record-dir',type=Path,help='New test-only output directory; never overwrite')
-parser.add_argument('--record-seconds',type=float,default=8,help='Auto-save each short test after this many wall seconds')
+parser.add_argument('--record-dir',type=Path,help='New output directory for raw Isaac Lab demonstrations and simulation camera MP4; never overwrite')
+parser.add_argument('--record-seconds',type=float,default=0,help='Auto-save after this many wall seconds; default 0 waits for episode end')
 add_arguments(parser)
 known,_=parser.parse_known_args()
 try:
@@ -124,8 +124,9 @@ try:
         cfg.recorders.export_in_record_pre_reset=False
         metadata['timing']=dict(physics_dt=cfg.sim.dt,decimation=cfg.decimation,
             render_interval=cfg.sim.render_interval,control_dt=cfg.sim.dt*cfg.decimation)
-    # Original physics, rewards, 240-second timeout and success/failure predicates remain.
+    # Physics, rewards and 240-second timeout remain; success uses the current task predicate.
     env=gym.make(TASK,cfg=cfg).unwrapped
+    capture_termination_results(env.termination_manager,lifecycle)
     if record_dir:
         audit_dir=record_dir/'record_audit';audit_dir.mkdir()
         env._replay_audit_dir=str(audit_dir)
@@ -204,13 +205,14 @@ try:
                         position_scale=controller.position_scale,rotation_scale=controller.rotation_scale,
                         max_translation_m=controller.max_translation,max_rotation_deg=control_settings['max_rotation_deg'],
                         control_settings=control_settings,grippers=('trigger_binary_0_1rad' if args.gripper_trigger_official_binary else 'trigger_analog') if args.enable_grippers else 'open',lift='fixed_at_reset')
-        recorder=DiagnosticRecorder(env,metadata)
+        recorder=DiagnosticRecorder(env,metadata,lifecycle)
     def begin_waiting_audit():
         if timeline:
             env._replay_audit_episode=f'demo_{recorder.saved}'
             timeline.mark('before_waiting_renders')
     begin_waiting_audit()
     if sys.stdin.isatty():threading.Thread(target=console,daemon=True).start()
+    print(f'RECORD_CONFIG enabled={bool(recorder)} path={record_dir} auto_stop_wall_seconds={args.record_seconds}',flush=True)
     print('READY / WAITING: X(left) or n+Enter = RESET & START; A(right) or s+Enter = SAVE & WAIT; Ctrl+C/q = exit.',flush=True)
     print('PREVIEW ONLY; no controller motion or recording' if args.preview_only else 'Release both squeezes before START, then re-squeeze to move.',flush=True)
     perf=PerformanceProbe(env)
@@ -289,7 +291,7 @@ try:
                 action=torch.tensor([action_values],device=env.device,dtype=torch.float32)
                 if not torch.isfinite(action).all():raise RuntimeError('Nonfinite action')
                 if recorder and recorder.active:
-                    env.recorder_manager.add_to_episodes('timing/wall_monotonic',torch.tensor([[tick]],dtype=torch.float64,device=env.device))
+                    env.recorder_manager.add_to_episodes('timing/wall_monotonic',torch.tensor([[time.monotonic()]],dtype=torch.float64,device=env.device))
                     env.recorder_manager.add_to_episodes('timing/simulation_time',env.episode_length_buf[:,None]*dt)
                 if contact_probe:
                     contact_probe.begin(dict(episode_number=lifecycle.number,control_index=episode_steps,
@@ -308,9 +310,9 @@ try:
                     if timeline:timeline.mark('after_record_finish')
                     begin_waiting_audit()
                     report_gripper_runtime('after_automatic_episode_reset')
-                    lifecycle.finish('environment_termination')
+                    lifecycle.finish('environment_termination',lifecycle.pending_result)
                     for side in controller.states:controller.hold(side,'episode_waiting')
-                    print('EPISODE_WAITING: original termination fired; no further physics steps until START',flush=True)
+                    print('EPISODE_RESULT '+json.dumps(lifecycle.result),flush=True)
             else:
                 # Render only: no physics, rewards, episode clock or recorder rows in WAITING.
                 if tick-preview_time>=1/args.preview_hz:env.sim.render()
@@ -318,6 +320,9 @@ try:
             previous=tick;step_ms=(time.monotonic()-step_start)*1000
             telemetry=display_status(snapshot,controller,lifecycle,args.preview_only,start_blocked,current)
             telemetry['recording']=bool(recorder and recorder.active)
+            telemetry['record_path']=str(record_dir) if record_dir else None
+            telemetry['record_episode_id']=recorder.episode_id if recorder else None
+            telemetry['video_error']=recorder.video.error if recorder and recorder.video else None
             telemetry['limits_hit']=controller.limits_hit
             if diagnostic_log and current is not None and tick-gripper_audit_time>=.5:
                 gripper_audit_time=tick;grip_read_start=time.monotonic()
@@ -372,7 +377,10 @@ try:
             if tick-report_time>=1:
                 report_time=tick
                 print(json.dumps(dict(scenario_id=selected_id,seed=args.seed,episode_state=lifecycle.state,
-                    episode_number=lifecycle.number,recording=bool(recorder and recorder.active),
+                    episode_number=lifecycle.number,episode_result=lifecycle.result,recording=bool(recorder and recorder.active),
+                    record_path=str(record_dir) if record_dir else None,
+                    record_episode_id=recorder.episode_id if recorder else None,
+                    video_error=recorder.video.error if recorder and recorder.video else None,
                     live=snapshot['live'],states={s:v['reason'] for s,v in controller.states.items()},frame_id=frame_id)),flush=True)
             time.sleep(max(0.,dt-(time.monotonic()-tick)))
 except KeyboardInterrupt:

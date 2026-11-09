@@ -3,7 +3,8 @@
 <style>body{background:#101c2b;color:#eef;font:20px system-ui;margin:30px}button{font:24px system-ui;padding:20px}pre{white-space:pre-wrap;font-size:15px}</style>
 <h1>Quest Touch Plus input / simulation test</h1>
 <p>Hold both controllers. Enter VR, move each controller and press its buttons.</p>
-<p>VR: The status bar above HEAD shows controller connectivity only. Green=connected, gray=disconnected. Connectivity is distinct from active arm control. See the detailed diagnostics below for input and control verdicts.</p>
+<p>VR: Above HEAD, controller connectivity, REC / NO REC and the episode result are separate. SUCCESS is green and remains visible while waiting. Connectivity is distinct from active arm control. See the detailed diagnostics below for input and control verdicts.</p>
+<canvas id="pcPreview" width="1024" height="1024" style="display:block;width:min(100%,850px);height:auto" aria-label="Camera preview with recording status and episode result"></canvas>
 <details><summary>Detailed diagnostics / build · latency · all blocking reasons</summary>
 <p>CLIENT BUILD: <strong id="build">__QUEST_BUILD__</strong></p>
 <p>HUD revision: <strong id="hudRevision"></strong></p>
@@ -179,8 +180,9 @@ async function poll(){
  updateStart();
 }
 async function pollPreview(){
- if(!paired||!session)return;
+ if(!paired)return;
  await previewClient.poll();
+ drawPCPreview(document.querySelector('#pcPreview'),previewClient.image(),previewClient.teleop(),previewClient.fresh());
  document.querySelector('#previewStatus').textContent=JSON.stringify(previewClient.state);
  document.querySelector('#controlDetails').textContent=teleopStatusLines(previewClient.teleop(),previewClient.fresh()).join('\n')+
    '\n'+JSON.stringify(previewClient.teleop(),null,2);

@@ -154,6 +154,16 @@ class ServingSuccess(unittest.TestCase):
                 self.setUp();self.place(i);self.env.toast_cycle.heated_bread[0,i]=True
                 self.assertTrue(self.done(self.env).item())
 
+    def test_success_independent_of_both_arms_grippers_and_lift(self):
+        for i in range(4):
+            self.setUp();self.place(i);self.env.toast_cycle.heated_bread[0,i]=True
+            self.env.scene['robot'].data.body_link_pos_w.fill_(9.)
+            self.env.scene['robot'].data.joint_pos[:]=torch.tensor([[1.,1.,.3]])
+            self.assertTrue(self.done(self.env).item())
+            # Serving must not even read robot posture for success.
+            del self.env.scene['robot']
+            self.assertTrue(self.done(self.env).item())
+
     def test_raw_or_different_id_rejected(self):
         self.place(3)
         self.assertFalse(self.done(self.env).item())
@@ -192,9 +202,6 @@ class ServingSuccess(unittest.TestCase):
         self.place(0);self.env.toast_cycle.heated_bread[0,0]=True
         self.assertTrue(self.done(self.env).item())
         changes=[lambda e:setattr(e,'lever_pressed',True),lambda e:e.toast_cycle.phase.fill_(3),
-                 lambda e:e.scene['robot'].data.joint_pos.__setitem__((0,0),.15),
-                 lambda e:e.scene['robot'].data.joint_pos.__setitem__((0,2),.02),
-                 lambda e:e.scene['robot'].data.body_link_pos_w.__setitem__((0,0,0),9),
                  lambda e:e.scene['plate'].data.root_pos_w.__setitem__((0,0),2.418),
                  lambda e:e.scene['plate'].data.root_pos_w.__setitem__((0,1),3.10),
                  lambda e:e.scene['plate'].data.root_quat_w.__setitem__((0,slice(None)),torch.tensor([math.sqrt(.5),math.sqrt(.5),0,0]))]

@@ -54,8 +54,8 @@ The baseline column below refers to the fixed commit above.
   speed <0.15 m/s. This is not a plate contact-force check.
 - **Overall task success:** In addition to the bread criteria, the plate must be upright with
   `R[2,2]>0.985`, displaced by <25 mm from its initial XY position, and at environment-frame X>0.419 m.
-  The cycle must be in phase 4 with the toaster lever returned, both wrists must have standby-position
-  error <40 mm, and the existing gripper check <0.15 and absolute lift value <20 mm must hold.
+  The cycle must be in phase 4 with the toaster lever returned. Arm standby positions, gripper
+  joint1 angles and lift return position do not constrain serving success.
   Bread-related success can hold without the remaining slices, but existing termination conditions,
   such as another slice falling, still apply separately.
 - **Grippers:** Left/right master joint1 and slave joint2/3/4 all use stiffness and damping gains of
@@ -70,9 +70,9 @@ The baseline column below refers to the fixed commit above.
 
 Diagnostic JSON/JSONL, CSV, and RGB outputs are not training demonstrations. The optional `--record-dir`
 HDF5 output stores `data/demo_*/{actions,obs,states,initial_state,processed_actions}` plus metadata and a
-manifest snapshot, but is a diagnostic recording with **diagnostic=true, success=false**. Even though
-it uses the existing recorder format, it must not be classified as validated successful demonstration
-data for training. Action replay and saved-state video are also distinct; video playback alone does
+manifest snapshot with **diagnostic=true** and a success label derived from the pre-reset task terms
+and episode outcome policy. A positive label is an observed task verdict, not independent validation
+of demonstration quality or action-replay fidelity for training. Action replay and saved-state video are also distinct; video playback alone does
 not demonstrate successful physics replay. The examples below run teleoperation without recording.
 
 ## ④ System Requirements and Dependencies
@@ -187,3 +187,10 @@ See the [scenario guide](scenario_delivery/README.md) for group/index selection 
 An additional [fixed-base 100-scenario set](scenario_delivery_base/README.md) uses the current default
 Toaster → Plate → Bread Rack order with independent ±20 mm XY and ±5° yaw proposals, static rejection
 checks, and four groups of 25. The original scenario delivery and default selection remain unchanged.
+
+
+The status area above HEAD now separates controller connectivity, REC / NO REC, and the episode result.
+A large green SUCCESS, STOPPED, TRACKING STALL, or the actual termination reason remains visible in
+WAITING and clears only when the next X start is accepted. The PC preview uses the same result badge;
+recording is optional. See [episode results](scripts/quest_diagnostic/EPISODE_RESULTS.md) for the
+pre-reset capture, simultaneous-termination policy and validation scope.

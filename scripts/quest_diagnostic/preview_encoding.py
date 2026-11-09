@@ -4,8 +4,7 @@ import time
 from PIL import Image
 
 
-def encode_native_preview(cameras):
-    started = time.perf_counter()
+def compose_native_preview(cameras):
     atlas = Image.new('RGB', (768, 256))
     for i, camera in enumerate(cameras):
         if camera.size != (244, 244) or camera.mode != 'RGB':
@@ -13,6 +12,12 @@ def encode_native_preview(cameras):
         atlas.paste(camera, (i*256+6, 6))
     if len(cameras) != 3:
         raise ValueError('Expected HEAD / LEFT WRIST / RIGHT WRIST')
+    return atlas
+
+
+def encode_native_preview(cameras):
+    started = time.perf_counter()
+    atlas = compose_native_preview(cameras)
     output = io.BytesIO()
     atlas.save(output, format='JPEG', quality=90, subsampling=0)
     data = output.getvalue()

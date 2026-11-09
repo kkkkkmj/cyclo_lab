@@ -75,6 +75,9 @@ def task_done(env):
     else:
         occupied = ((bread_in_slot(env, "bread_0", 0) & bread_in_slot(env, "bread_1", 1))
                     | (bread_in_slot(env, "bread_0", 1) & bread_in_slot(env, "bread_1", 0)))
+    if serving:
+        # Serving success depends on the heated slice and plate, not robot posture.
+        return occupied & (cycle.phase == 4) & ~mdp.lever_pressed(env)
     robot = env.scene["robot"]
     standby = torch.ones(env.num_envs, dtype=torch.bool, device=env.device)
     for side, sign in (("l", 1), ("r", -1)):

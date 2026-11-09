@@ -59,8 +59,10 @@ function runHUDRenderTests(){
  assert(!draw(views,layer,hands,'ACK OK',image,false,400,{stage:'stale'},'test-build'),'stale preview acknowledged');
  assert(texts.some(t=>t[0].includes('Waiting for video')),'stale video hidden');
  const nativeStart=images.length;
- assert(draw(views,layer,hands,'ACK OK',{width:768,height:256},true,500,{stage:'decoded'},'test-build',{recording:true},{}),'native preview not acknowledged');
+ assert(draw(views,layer,hands,'ACK OK',{width:768,height:256},true,500,{stage:'decoded'},'test-build',{recording:true,episode_result:{label:'SUCCESS',success:true}},{}),'native preview not acknowledged');
  assert(images.slice(nativeStart).length===3&&images.slice(nativeStart).every(a=>a[3]===244&&a[4]===244),'native draw used legacy crop');
+ assert(texts.some(t=>t[0]==='● REC')&&texts.some(t=>t[0]==='SUCCESS'),'record/result not both drawn');
+ assert(draw.info.status_panel.resultBox.y+draw.info.status_panel.resultBox.h<144,'result overlaps camera');
  error=1282;let threw=false;try{draw(views,layer,hands,'ACK OK',image,true,600,{stage:'decoded'},'test-build');}catch(e){threw=true;}
  assert(threw,'WebGL error suppressed');
  error=0;lost=true;threw=false;try{draw(views,layer,hands,'ACK OK',image,true,800,{stage:'decoded'},'test-build');}catch(e){threw=true;}
@@ -183,4 +185,28 @@ function runNativeRecordingTests(){
  assert(recordingBadge({recording:true},false).text==='Checking','stale REC retained');
  assert(recordingBadge(null,true).text==='Checking','missing status not explicit');
  return 7;
+}
+
+function runEpisodeResultTests(){
+ const assert=(ok,msg)=>{if(!ok)throw Error(msg);};
+ const status={episode_state:'WAITING',recording:false,live:false,
+   episode_result:{reason:'success',label:'SUCCESS',success:true}};
+ assert(episodeResultBadge(status).color==='#61e993','success must be green');
+ const calls=[],rects=[],images=[];
+ const c={fillRect:(...x)=>rects.push(x),fillText:function(text,x,y,maxWidth){calls.push({text,x,y,maxWidth,color:this.fillStyle,font:this.font});},
+   drawImage:(...x)=>images.push(x)};
+ const canvas={getContext:()=>c};
+ const panel=drawPCPreview(canvas,{width:768,height:256},status,true);
+ assert(panel.recording==='NO REC'&&panel.result==='SUCCESS','practice result hidden by recorder state');
+ const result=calls.find(x=>x.text==='SUCCESS');
+ assert(result.color==='#61e993'&&result.font==='bold 32px sans-serif','success styling');
+ assert(result.x+result.maxWidth<=916&&result.y<144,'result clips or overlaps camera');
+ assert(images.every(x=>x[6]>=144),'camera overlaps status');
+ assert(drawPCPreview(canvas,null,status,false).result==='SUCCESS','historical result erased by stale input');
+ for(const label of ['STOPPED','TRACKING STALL','TIMEOUT','BREAD DROPPED']){
+   status.episode_result={label,success:false};
+   assert(drawPCPreview(canvas,null,status,true).result===label,'wrong stop reason');
+ }
+ status.episode_result=null;assert(drawPCPreview(canvas,null,status,true).result==='','approved start did not clear');
+ return 10;
 }
