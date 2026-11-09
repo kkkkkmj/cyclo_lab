@@ -119,7 +119,7 @@ provenance 해시는 달라진다. 과거 manifest를 최신 해시로 덮어쓰
 예: `--scenario_group operator_A_2 --group_index 1`은
 `--operator operator_A --scenario_index 26`과 같고 ID는 `toast_v20261108_087`이다.
 새 목록을 쓰려면 반드시 `--scenario_manifest scenario_delivery/v20261108_current_100/manifest.json`을
-지정한다. ID/그룹/상위 operator 선택은 혼용하지 않는다. GUI·Quest 전체 명령은 메인 README를 따른다.
+지정한다. ID/그룹/상위 operator 선택은 혼용하지 않는다. GUI·Quest 전체 명령은 [시나리오 README](../README.md)를 따른다.
 
 [Manifest](manifest.json) · [CSV 배정표](assignments.csv) · [읽기용 배정표](ASSIGNMENTS.md) ·
 [700개 물체 pose CSV](poses.csv) · [카드형 100개 배치도](overview_cards.html) · [SVG 배치도](overview.svg)

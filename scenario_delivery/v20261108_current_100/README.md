@@ -1,7 +1,7 @@
 # 현재 시나리오 — v20261108_current_100
 
 물체 배치 변화에 따른 토스트 시연 수집용 **100개 고유 배치**다.
-현재 공유 실행은 [Changes](../../CHANGES.md), 생성 범위·seed·제외 기준·분포 균형화는
+현재 생성·사용 안내는 [시나리오 README](../README.md), 환경 설치는 [Changes](../../CHANGES.md), 생성 범위·seed·제외 기준·분포 균형화는
 [Scenario Design](SCENARIO_DESIGN.md)을 따른다. 배치 데이터와 성공 시연은 다르다.
 
 ## 그룹과 순번
@@ -27,7 +27,7 @@
 - [overview.svg](overview.svg): 그룹·그룹 내 순번으로 정렬한 정적 100개 배치도.
 - [generation_config.json](generation_config.json), [distribution.json](distribution.json): seed와 종류별 quota, 분포 통계.
 
-GUI/Quest 명령에 아래 세 옵션을 함께 지정한다. 전체 복사 가능한 명령은 [Changes](../../CHANGES.md)에 있다.
+GUI/Quest 명령에 아래 세 옵션을 함께 지정한다. 전체 복사 가능한 명령은 [시나리오 README](../README.md)에 있다.
 
 ```text
 --scenario_manifest scenario_delivery/v20261108_current_100/manifest.json
@@ -58,7 +58,7 @@ T=toaster, P=plate, S=bread_shelf. 로봇 왼쪽에서 오른쪽 순서다.
 이번 안내 정리는 기존 ID·배정·pose·HTML 데이터·생성기를 변경하지 않는다.
 그룹/상위 선택과 ID, pose CSV, 카드 내장 인덱스, 기록 metadata를 CPU에서 대조한다.
 정적 거리·형상 검사는 도달 가능성·동일 조작 난이도·전체 PhysX 안정성을 보장하지 않는다.
-거치대 내려앉음과 실제 VR 상태는 [Changes](../../CHANGES.md)의 제한사항을 따른다.
+거치대 내려앉음과 실제 VR 검증 근거는 [상세 참고 자료](../../docs/toast_quest/DETAILS.md)에 보존되어 있다.
 
 시나리오 재생성은 [설계 문서](SCENARIO_DESIGN.md)의 독립 입력·명령을 사용한다.
 제공된 카드 HTML은 자체 포함이라 열 때 별도 파일이 필요 없다. 다만 **카드 HTML 재빌드 도구**

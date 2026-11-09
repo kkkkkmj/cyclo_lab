@@ -4,20 +4,18 @@
 
 `toast-quest`는 FFW BG2 양팔 토스트 환경을 Quest WebXR로 조작하고, 배치를 바꿔 시연을
 수집하기 위한 공유 브랜치다. 대상 task는 `Cyclo-Make-Toast-FFW-BG2-Bimanual-IK-Rel-v2`다.
+`toast-quest`는 Git 브랜치 이름이며 task의 `-v2` 등록 버전과 구분한다. Quest 실행기는 이 ID를
+고정 사용하며 등록 환경 클래스는 `MakeToastFFWBG2BimanualEnv`, 설정 클래스는
+`MakeToastFFWBG2BimanualServeEnvCfg`다.
 4홈 빵 거치대, 현재 동작·성공 조건, Quest 서버/클라이언트, 새 시나리오 100개와 검사 도구를 포함한다.
 
-원본 비교 기준은 연구실 `badajhong/cyclo_lab`의 **`5f5086d11f664494119086de30a9e925b12022ad`**
-(`add readme of toast`, 2026-11-02)로 고정했다. 최초 작업 커밋 `761c8ac`의 부모와
-브랜치 생성 reflog가 이 커밋을 가리킨다. 이동 가능한 최신 main을 기준으로 사용하지 않았다.
-이는 로컬 Git 이력에서 확인한 시작점이며, 연구실 제공 당시의 별도 미커밋 파일까지 증명하지는 않는다.
+원본 비교 기준은 `badajhong/cyclo_lab`의 **`5f5086d11f664494119086de30a9e925b12022ad`** (`add readme of toast`, 2026-11-02)로 고정했다. 최초 작업 커밋 `761c8ac`의 부모와 브랜치 생성 reflog가 이 커밋을 가리킨다.
 
-`README.md`는 기준 커밋과 동일하다. `README_TOAST.md`에는 이전 작업에서 113줄이 추가됐으며
-이번 문서 통합에서는 둘 다 수정하지 않았다. 분야별 실제 파일 변경과 기준 근거는
-[원본 비교 기록](docs/toast_quest/BASELINE.md)에 정리했다.
+분야별 실제 파일 변경과 기준 근거는 [원본 비교 기록](docs/toast_quest/BASELINE.md)에 정리했다.
 
 ## ② 기존 환경 대비 변경 전/후
 
-아래 ‘기존’은 위 고정 커밋의 **v2 코드** 기준이다. 중간 실험값을 원본값으로 사용하지 않는다.
+현재 `toast-quest` 브랜치의 토스트 환경 코드 기준이다. 아래 ‘기존’ 열은 위 고정 커밋과 비교한다.
 
 | 항목 | 기존 `5f5086d` | 현재 toast-quest |
 |---|---|---|
@@ -29,14 +27,10 @@
 | 캐리지 | 하한/하강 −45 mm, 상한/상승 +15 mm, 이동 60 mm | 하한/하강 −45 mm 유지, 상한/상승 +35 mm, 이동 80 mm |
 | 빵 성공 | bread_0/1 모두 접시, bread_2/3 거치대 유지; 개별 가열 ID 증거 없음 | 가열을 완료한 동일 ID 빵 하나 이상 접시 조건 충족; 여분 빵 잔류 조건 제거 |
 | 접시 XY 판정 | 빵 외곽 전체가 접시 반경−0.5 mm 안 | 빵 형상 중심의 접시 로컬 XY 반경 **20 mm 미만** |
-| 좌우 master/slave gain | v2에서 이미 stiffness=100, damping=4 | 최종값 **동일**, v2에 명시·Quest 설정/readback 검증 추가 |
+| 좌우 master/slave gain | 대상 환경에서 이미 stiffness=100, damping=4 | 최종값 **동일**, 환경 설정에 명시·Quest 설정/readback 검증 추가 |
 | 좌우 master joint1 속도 상한 | 2.2 rad/s | 6.5 rad/s |
 | 시나리오 | 고정 100개 delivery/그룹 선택 없음 | 기존 목록을 보존하고 새 100개, A/B 및 네 하위 그룹 선택·배치도 추가 |
 | 기록·재생 | 기존 Isaac Lab recorder/replay | 시나리오 provenance, 빵별 가열 상태, 진단 HDF5·검수 도구 추가 |
-
-과거 문서의 slave 2/0.5는 공용 robot 기본값 또는 중간 비교 설정이다. 원본 v2는 상속된
-100/4를 사용했으므로 원본 대비 gain 수치 변경으로 세지 않는다. 기존 양팔 IK·토스터·recorder
-자체를 이 브랜치에서 새로 만든 것으로 해석하지 않는다.
 
 ## ③ 현재 최종 설정과 성공 조건
 
@@ -171,70 +165,4 @@ practice에서 squeeze 해제/입력·영상 무효 시 팔 목표를 측정 자
 물리 관성까지 순간 정지한다는 의미는 아니다. 입력 복구 뒤 squeeze를 놓고 다시 잡는다.
 미리보기는 overview/head/좌·우 wrist 네 카메라와 상태/HUD를 제공한다. 캐스팅 정렬·실제 가독성은 미검증이다.
 
-## ⑧ 시나리오 선택·배치도
-
-[시나리오 상위 안내](scenario_delivery/README.md)는 현재 버전으로 연결하며,
-현재 자료는 `scenario_delivery/v20261108_current_100/`에 있고 기존 목록도 과거 버전으로 보존한다.
-A/B 각각 50개, 하위 그룹 각각 25개다. GUI와 Quest 모두 같은 manifest/그룹 옵션을 사용한다.
-
-| GROUP | INDEX | 첫 ID | 상위 operator 순번 |
-|---|---|---|---|
-| operator_A_1 | 1~25 | toast_v20261108_097 | A 1~25 |
-| operator_A_2 | 1~25 | toast_v20261108_087 | A 26~50 |
-| operator_B_1 | 1~25 | toast_v20261108_041 | B 1~25 |
-| operator_B_2 | 1~25 | toast_v20261108_011 | B 26~50 |
-
-위 명령의 GROUP/INDEX를 바꿔 선택한다. 새 manifest 지정이 필수이며 ID/그룹/상위 operator 선택은 혼용하지 않는다.
-`operator_A_2`의 1번은 `--operator operator_A --scenario_index 26`과 같다.
-
-배치 순서는 로봇 왼쪽 **+Y → −Y**(오른쪽)다. T=toaster, P=plate, S=bread_shelf.
-
-| 순서 | A_1 | A_2 | B_1 | B_2 | 합계 |
-|---|---:|---:|---:|---:|---:|
-| T>P>S | 5 | 4 | 4 | 4 | 17 |
-| T>S>P | 4 | 4 | 5 | 4 | 17 |
-| P>T>S | 4 | 5 | 4 | 4 | 17 |
-| P>S>T | 4 | 4 | 4 | 5 | 17 |
-| S>T>P | 4 | 4 | 4 | 4 | 16 |
-| S>P>T | 4 | 4 | 4 | 4 | 16 |
-| 합계 | 25 | 25 | 25 | 25 | 100 |
-
-물체 위치·yaw 변화에 따른 시연 수집을 위해 형상/간격 제외 검사와 그룹별 분포 균형화를 적용했다.
-이는 로봇 도달 가능성이나 동일 조작 난이도를 보장하지 않는다. 정확한 생성 범위·seed(20261108/20261109)·
-배정 및 재생성 방법은 [Scenario Design](scenario_delivery/v20261108_current_100/SCENARIO_DESIGN.md)을 따른다.
-
-[Manifest](scenario_delivery/v20261108_current_100/manifest.json) ·
-[배정표](scenario_delivery/v20261108_current_100/assignments.csv) ·
-[700개 물체 pose CSV](scenario_delivery/v20261108_current_100/poses.csv) ·
-[카드형 배치도](scenario_delivery/v20261108_current_100/overview_cards.html) ·
-[SVG 배치도](scenario_delivery/v20261108_current_100/overview.svg)
-
-카드 HTML을 로컬 브라우저로 직접 열거나 아래 서버를 실행하고
-`http://127.0.0.1:8000/scenario_delivery/v20261108_current_100/overview_cards.html`을 연다.
-이는 정적 배치도이며 PhysX 화면이 아니다.
-
-```bash
-export REPO=/path/to/cyclo_lab_toast_quest
-cd "$REPO"
-python3 -m http.server 8000 --bind 127.0.0.1
-```
-
-## ⑨ 검증 상태와 알려진 문제
-
-| 항목 | 확인 범위와 남은 문제 |
-|---|---|
-| CPU·공유 구성 | 기존 검증 기록: 39개 테스트 파일/238개 CPU 테스트, 별도 index-only 추출 환경 검사 4종 통과. 100개 재생성 pose/배정 및 7개 산출물 바이트 일치. 이번에는 명령·참조 외 그룹/상위 선택 200건·metadata 왕복 100건·pose 700행·카드/SVG 각 100개를 대조. 실제 시뮬레이션 재실행은 아님 |
-| 거치대 | 첫 시나리오 2 trial에서 빵 약 18.5 mm 하강 관측. 초기 1 mm 접촉은 한쪽 어깨에만 존재. cooked contact 상대가 없어 정상 안착/관통 여부 미확정. 전체 100개 동적 안정성 미검증 |
-| +35 mm 상승 | CPU/USD 정적 검사 통과. 실제 노출률·튀어오름·이탈 미측정. +15 mm 당시 bread_0 슬롯0/1의 완료 노출률 약 46.99%/46.92%는 현재 설정 실측이 아님 |
-| 카메라 종료 | strong reference 유지·callback/annotator 정리 순서와 모의 검사 구현. 실제 Isaac 종료 오류 해결은 미검증 |
-| Quest·브라우저 | 과거 양손 입력/일부 기록 근거는 있으나 현재 설정의 전체 작업·추종 성능 완료로 일반화 불가. 이전 Chrome 검사는 권한 제한, JS 검사는 Node 부재로 미완료 |
-| 설치/LFS | 새 rack 2개 LFS 로컬 복원 확인. 이전 검사에서 기존 LFS 포인터 66개는 로컬 부재. 원격 전체 LFS·외부 asset 다운로드 및 새 GPU 환경 실행은 미검증 |
-| 카드 재빌드 | 제공 HTML 열기는 자체 포함. 카드 빌더는 Git 제외 `collision_geometry.json` snapshot을 요구하므로 깨끗한 clone에서 재빌드는 미지원 상태. 시나리오 생성과 구분 |
-| 기록·학습 | 진단 HDF5·상태 재생은 검수된 성공 시연 또는 물리 재현 성공의 증거가 아님 |
-
-근거: [이번 문서 검증](docs/toast_quest/DOCUMENTATION_CHECK.json),
-[CPU/재생성 검증 기록](docs/toast_quest/VALIDATION.json),
-[거치대 진단](scenario_delivery/v20261108_current_100/rack_diagnosis_20261109/README.md),
-[+35 mm 보고서](measurements/toast_lift_35mm_20261109/REPORT.txt).
-필요한 과거 비교·측정 기록은 [참고 자료](docs/toast_quest/DETAILS.md)에 별도로 보존했다.
-과거 보고서의 `logs/` 경로는 당시 로컬 증거 위치이며 공유 실행 의존성이 아니다.
+그룹·순번 선택과 배치도 사용법은 [시나리오 안내](scenario_delivery/README.md)를 따른다.

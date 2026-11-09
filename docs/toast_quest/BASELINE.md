@@ -27,11 +27,11 @@ git diff --name-status 5f5086d11f664494119086de30a9e925b12022ad 87d971f1cf8ec579
 | 파일 | 기준 대비 통합 전 상태 | 이번 통합 |
 |---|---|---|
 | README.md | Git blob 동일, 변경 없음 | 수정/삭제하지 않음 |
-| README_TOAST.md | 113줄 추가, 삭제 없음. Quest 진입 안내 및 시나리오 실행 등 추가 | 수정/삭제하지 않음 |
+| README_TOAST.md | 113줄 추가, 삭제 없음. Quest 진입 안내 및 시나리오 실행 등 추가 | 현재는 삭제, 실행 안내는 Changes/시나리오 안내로 통합 |
 
-`README_TOAST.md` 첫 줄이 `README_TOAST_QUEST.md`를 링크하므로 해당 파일은 완전히 삭제하면
-보존 조건과 충돌한다. 최소 안내만 남겨 [Changes](../../CHANGES.md)로 연결한다.
-나머지 6개 최상위 README는 history로 옮기고 현재 안내를 Changes에 통합했다.
+현재 공유 진입점은 [Changes](../../CHANGES.md)와 [시나리오 안내](../../scenario_delivery/README.md)다.
+루트 README_TOAST.md 및 README_TOAST_QUEST.md는 삭제하며 안내용 stub을 남기지 않는다.
+과거 6개 세부 README의 측정 기록은 history에 보존한다.
 
 ## README 외 실제 변경 분야
 
