@@ -1,0 +1,804 @@
+{
+  "robot_model": {
+    "lift_axis_world": [
+      4.6118880932237986e-10,
+      -2.0816062771648243e-10,
+      1.0
+    ],
+    "lift_limits": [
+      -0.5,
+      0
+    ],
+    "arms": {
+      "left": {
+        "joints": [
+          {
+            "pos0": [
+              0.0,
+              0.10450000315904617,
+              0.0
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "Y",
+            "limits_rad": [
+              -3.1399998664855957,
+              3.1399998664855957
+            ]
+          },
+          {
+            "pos0": [
+              0.0,
+              0.12300000339746475,
+              0.0
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "X",
+            "limits_rad": [
+              0.0,
+              3.1399998664855957
+            ]
+          },
+          {
+            "pos0": [
+              0.0,
+              0.0,
+              -0.16499996185302734
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "Z",
+            "limits_rad": [
+              -3.1399998664855957,
+              3.1399998664855957
+            ]
+          },
+          {
+            "pos0": [
+              0.0410039983689785,
+              0.0,
+              -0.13499999046325684
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "Y",
+            "limits_rad": [
+              -2.9361000061035156,
+              1.0785999298095703
+            ]
+          },
+          {
+            "pos0": [
+              -0.0410039983689785,
+              0.0,
+              -0.14890003204345703
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "Z",
+            "limits_rad": [
+              -3.1399998664855957,
+              3.1399998664855957
+            ]
+          },
+          {
+            "pos0": [
+              0.0,
+              0.0,
+              -0.10409998893737793
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "Y",
+            "limits_rad": [
+              -1.5699999332427979,
+              1.5699999332427979
+            ]
+          },
+          {
+            "pos0": [
+              0.0,
+              0.0,
+              -0.0885000228881836
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "X",
+            "limits_rad": [
+              -1.8200998306274414,
+              1.580399990081787
+            ]
+          }
+        ],
+        "home_joints": [
+          0.0,
+          1.7999999523162842,
+          -0.029999999329447746,
+          -2.0999999046325684,
+          1.440000057220459,
+          0.20000000298023224,
+          0.6499999761581421
+        ],
+        "parent_at_lift_zero": [
+          [
+            0.9999999999999963,
+            3.1207001109622994e-09,
+            8.745218261340606e-08,
+            0.005500028841197491
+          ],
+          [
+            -3.120699874583404e-09,
+            1.0000000000000002,
+            -2.7029503443038744e-09,
+            4.6566128730773926e-09
+          ],
+          [
+            -8.745218262184116e-08,
+            2.702950071391849e-09,
+            0.9999999999999963,
+            1.4315999746322632
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "shoulder_at_lift_zero": [
+          0.005500029167310662,
+          0.10450000781565907,
+          1.4315999749147215
+        ],
+        "wrist_radius_upper_m": 0.7761324540356989,
+        "tcp_radius_upper_m": 0.20859602518544432,
+        "tcp_in_wrist": [
+          [
+            1.0,
+            -5.551115123125783e-17,
+            -1.3877787807814457e-17,
+            5.73754381782976e-08
+          ],
+          [
+            0.0,
+            1.0,
+            -1.3877787807814457e-17,
+            3.8494042620129676e-08
+          ],
+          [
+            0.0,
+            -1.3877787807814457e-17,
+            1.0000000000000002,
+            -0.17950000937308974
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "fk_position_error_m": 9.114678887245524e-08,
+        "fk_rotation_error_rad": 7.328559953600693e-07
+      },
+      "right": {
+        "joints": [
+          {
+            "pos0": [
+              0.0,
+              -0.10450000315904617,
+              0.0
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "Y",
+            "limits_rad": [
+              -3.1399998664855957,
+              3.1399998664855957
+            ]
+          },
+          {
+            "pos0": [
+              0.0,
+              -0.12300000339746475,
+              0.0
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "X",
+            "limits_rad": [
+              -3.1399998664855957,
+              0.0
+            ]
+          },
+          {
+            "pos0": [
+              0.0,
+              0.0,
+              -0.16499996185302734
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "Z",
+            "limits_rad": [
+              -3.1399998664855957,
+              3.1399998664855957
+            ]
+          },
+          {
+            "pos0": [
+              0.0410039983689785,
+              0.0,
+              -0.13499999046325684
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "Y",
+            "limits_rad": [
+              -2.9361000061035156,
+              1.0785999298095703
+            ]
+          },
+          {
+            "pos0": [
+              -0.0410039983689785,
+              0.0,
+              -0.14890003204345703
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "Z",
+            "limits_rad": [
+              -3.1399998664855957,
+              3.1399998664855957
+            ]
+          },
+          {
+            "pos0": [
+              0.0,
+              0.0,
+              -0.10409998893737793
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "Y",
+            "limits_rad": [
+              -1.5699999332427979,
+              1.5699999332427979
+            ]
+          },
+          {
+            "pos0": [
+              0.0,
+              0.0,
+              -0.0885000228881836
+            ],
+            "rot0": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pos1": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot1": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "axis": "X",
+            "limits_rad": [
+              -1.580399990081787,
+              1.8200998306274414
+            ]
+          }
+        ],
+        "home_joints": [
+          0.0,
+          -1.7999999523162842,
+          0.029999999329447746,
+          -2.0999999046325684,
+          -1.440000057220459,
+          0.20000000298023224,
+          -0.6499999761581421
+        ],
+        "parent_at_lift_zero": [
+          [
+            0.9999999999999963,
+            3.1207001109622994e-09,
+            8.745218261340606e-08,
+            0.005500028841197491
+          ],
+          [
+            -3.120699874583404e-09,
+            1.0000000000000002,
+            -2.7029503443038744e-09,
+            4.6566128730773926e-09
+          ],
+          [
+            -8.745218262184116e-08,
+            2.702950071391849e-09,
+            0.9999999999999963,
+            1.4315999746322632
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "shoulder_at_lift_zero": [
+          0.0055000285150843195,
+          -0.10449999850243333,
+          1.431599974349805
+        ],
+        "wrist_radius_upper_m": 0.7761324540356989,
+        "tcp_radius_upper_m": 0.20859602518544432,
+        "tcp_in_wrist": [
+          [
+            1.0,
+            0.0,
+            -2.7755575615628914e-17,
+            -5.099827160570669e-08
+          ],
+          [
+            -5.551115123125783e-17,
+            1.0000000000000002,
+            -1.3877787807814457e-17,
+            2.0164166558700458e-08
+          ],
+          [
+            1.3877787807814457e-17,
+            2.7755575615628914e-17,
+            1.0,
+            -0.17949998193953137
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "fk_position_error_m": 1.9269432700937706e-07,
+        "fk_rotation_error_rad": 7.231155357637021e-07
+      }
+    },
+    "fk_validated": true
+  },
+  "table_support": {
+    "kind": "AUTHORED_COLLISION_FACES",
+    "status": "EXTRACTED",
+    "top_z_m": 0.994051338865205,
+    "convex_surface_polygons_xy": [
+      [
+        [
+          0.34185771195479986,
+          -1.3182152940334442
+        ],
+        [
+          1.0581422189548466,
+          -1.3182153185508185
+        ],
+        [
+          1.058142302350314,
+          1.1182152910532106
+        ],
+        [
+          0.3418577953502673,
+          1.118215315570585
+        ]
+      ]
+    ],
+    "mesh_paths": [
+      "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry/M_HeavyDutyPackingTable_C01_TableTop"
+    ],
+    "diagnostics": {
+      "target_path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01",
+      "prims": [
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01",
+          "type": "Xform",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": true,
+          "instance_proxy": false,
+          "prototype_path": "/__Prototype_7",
+          "excluded": "not_UsdGeom_Mesh"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry",
+          "type": "Scope",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Geometry",
+          "excluded": "not_UsdGeom_Mesh"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry/M_HeavyDutyPackingTable_C01_TableTopSide",
+          "type": "Mesh",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Geometry/M_HeavyDutyPackingTable_C01_TableTopSide",
+          "collision_enabled": true,
+          "excluded_faces": {
+            "not_horizontal": 264
+          },
+          "accepted_faces": 0,
+          "excluded": "no_convex_horizontal_faces_in_top_band"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry/M_HeavyDutyPackingTable_C01_TableTop",
+          "type": "Mesh",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Geometry/M_HeavyDutyPackingTable_C01_TableTop",
+          "collision_enabled": true,
+          "excluded_faces": {
+            "not_horizontal": 128,
+            "below_top_band": 3
+          },
+          "accepted_faces": 1
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry/M_HeavyDutyPackingTable_C01_Bolts",
+          "type": "Mesh",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Geometry/M_HeavyDutyPackingTable_C01_Bolts",
+          "collision_enabled": true,
+          "excluded_faces": {
+            "not_horizontal": 34230,
+            "below_top_band": 2182
+          },
+          "accepted_faces": 0,
+          "excluded": "no_convex_horizontal_faces_in_top_band"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry/M_HeavyDutyPackingTable_C01_Body",
+          "type": "Mesh",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Geometry/M_HeavyDutyPackingTable_C01_Body",
+          "collision_enabled": true,
+          "excluded_faces": {
+            "below_top_band": 3672,
+            "not_horizontal": 53174
+          },
+          "accepted_faces": 0,
+          "excluded": "no_convex_horizontal_faces_in_top_band"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Materials",
+          "type": "Scope",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Materials",
+          "excluded": "not_UsdGeom_Mesh"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Materials/MetalPainted_Gray_Glossy_A_HeavyDutyPackingTable_C",
+          "type": "Material",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Materials/MetalPainted_Gray_Glossy_A_HeavyDutyPackingTable_C",
+          "excluded": "not_UsdGeom_Mesh"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Materials/MetalPainted_Gray_Glossy_A_HeavyDutyPackingTable_C/Shader",
+          "type": "Shader",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Materials/MetalPainted_Gray_Glossy_A_HeavyDutyPackingTable_C/Shader",
+          "excluded": "not_UsdGeom_Mesh"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Materials/Metal_Glossy_A_HeavyDutyPackingTable_C",
+          "type": "Material",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Materials/Metal_Glossy_A_HeavyDutyPackingTable_C",
+          "excluded": "not_UsdGeom_Mesh"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Materials/Metal_Glossy_A_HeavyDutyPackingTable_C/Shader",
+          "type": "Shader",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Materials/Metal_Glossy_A_HeavyDutyPackingTable_C/Shader",
+          "excluded": "not_UsdGeom_Mesh"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Materials/Wood_Laminate_Gray_A_HeavyDutyPackingTable_C",
+          "type": "Material",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Materials/Wood_Laminate_Gray_A_HeavyDutyPackingTable_C",
+          "excluded": "not_UsdGeom_Mesh"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Materials/Wood_Laminate_Gray_A_HeavyDutyPackingTable_C/Shader",
+          "type": "Shader",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Materials/Wood_Laminate_Gray_A_HeavyDutyPackingTable_C/Shader",
+          "excluded": "not_UsdGeom_Mesh"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Materials/Wood_Pressed_A_HeavyDutyPackingTable_C",
+          "type": "Material",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Materials/Wood_Pressed_A_HeavyDutyPackingTable_C",
+          "excluded": "not_UsdGeom_Mesh"
+        },
+        {
+          "path": "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Materials/Wood_Pressed_A_HeavyDutyPackingTable_C/Shader",
+          "type": "Shader",
+          "active": true,
+          "loaded": true,
+          "defined": true,
+          "instance": false,
+          "instance_proxy": true,
+          "prototype_path": "/__Prototype_7/Materials/Wood_Pressed_A_HeavyDutyPackingTable_C/Shader",
+          "excluded": "not_UsdGeom_Mesh"
+        }
+      ],
+      "default_mesh_count": 0,
+      "proxy_mesh_count": 4,
+      "selected_mesh_paths": [
+        "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry/M_HeavyDutyPackingTable_C01_TableTopSide",
+        "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry/M_HeavyDutyPackingTable_C01_TableTop",
+        "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry/M_HeavyDutyPackingTable_C01_Bolts",
+        "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry/M_HeavyDutyPackingTable_C01_Body"
+      ],
+      "errors": []
+    },
+    "note": "Union of actual convex top faces; no bbox/extent substitution. Authored geometry, not cooked PhysX shapes."
+  },
+  "robot_usd_sha256": "82ac39486428e51d8be58996ea817fd4b25a40c262936e2d2cc8823673e1387d",
+  "source_path": "logs/scenario_batch_geometry_fix.lKmiuB/geometry.json",
+  "source_sha256": "7ae62d665f27cd3111d01bdcedd5086196f6320d34515cf2b8b37e6206847ad9",
+  "scope": "Reused authored table support and FK-validated distance upper-bound evidence; no new runtime validation"
+}

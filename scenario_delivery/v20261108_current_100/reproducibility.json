@@ -1,0 +1,14 @@
+{
+  "byte_identical": {
+    "overview.svg": true,
+    "poses.csv": true,
+    "validation.json": true,
+    "manifest.json": true,
+    "generation_config.json": true,
+    "assignments.csv": true,
+    "distribution.json": true,
+    "ASSIGNMENTS.md": true
+  },
+  "seed": 20261108,
+  "assignment_seed": 20261109
+}

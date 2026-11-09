@@ -116,7 +116,6 @@ class MakeToastFFWBG2EnvCfg(PickPlaceFFWBG2EnvCfg):
             prim_path="{ENV_REGEX_NS}/BreadShelf",
             spawn=sim_utils.UsdFileCfg(
                 usd_path=asset_path("bread_shelf"),
-                rigid_props=sim_utils.RigidBodyPropertiesCfg(rigid_body_enabled=False),
                 collision_props=sim_utils.CollisionPropertiesCfg(contact_offset=0.001, rest_offset=0.0),
                 semantic_tags=[("class", "bread_rack")],
             ),

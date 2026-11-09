@@ -1,0 +1,18 @@
+{
+  "runtime_status": "NOT_RUN_GPU_AND_DOCKER_UNAVAILABLE",
+  "actual_measurements": null,
+  "syntax_checks": "PASS",
+  "static_checks": "PASS; see static_checks.json",
+  "changed_source_files": [
+    "bimanual_env_cfg.py",
+    "scene.py",
+    "toast_parameters.py"
+  ],
+  "toast_cycle_unchanged": true,
+  "source_sha256": {
+    "toast_cycle.py": "3a0cb9266e2bbb675d2e5d88c2ba4958e5960091d618aa2ea1523744a2535b15",
+    "bimanual_env_cfg.py": "9837abc2540c4b751300ba967ef3f1fb2a3a2386a25a784dc256c4b638fc5929",
+    "scene.py": "91f9af11550e69ce96f9ed1916a08d2b56b699ab9b61921d7b302dc7bbbc6f94",
+    "toast_parameters.py": "fb6731709fc0d9a910f1cf8783f957f5795ffe2ee4e48dda66e3c9e62757166c"
+  }
+}

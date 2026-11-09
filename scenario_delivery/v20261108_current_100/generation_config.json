@@ -1,0 +1,139 @@
+{
+  "seed": 20261108,
+  "assignment_seed": 20261109,
+  "sampling": "per-type Latin hypercube, rejection sampling",
+  "object_orders": [
+    [
+      "toaster",
+      "plate",
+      "bread_shelf"
+    ],
+    [
+      "toaster",
+      "bread_shelf",
+      "plate"
+    ],
+    [
+      "plate",
+      "toaster",
+      "bread_shelf"
+    ],
+    [
+      "plate",
+      "bread_shelf",
+      "toaster"
+    ],
+    [
+      "bread_shelf",
+      "toaster",
+      "plate"
+    ],
+    [
+      "bread_shelf",
+      "plate",
+      "toaster"
+    ]
+  ],
+  "quotas_by_type_and_group": [
+    [
+      5,
+      4,
+      4,
+      4
+    ],
+    [
+      4,
+      4,
+      5,
+      4
+    ],
+    [
+      4,
+      5,
+      4,
+      4
+    ],
+    [
+      4,
+      4,
+      4,
+      5
+    ],
+    [
+      4,
+      4,
+      4,
+      4
+    ],
+    [
+      4,
+      4,
+      4,
+      4
+    ]
+  ],
+  "groups": [
+    "operator_A_1",
+    "operator_A_2",
+    "operator_B_1",
+    "operator_B_2"
+  ],
+  "x_anchors_m": {
+    "toaster": 0.55,
+    "plate": 0.49,
+    "bread_shelf": 0.46
+  },
+  "y_anchors_m": [
+    0.4,
+    0.0,
+    -0.4
+  ],
+  "x_jitter_m": {
+    "toaster": 0.015,
+    "plate": 0.01,
+    "bread_shelf": 0.015
+  },
+  "y_jitter_m": 0.015,
+  "yaw_jitter_degrees": 5.0,
+  "table_margin_m": 0.02,
+  "mesh_bound_margin_m": 0.001,
+  "minimum_collision_gap_m": 0.03,
+  "minimum_approach_gap_m": 0.06,
+  "range_adjustment": "None: native rack passes existing ranges with full margins",
+  "allocation": {
+    "method": "fixed per-type quotas + seeded within-type swaps of group labels",
+    "iterations": 50000,
+    "assignment_seed": 20261109,
+    "objective": "standardized signed offsets, magnitudes, distances, second moments and quartile occupancy",
+    "initial_score": 3655.0879867913472,
+    "final_score": 670.2049534349375,
+    "difficulty_equivalence": "NOT_PROVEN",
+    "feature_names": [
+      "toaster_dx_m",
+      "toaster_dy_m",
+      "toaster_yaw_deg",
+      "toaster_abs_yaw_deg",
+      "toaster_jitter_xy_m",
+      "toaster_baseline_displacement_m",
+      "toaster_robot_origin_distance_m",
+      "toaster_robot_origin_xy_distance_m",
+      "plate_dx_m",
+      "plate_dy_m",
+      "plate_yaw_deg",
+      "plate_abs_yaw_deg",
+      "plate_jitter_xy_m",
+      "plate_baseline_displacement_m",
+      "plate_robot_origin_distance_m",
+      "plate_robot_origin_xy_distance_m",
+      "bread_shelf_dx_m",
+      "bread_shelf_dy_m",
+      "bread_shelf_yaw_deg",
+      "bread_shelf_abs_yaw_deg",
+      "bread_shelf_jitter_xy_m",
+      "bread_shelf_baseline_displacement_m",
+      "bread_shelf_robot_origin_distance_m",
+      "bread_shelf_robot_origin_xy_distance_m",
+      "max_probe_shoulder_distance_m"
+    ]
+  }
+}

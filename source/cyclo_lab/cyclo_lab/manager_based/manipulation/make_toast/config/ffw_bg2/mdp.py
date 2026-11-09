@@ -25,12 +25,16 @@ def lever_position(env) -> torch.Tensor:
     return toaster.data.joint_pos[:, toaster.joint_names.index(LEVER_JOINT)].unsqueeze(-1)
 
 
-def lever_pressed(env) -> torch.Tensor:
+def lever_press_ratio(env) -> torch.Tensor:
+    from .lever_indicator import press_fraction
     toaster = env.scene["toaster"]
     index = toaster.joint_names.index(LEVER_JOINT)
     limits = toaster.data.joint_pos_limits[:, index]
-    ratio = (toaster.data.joint_pos[:, index] - limits[:, 0]) / (limits[:, 1] - limits[:, 0])
-    return ratio >= LEVER_PRESSED_RATIO
+    return press_fraction(toaster.data.joint_pos[:, index], limits[:, 0], limits[:, 1])
+
+
+def lever_pressed(env) -> torch.Tensor:
+    return lever_press_ratio(env) >= LEVER_PRESSED_RATIO
 
 
 def gripper_open(env) -> torch.Tensor:
@@ -83,15 +87,8 @@ def robot_at_home(env) -> torch.Tensor:
 
 
 def spare_bread_on_shelf(env) -> torch.Tensor:
-    result = torch.ones(env.num_envs, dtype=torch.bool, device=env.device)
-    shelf_pos = torch.tensor(env.cfg.scene.bread_shelf.init_state.pos, device=env.device).expand(env.num_envs, -1)
-    for name in ("bread_2", "bread_3"):
-        position = object_position(env, name) - shelf_pos
-        result &= (torch.abs(position[:, 0]) < 0.085) & (torch.abs(position[:, 1]) < 0.06)
-        result &= (position[:, 2] > 0.015) & (position[:, 2] < 0.16)
-        rotation = math_utils.matrix_from_quat(env.scene[name].data.root_quat_w)
-        result &= torch.maximum(torch.abs(rotation[:, 2, 0]), torch.abs(rotation[:, 2, 1])) > math.cos(math.radians(30))
-    return result
+    from .bimanual_mdp import spare_bread_on_shelf as seated_spares
+    return seated_spares(env)
 
 
 def task_done(env) -> torch.Tensor:
@@ -124,14 +121,10 @@ def reset_objects(env, env_ids: torch.Tensor):
     toaster.set_joint_position_target(joints, env_ids=env_ids)
     toaster.set_joint_velocity_target(torch.zeros_like(joints), env_ids=env_ids)
 
-    # The static shelf stays fixed. A common small Y displacement randomizes slices inside its grooves.
-    bread_y = math_utils.sample_uniform(-0.008, 0.008, (n,), env.device)
+    # Restore the geometry-calibrated seats; Y jitter hits the rounded end walls.
     for i, offset in enumerate(BREAD_OFFSETS):
         bread = env.scene[f"bread_{i}"]
         state = bread.data.default_root_state[env_ids].clone()
-        state[:, :3] = (torch.tensor(SHELF_POSITION, device=env.device)
-                       + torch.tensor(offset, device=env.device) + env.scene.env_origins[env_ids])
-        state[:, 1] += bread_y
-        state[:, 3:7] = torch.tensor(BREAD_ROTATION, device=env.device)
+        state[:, :3] += env.scene.env_origins[env_ids]
         state[:, 7:] = 0.0
         bread.write_root_state_to_sim(state, env_ids)

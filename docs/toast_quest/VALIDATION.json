@@ -1,0 +1,378 @@
+{
+  "date": "2026-11-09",
+  "scope": "CPU, source/asset and local index-only export; no PhysX/VR runtime started",
+  "base_commit": "29c04a5592bb20bfe4dc0134bf1ff4bed64e67ca",
+  "checks": [
+    {
+      "file": "scripts/imitation_learning/isaaclab_recorder/test_contact_replay.py",
+      "status": "PASS",
+      "test_count": 6
+    },
+    {
+      "file": "scripts/imitation_learning/isaaclab_recorder/test_replay_validation.py",
+      "status": "PASS",
+      "test_count": 14
+    },
+    {
+      "file": "scripts/imitation_learning/isaaclab_recorder/test_scene_audit.py",
+      "status": "PASS",
+      "test_count": 3
+    },
+    {
+      "file": "scripts/imitation_learning/isaaclab_recorder/test_slave_gain_experiment.py",
+      "status": "PASS",
+      "test_count": 4
+    },
+    {
+      "file": "scripts/quest_diagnostic/official_contact/test_asset_dependencies.py",
+      "status": "PASS",
+      "test_count": 4
+    },
+    {
+      "file": "scripts/quest_diagnostic/official_contact/test_common.py",
+      "status": "PASS",
+      "test_count": 6
+    },
+    {
+      "file": "scripts/quest_diagnostic/official_contact/test_mdl_wrapper.py",
+      "status": "PASS",
+      "test_count": 6
+    },
+    {
+      "file": "scripts/quest_diagnostic/official_contact/test_partial.py",
+      "status": "PASS",
+      "test_count": 7
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_analyze_interruptions.py",
+      "status": "PASS",
+      "test_count": 12
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_auto_contact.py",
+      "status": "PASS",
+      "test_count": 4
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_auto_contact_plan.py",
+      "status": "PASS",
+      "test_count": 7
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_auto_contact_shutdown.py",
+      "status": "PASS",
+      "test_count": 3
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_binary_trigger.py",
+      "status": "PASS",
+      "test_count": 4
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_contact_geometry_snapshot.py",
+      "status": "PASS",
+      "test_count": 4
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_contact_postmortem.py",
+      "status": "PASS",
+      "test_count": 2
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_contact_probe.py",
+      "status": "PASS",
+      "test_count": 4
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_control.py",
+      "status": "PASS",
+      "test_count": 14
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_display_status.py",
+      "status": "PASS",
+      "test_count": 4
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_episode_control.py",
+      "status": "PASS",
+      "test_count": 7
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_free_gripper.py",
+      "status": "PASS",
+      "test_count": 7
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_official_vr.py",
+      "status": "PASS",
+      "test_count": 5
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_page_routes.py",
+      "status": "PASS",
+      "test_count": 1
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_pairing.py",
+      "status": "PASS",
+      "test_count": 8
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_practice.py",
+      "status": "PASS",
+      "test_count": 3
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_preview.py",
+      "status": "PASS",
+      "test_count": 8
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_preview_encoding.py",
+      "status": "PASS",
+      "test_count": 2
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_receiver.py",
+      "status": "PASS",
+      "test_count": 8
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_response.py",
+      "status": "PASS",
+      "test_count": 7
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_teleop_gripper_options.py",
+      "status": "PASS",
+      "test_count": 6
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_teleop_slave_gains.py",
+      "status": "PASS",
+      "test_count": 7
+    },
+    {
+      "file": "scripts/quest_diagnostic/test_tip_contact_observation.py",
+      "status": "PASS",
+      "test_count": 5
+    },
+    {
+      "file": "scripts/tools/test_bread_slot_logic.py",
+      "status": "PASS",
+      "test_count": 1
+    },
+    {
+      "file": "scripts/tools/test_current_toast_delivery.py",
+      "status": "PASS_AFTER_PROVENANCE_FIX",
+      "test_count": 6
+    },
+    {
+      "file": "scripts/tools/test_toast_audit_lifecycle.py",
+      "status": "PASS",
+      "test_count": 6
+    },
+    {
+      "file": "scripts/tools/test_toast_collection_validation.py",
+      "status": "PASS_AFTER_PROVENANCE_FIX",
+      "test_count": 7
+    },
+    {
+      "file": "scripts/tools/test_toast_overview_browser.py",
+      "status": "BLOCKED_CHROME_SANDBOX_PERMISSION",
+      "test_count": null
+    },
+    {
+      "file": "scripts/tools/test_toast_recording_metadata.py",
+      "status": "PASS",
+      "test_count": 6
+    },
+    {
+      "file": "scripts/tools/test_toast_scenario_runtime.py",
+      "status": "PASS",
+      "test_count": 8
+    },
+    {
+      "file": "scripts/tools/test_toast_serving_success.py",
+      "status": "PASS",
+      "test_count": 11
+    },
+    {
+      "file": "scripts/tools/test_toaster_led.py",
+      "status": "PASS",
+      "test_count": 11
+    }
+  ],
+  "additional_checks": {
+    "lift_35mm_cpu_authored_usd": "PASS",
+    "server_pairing_after_host_option_change": "PASS",
+    "server_routes_after_host_option_change": "PASS",
+    "javascript_tests": "NOT_RUN: node/nodejs unavailable",
+    "git_diff_check": "PASS with attributes preserving historical CSV CRLF and patch context bytes",
+    "shell_syntax": "PASS",
+    "server_cli_help": "PASS",
+    "viewer_host_cli_help": "BLOCKED: host system Python lacks isaaclab; parser behavior covered by CPU tests; use documented container runtime"
+  },
+  "clean_export": {
+    "method": "git checkout-index, no untracked files; LFS hydrated from local Git object store only",
+    "python_files_parsed": 135,
+    "groups_by_type": {
+      "operator_A_1": {
+        "0": 5,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4
+      },
+      "operator_A_2": {
+        "0": 4,
+        "1": 4,
+        "2": 5,
+        "3": 4,
+        "4": 4,
+        "5": 4
+      },
+      "operator_B_1": {
+        "0": 4,
+        "1": 5,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4
+      },
+      "operator_B_2": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 5,
+        "4": 4,
+        "5": 4
+      }
+    },
+    "lfs_resolved_locally": [
+      "source/cyclo_lab/data/objects/bread_slot/bread_slot.usdz",
+      "source/cyclo_lab/data/objects/bread_slot/rack.usda"
+    ],
+    "lfs_unavailable_locally": [
+      "source/cyclo_lab/data/robots/FFW/FFW_SH5.usd",
+      "source/cyclo_lab/data/object/texture/roasted_chestnut_bag/baked_mesh_8315f7dd_norm0.png",
+      "source/cyclo_lab/data/object/texture/roasted_chestnut_bag/baked_mesh_8315f7dd_tex0.png",
+      "source/cyclo_lab/data/object/texture/roasted_chestnut_bag/baked_mesh_8315f7dd_ao0.png",
+      "source/cyclo_lab/data/object/texture/jelly_bag/baked_mesh_603d9417_norm0.png",
+      "source/cyclo_lab/data/object/texture/jelly_bag/baked_mesh_603d9417_tex0.png",
+      "source/cyclo_lab/data/object/texture/jelly_bag/baked_mesh_603d9417_ao0.png",
+      "source/cyclo_lab/data/object/texture/peanut_mix_bag/baked_mesh_c87b43f8_ao0.png",
+      "source/cyclo_lab/data/object/texture/peanut_mix_bag/baked_mesh_c87b43f8_tex0.png",
+      "source/cyclo_lab/data/object/texture/peanut_mix_bag/baked_mesh_c87b43f8_norm0.png",
+      "source/cyclo_lab/data/motions/K1_rev1/dance2/dance2.npz",
+      "source/cyclo_lab/data/motions/K1_rev1/dance1/dance1.npz",
+      "third_party/IsaacLab-Arena/docs/images/gr1_open_microwave_task_view.png",
+      "third_party/IsaacLab-Arena/docs/images/isaaclab_arena_core_framework.png",
+      "third_party/IsaacLab-Arena/docs/images/cloud_xr_sessions_control_panel.png",
+      "third_party/IsaacLab-Arena/docs/images/franka_kitchen.png",
+      "third_party/IsaacLab-Arena/docs/images/lift_object_rl_task.gif",
+      "third_party/IsaacLab-Arena/docs/images/locomanip_cloudxr_js.png",
+      "third_party/IsaacLab-Arena/docs/images/simulation_view.png",
+      "third_party/IsaacLab-Arena/docs/images/swap_hdr.gif",
+      "third_party/IsaacLab-Arena/docs/images/relations_highlevel.png",
+      "third_party/IsaacLab-Arena/docs/images/g1_galileo_arena_box_pnp_locomanip.gif",
+      "third_party/IsaacLab-Arena/docs/images/variation_axis.png",
+      "third_party/IsaacLab-Arena/docs/images/isaac_lab_arena_arch_overview.png",
+      "third_party/IsaacLab-Arena/docs/images/franka_kitchen_pickup.gif",
+      "third_party/IsaacLab-Arena/docs/images/remote_policy_design.png",
+      "third_party/IsaacLab-Arena/docs/images/scale_up.gif",
+      "third_party/IsaacLab-Arena/docs/images/default_srl_pnp.png",
+      "third_party/IsaacLab-Arena/docs/images/g1_locomanip_pick_and_place_task_view.png",
+      "third_party/IsaacLab-Arena/docs/images/gr1_sequential_static_manipulation_env.gif",
+      "third_party/IsaacLab-Arena/docs/images/kitchen_gr1_arena.gif",
+      "third_party/IsaacLab-Arena/docs/images/gr1_sequential_static_manip_mimic_datagen.gif",
+      "third_party/IsaacLab-Arena/docs/images/locomanip_arena_server.png",
+      "third_party/IsaacLab-Arena/docs/images/object_placement_variety.gif",
+      "third_party/IsaacLab-Arena/docs/images/gr1_sequential_static_manipulation_env_vr_view.png",
+      "third_party/IsaacLab-Arena/docs/images/iterate_getting_started_jobs_config.gif",
+      "third_party/IsaacLab-Arena/docs/images/task_duplications.png",
+      "third_party/IsaacLab-Arena/docs/images/swap_objects.gif",
+      "third_party/IsaacLab/source/isaaclab_tasks/isaaclab_tasks/direct/humanoid_amp/motions/humanoid_dance.npz",
+      "third_party/IsaacLab/source/isaaclab_tasks/isaaclab_tasks/direct/humanoid_amp/motions/humanoid_walk.npz",
+      "third_party/IsaacLab/source/isaaclab_tasks/isaaclab_tasks/direct/humanoid_amp/motions/humanoid_run.npz",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_hip_pitch_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_hip_roll_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_hip_yaw_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/torso_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_knee_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_knee_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/head_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_shoulder_roll_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_shoulder_yaw_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_hip_roll_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_shoulder_pitch_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_shoulder_yaw_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/pelvis.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_ankle_roll_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_ankle_pitch_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_ankle_roll_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_elbow_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_elbow_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_ankle_pitch_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_shoulder_pitch_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_hip_pitch_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/left_wrist_roll_rubber_hand.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_shoulder_roll_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_hip_yaw_link.stl",
+      "third_party/ai_sapiens/ai_sapiens_description/meshes/k1_rev1/right_wrist_roll_rubber_hand.stl"
+    ],
+    "tests": [
+      {
+        "file": "scripts/tools/test_toast_scenario_runtime.py",
+        "exit": 0
+      },
+      {
+        "file": "scripts/tools/test_toast_recording_metadata.py",
+        "exit": 0
+      },
+      {
+        "file": "scripts/quest_diagnostic/test_control.py",
+        "exit": 0
+      },
+      {
+        "file": "scripts/quest_diagnostic/test_page_routes.py",
+        "exit": 0
+      }
+    ],
+    "external_assets": "RoboDojo USDZ absent as expected; require documented checksum-pinned downloader. No host copies used.",
+    "remote_download": "NOT_VERIFIED_DNS_UNAVAILABLE",
+    "submodule_gitlinks": 0,
+    "third_party": "Vendored tracked sources; .gitmodules retained as source URL metadata"
+  },
+  "excluded": [
+    "launch logs",
+    "core dumps",
+    "temporary backups",
+    "caches",
+    "TLS keys and credentials",
+    "personal HDF5 demonstrations",
+    "raw measurement traces and vertex dumps"
+  ],
+  "runtime_limits": [
+    "rack settling unresolved",
+    "35mm actual exposure/ejection unmeasured",
+    "camera shutdown not verified in Isaac",
+    "VR tracking performance not measured"
+  ],
+  "remote": "GitHub DNS resolution unavailable; remote branch/LFS downloads not verified",
+  "regeneration": {
+    "scenarios_and_generation_equal": true,
+    "byte_identical_files": {
+      "assignments.csv": true,
+      "poses.csv": true,
+      "generation_config.json": true,
+      "validation.json": true,
+      "distribution.json": true,
+      "ASSIGNMENTS.md": true,
+      "overview.svg": true
+    },
+    "manifest_difference": "provenance source hashes only; +35mm config/spawner migration"
+  }
+}

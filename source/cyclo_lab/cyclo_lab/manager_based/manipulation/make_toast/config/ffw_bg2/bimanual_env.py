@@ -12,6 +12,7 @@ class MakeToastFFWBG2BimanualEnv(ManagerBasedRLMimicEnv):
         if getattr(cfg, "scenario_id", None) is not None:
             from .scenarios import apply_scenario
             apply_scenario(cfg, cfg.scenario_id)
+        self.lever_indicators = None
         self.toast_cycle = None
         self._restoring_cycle = None
         if getattr(cfg, "toast_cycle_enabled", False) and getattr(cfg.recorders, "record_initial_state", None):
@@ -21,6 +22,18 @@ class MakeToastFFWBG2BimanualEnv(ManagerBasedRLMimicEnv):
         if getattr(cfg, "toast_cycle_enabled", False):
             from .toast_cycle import ToastCycle
             self.toast_cycle = ToastCycle(self)
+        from .lever_indicator import LeverIndicators
+        self.lever_indicators = LeverIndicators(
+            self.scene.stage, [f"{path}/Toaster" for path in self.scene.env_prim_paths],
+        )
+        self._update_lever_indicators(force=True)
+
+    def _update_lever_indicators(self, force=False):
+        if self.lever_indicators is not None:
+            # No automatic cycle (e.g. v0) means OFF, regardless of lever position.
+            phase = (self.toast_cycle.phase if self.toast_cycle is not None
+                     else torch.zeros(self.num_envs, device=self.device))
+            self.lever_indicators.update(phase, force=force)
 
     def _reset_idx(self, env_ids):
         super()._reset_idx(env_ids)
@@ -28,11 +41,20 @@ class MakeToastFFWBG2BimanualEnv(ManagerBasedRLMimicEnv):
             self.toast_cycle.reset(env_ids)
             if self._restoring_cycle is not None:
                 self.toast_cycle.restore(self._restoring_cycle, env_ids)
+        self._update_lever_indicators(force=True)
 
     def step(self, action):
         if self.toast_cycle is not None:
             self.toast_cycle.update(self.step_dt)
-        return super().step(action)
+        self._update_lever_indicators()
+        result = super().step(action)
+        # Also reflect the just-completed physics step for the next GUI/RGB render.
+        self._update_lever_indicators()
+        return result
+
+    def render(self, *args, **kwargs):
+        self._update_lever_indicators()
+        return super().render(*args, **kwargs)
 
     def reset_to(self, state, env_ids=None, seed=None, is_relative=False):
         self._restoring_cycle = state.get("toast_cycle")
@@ -49,6 +71,7 @@ class MakeToastFFWBG2BimanualEnv(ManagerBasedRLMimicEnv):
         if self.toast_cycle is not None:
             self.toast_cycle.apply_targets()
         self.scene.write_data_to_sim()
+        self._update_lever_indicators(force=True)
         return observations
 
     def get_robot_eef_pose(self, eef_name, env_ids=None):

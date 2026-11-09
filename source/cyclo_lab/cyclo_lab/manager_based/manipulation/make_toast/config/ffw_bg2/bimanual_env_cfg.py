@@ -22,6 +22,7 @@ from .assets import (BREAD_OFFSETS, BREAD_ROTATION, TABLE_HEIGHT,
                      BIMANUAL_STANDBY_RIGHT_JOINTS, BIMANUAL_STANDBY_WRIST)
 from .scene import spawn_toast_bimanual_robot, spawn_toast_bimanual_toaster
 from .arm_action import StandbyPostureIKActionCfg
+from .toast_parameters import SERVING_POPUP_HEIGHT
 
 
 @configclass
@@ -75,11 +76,10 @@ class MakeToastFFWBG2BimanualEnvCfg(MakeToastFFWBG2EnvCfg, MimicEnvCfg):
             pose[f"arm_l_joint{i}"] = value * (1.0 if i in (1, 4, 6) else -1.0)
         pose.update({"head_joint1": 0.60, "head_joint2": 0.0})
         self.scene.robot.init_state.joint_pos.update(pose)
-        # RH-P12 fingers need more clearance than the original ARX rack's 25 mm pitch.
-        # Widen only the rack; keep bread/toaster geometry and slot clearances unchanged.
+        # Preserve the scenario pivot/yaw; the new rack keeps its native dimensions.
         shelf_position = torch.tensor([0.45, -0.25, TABLE_HEIGHT + 0.0382])
         shelf_rotation = torch.tensor([0.70710678, 0.0, 0.0, -0.70710678])
-        self.scene.bread_shelf.spawn.scale = (2.0, 1.0, 1.0)
+        self.scene.bread_shelf.spawn.scale = (1.0, 1.0, 1.0)
         self.scene.bread_shelf.init_state.pos = tuple(shelf_position.tolist())
         self.scene.bread_shelf.init_state.rot = tuple(shelf_rotation.tolist())
         # Present the lever toward the left hand, within the central arm workspace.
@@ -104,7 +104,7 @@ class MakeToastFFWBG2BimanualEnvCfg(MakeToastFFWBG2EnvCfg, MimicEnvCfg):
                 update_period=0.0, history_length=4,
             ))
         for i, offset in enumerate(BREAD_OFFSETS):
-            position = torch.tensor([offset[0] * 2, offset[1], offset[2]])
+            position = torch.tensor(offset)
             pose = self.scene.__dict__[f"bread_{i}"].init_state
             pose.pos = tuple((shelf_position + math_utils.quat_apply(shelf_rotation, position)).tolist())
             pose.rot = tuple(math_utils.quat_mul(shelf_rotation, torch.tensor(BREAD_ROTATION)).tolist())
@@ -153,7 +153,7 @@ class MakeToastFFWBG2BimanualEnvCfg(MakeToastFFWBG2EnvCfg, MimicEnvCfg):
 
 @configclass
 class MakeToastFFWBG2BimanualCycleEnvCfg(MakeToastFFWBG2BimanualEnvCfg):
-    """Version 1 adds a physical bread carriage and a five-second pop-up cycle."""
+    """Version 1 adds a physical bread carriage and a four-second heating/pop-up cycle."""
 
     toast_cycle_enabled: bool = True
 
@@ -176,13 +176,19 @@ class MakeToastFFWBG2BimanualServeEnvCfg(MakeToastFFWBG2BimanualCycleEnvCfg):
     """Version 2 finishes by serving both popped slices on a small dark blue plate."""
 
     serve_to_plate: bool = True
-    toast_popup_extra_height: float = .015
+    toast_popup_extra_height: float = SERVING_POPUP_HEIGHT
     # Optional fixed layout. Applied before InteractiveScene is constructed.
     scenario_id: str | None = None
     scenario_manifest: str | None = None
 
     def __post_init__(self):
         super().__post_init__()
+        # The shared robot caps both masters at 2.2 rad/s; v2 uses 6.5 rad/s.
+        # Slaves retain their authored USD velocity limits.
+        self.scene.robot.actuators["gripper_master"].velocity_limit_sim = 6.5
+        # Explicit v2 gains: both slave joint2/3/4 groups match master 100/4.
+        self.scene.robot.actuators["gripper_slave"].stiffness = 100.0
+        self.scene.robot.actuators["gripper_slave"].damping = 4.0
         from isaaclab.assets import RigidObjectCfg
         from .assets import SERVING_PLATE_POSITION, SERVING_PLATE_SCALE, asset_path
         from .scene import spawn_toast_serving_plate

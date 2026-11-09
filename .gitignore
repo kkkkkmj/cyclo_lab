@@ -88,3 +88,13 @@ third_party/*
 
 # Zenoh ROS2 SDK message cache mounted into Docker
 docker/zenoh_cache/
+
+# Local Quest credentials, transient diagnostics and editor backups.
+*.key
+*.pem
+*.p12
+*.pfx
+*.bak_*
+/core
+/core.[0-9]*
+/measurements/**/runs/

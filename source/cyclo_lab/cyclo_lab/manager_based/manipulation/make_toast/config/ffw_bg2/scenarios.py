@@ -9,7 +9,7 @@ import json
 import math
 from pathlib import Path
 
-MANIFEST = Path(__file__).resolve().parents[8] / "scenario_delivery/manifest.json"
+MANIFEST = Path(__file__).resolve().parents[8] / "scenario_delivery/manifest_bread_slot.json"
 OBJECTS = ("toaster", "plate", "bread_shelf")
 
 

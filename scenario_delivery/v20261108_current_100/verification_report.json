@@ -1,0 +1,52 @@
+{
+  "cpu_tests": {
+    "new_delivery": 6,
+    "legacy_scenario_runtime": 8,
+    "legacy_recording_metadata": 6,
+    "total_passed": 20
+  },
+  "geometry": {
+    "native_rack_m": [
+      0.23,
+      0.13,
+      0.045
+    ],
+    "layouts_checked": 100,
+    "rack_bread_initial_intersections": 0,
+    "support_within_m": 0.001,
+    "all_rigid_local_transforms_match": true
+  },
+  "reset": {
+    "actual_function_with_mock_writes": "PASS, all 100 layouts, two env origins, full and partial reset",
+    "physx": "NOT_RUN"
+  },
+  "runtime": {
+    "docker": "permission denied at unix:///var/run/docker.sock",
+    "nvidia_smi": "could not communicate with NVIDIA driver",
+    "GUI": "NOT_RUN",
+    "Quest": "NOT_RUN",
+    "IK": "NOT_RUN",
+    "robot_collision": "NOT_RUN",
+    "manipulation": "NOT_RUN"
+  },
+  "execution_config": {
+    "bind_source": "/home/mj/nrf_humanoid/cyclo_lab_mj",
+    "bind_target": "/workspace/cyclo_lab",
+    "mj_python_prepend": "source/cyclo_lab before image editable install",
+    "DISPLAY": ":1",
+    "XAUTHORITY": "/run/user/1000/gdm/Xauthority"
+  },
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.3.1",
+    "scipy": "1.17.0",
+    "torch": "2.11.0+cu128",
+    "usd": [
+      0,
+      25,
+      5
+    ]
+  },
+  "source_scope": "No task, asset, VR input or actuator edits in this scenario task; pre-existing user changes retained",
+  "remote_identity_verified": false
+}

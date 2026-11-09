@@ -34,3 +34,10 @@ def bread_support_vertices():
         raise RuntimeError("The pinned bread USD contains no visual mesh")
     vertices = np.concatenate(arrays)
     return np.ascontiguousarray(vertices[ConvexHull(vertices).vertices], dtype=np.float32)
+
+
+@lru_cache(maxsize=1)
+def bread_geometry_center():
+    """AABB midpoint of the actual visual hull in the bread root frame (metres)."""
+    vertices = bread_support_vertices()
+    return (vertices.min(axis=0) + vertices.max(axis=0)) * .5

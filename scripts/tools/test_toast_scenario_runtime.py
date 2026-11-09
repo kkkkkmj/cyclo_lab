@@ -149,7 +149,7 @@ class OperatorSelection(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             checkout=Path(tmp)/'renamed checkout';other=Path(tmp)/'unrelated';other.mkdir()
             paths=['scripts/tools/view_make_toast_scenario.py',str(PATH.relative_to(ROOT)),
-                   'scenario_delivery/manifest.json','scenario_delivery/assignments.csv']
+                   'scenario_delivery/manifest.json','scenario_delivery/manifest_bread_slot.json','scenario_delivery/assignments.csv']
             for rel in paths:
                 target=checkout/rel;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/rel,target)
             spec=importlib.util.spec_from_file_location('relocated_viewer',checkout/paths[0])

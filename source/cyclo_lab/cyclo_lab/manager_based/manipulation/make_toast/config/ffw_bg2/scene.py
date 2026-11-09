@@ -2,6 +2,7 @@
 
 import isaaclab.sim as sim_utils
 from isaacsim.core.utils.stage import get_current_stage
+from .toast_parameters import SERVING_POPUP_HEIGHT
 
 
 TABLE_GROUP = "SM_CratePacking_Table_A1"
@@ -81,11 +82,11 @@ def spawn_toast_popup_toaster(prim_path, cfg, translation=None, orientation=None
 
 @sim_utils.clone
 def spawn_toast_serving_toaster(prim_path, cfg, translation=None, orientation=None, **kwargs):
-    """Allow a 15 mm high-lift pop-up for the FFW-BG2 fingertip clearance."""
+    """Allow the v2 high-lift target within the physical carriage travel limit."""
     root = spawn_toast_popup_toaster.__wrapped__(prim_path, cfg, translation, orientation, **kwargs)
     from pxr import UsdPhysics
     joint = UsdPhysics.PrismaticJoint(root.GetStage().GetPrimAtPath(f"{prim_path}/joints/carriage_joint"))
-    joint.CreateUpperLimitAttr(.015)
+    joint.CreateUpperLimitAttr(SERVING_POPUP_HEIGHT)
     return root
 
 

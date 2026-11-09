@@ -1,0 +1,106 @@
+{
+  "joint_positions": {
+    "lift_joint": 0.0,
+    "arm_l_joint1": 0.0,
+    "arm_l_joint2": 1.8,
+    "arm_l_joint3": -0.03,
+    "arm_l_joint4": -2.1,
+    "arm_l_joint5": 1.44,
+    "arm_l_joint6": 0.2,
+    "arm_l_joint7": 0.65,
+    "arm_r_joint1": 0.0,
+    "arm_r_joint2": -1.8,
+    "arm_r_joint3": 0.03,
+    "arm_r_joint4": -2.1,
+    "arm_r_joint5": -1.44,
+    "arm_r_joint6": 0.2,
+    "arm_r_joint7": -0.65,
+    "gripper_l_joint1": 0.0,
+    "gripper_l_joint2": 0.0,
+    "gripper_l_joint3": 0.0,
+    "gripper_l_joint4": 0.0,
+    "gripper_r_joint1": 0.0,
+    "gripper_r_joint2": 0.0,
+    "gripper_r_joint3": 0.0,
+    "gripper_r_joint4": 0.0,
+    "head_joint1": 0.6,
+    "head_joint2": 0.0
+  },
+  "robot_root": {
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rot": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "table": {
+    "center": [
+      0.5373873572390807,
+      -0.4209096078892096,
+      1.3658507979235572
+    ],
+    "size": [
+      0.06634375516723767,
+      0.16496230013071944,
+      0.020000000000000018
+    ],
+    "speed_m_s": 0.005,
+    "max_down_m": 0.025,
+    "initial_gap_m": 0.01,
+    "source": "Composed collision mesh vertex bounds, not cooked PhysX shape; no IK guarantee",
+    "material": {
+      "static_friction": 1.0,
+      "dynamic_friction": 0.8,
+      "restitution": 0.0,
+      "friction_combine_mode": "max",
+      "restitution_combine_mode": "max"
+    },
+    "support_mode": "partial_distal",
+    "direct_target_joint": "gripper_r_joint2",
+    "expected_contact_point_m": [
+      0.527546108598167,
+      -0.3612957547123674,
+      1.3758507979235572
+    ],
+    "table_normal_world": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "other_distal_direct_contact_expected": false
+  },
+  "initial_right_wrist": [
+    [
+      0.13605976104736328,
+      0.11469465494155884,
+      -0.9840390086174011,
+      0.3609426021575928
+    ],
+    [
+      0.4250701665878296,
+      0.890443742275238,
+      0.1625586599111557,
+      -0.39540839195251465
+    ],
+    [
+      0.8948759436607361,
+      -0.4404033422470093,
+      0.07240027189254761,
+      1.4419125318527222
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "condition_note": "Partial distal support: joint2-side tip direct contact only. Same starting pose and diagnostic table for both conditions. Not original full-footprint table or original task objects.",
+  "expected_robot_usd_sha256": "82ac39486428e51d8be58996ea817fd4b25a40c262936e2d2cc8823673e1387d"
+}

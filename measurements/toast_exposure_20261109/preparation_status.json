@@ -1,0 +1,36 @@
+{
+  "status": "PHYSX_NOT_RUN_NO_MEASURED_EXPOSURE",
+  "task": "Cyclo-Make-Toast-FFW-BG2-Bimanual-IK-Rel-v2",
+  "runtime_blockers": [
+    "nvidia-smi: could not communicate with NVIDIA driver",
+    "No /dev/nvidia* available in this session",
+    "Docker API permission denied at unix:///var/run/docker.sock"
+  ],
+  "static_verification": "PASS: see static_geometry_audit.json; not a simulation result",
+  "syntax_verification": "PASS: Python AST and bash -n",
+  "requested_results": [
+    {
+      "bread_id": "bread_0",
+      "slot": 0,
+      "phase4_exposure_pct": null,
+      "plus_1s_exposure_pct": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "bread_id": "bread_0",
+      "slot": 1,
+      "phase4_exposure_pct": null,
+      "plus_1s_exposure_pct": null,
+      "status": "NOT_RUN"
+    }
+  ],
+  "reviewed_code_sha256": {
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/toast_cycle.py": "3a0cb9266e2bbb675d2e5d88c2ba4958e5960091d618aa2ea1523744a2535b15",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/bimanual_env.py": "1dbfb5b59497ff4f7af6f3a55a4bd19463f3a9bc7f0511a4263aef0c2a133462",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/bimanual_env_cfg.py": "8f0bf7e57bea65b074d5038781a84af8a5b64da6d20f55bfcff9ec6dcdd5de12",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/bimanual_mdp.py": "23ec017ca9c82d7e546a853dc455cfb7d06d9cf6d2ed391b700325a9ab6b13ed",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/mdp.py": "44dae63bb8ab62b8235677a1a1bada484431767fe2f1eae3e2ecda848947bc6c",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/scene.py": "7d0ebe18891415d38ec00cf5c00a04aca51c0bd887f101dd442c41f6347b1ac9",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/assets.py": "d4db00ff3600ac2fd342e5c80d4de93f116bee265d5ba1311497058a6a5674e9"
+  }
+}

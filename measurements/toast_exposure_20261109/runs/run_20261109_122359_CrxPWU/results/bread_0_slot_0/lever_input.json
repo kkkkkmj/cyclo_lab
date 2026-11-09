@@ -1,0 +1,11 @@
+{
+  "time_s": 1.2000000000000008,
+  "joint_name": "joint_1",
+  "position_m": [
+    [
+      0.06419999897480011
+    ]
+  ],
+  "velocity_m_s": 0.0,
+  "method": "One joint-state write only to lever; no carriage target/state override"
+}

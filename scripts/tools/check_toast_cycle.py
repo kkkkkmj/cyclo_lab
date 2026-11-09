@@ -97,7 +97,7 @@ def main():
         if cycle.phase.tolist() != [4, 0]:
             print("CYCLE TRACE", json.dumps(trace), flush=True)
         assert cycle.phase.tolist() == [4, 0], (cycle.phase, trace[-1])
-        assert abs(float(cycle.heating_time[0]) - 5) < .045
+        assert abs(float(cycle.heating_time[0]) - cycle.HEATING_SECONDS) < .045
         final = bread_local()[:, :, 2]
         torch.testing.assert_close(final, raised, atol=.006, rtol=0)
         assert saved is not None

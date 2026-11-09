@@ -1,0 +1,8 @@
+# Use with docker-compose.yaml and -p cyclo_lab_mj. Original container untouched.
+name: cyclo_lab_mj
+services:
+  cyclo_lab:
+    container_name: cyclo_lab_mj
+    working_dir: /workspace/cyclo_lab
+    environment:
+      - PYTHONPATH=/workspace/cyclo_lab/source/cyclo_lab:/workspace/cyclo_lab/third_party/IsaacLab/source/isaaclab:/workspace/cyclo_lab/third_party/IsaacLab/source/isaaclab_tasks:/workspace/cyclo_lab/third_party/IsaacLab/source/isaaclab_assets:/workspace/cyclo_lab/third_party/IsaacLab/source/isaaclab_mimic

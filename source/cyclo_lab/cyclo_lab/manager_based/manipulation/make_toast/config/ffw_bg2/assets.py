@@ -11,9 +11,12 @@ TOASTER_POSITION = (0.64, -0.17, TABLE_HEIGHT + 0.0818)
 # The lever is on the asset's +X side. Face it toward the robot (-world X).
 TOASTER_ROTATION = (0.0, 0.0, 0.0, 1.0)
 SHELF_POSITION = (0.42, -0.43, TABLE_HEIGHT + 0.0382)
-# Bread stands in the four grooves of the original bread_shelf asset.
-BREAD_OFFSETS = ((0.035, -0.007, 0.055), (0.010, -0.007, 0.055),
-                 (-0.015, -0.007, 0.055), (-0.039, -0.007, 0.055))
+# Native 230 x 130 x 45 mm rack, four 60 mm-pitch grooves.
+# Center the asymmetric bread thickness/width in each groove. The unchanged
+# bread is supported by the rounded end shoulders (not the recessed flat floor).
+# 0.0882 m is the sampled convex bread/triangle rack contact height; 0.3 mm gap.
+BREAD_OFFSETS = tuple((x - .005607555, .000249905, .0885 + .994051338865205 - 1.0382)
+                      for x in (.09, .03, -.03, -.09))
 BREAD_ROTATION = (0.7071067811865476, 0.0, 0.7071067811865475, 0.0)
 # From toaster/00000/metadata.json: slot frames are attached to the fixed base.
 SLOT_X_BOUNDS = (-0.078, 0.072)
@@ -35,12 +38,16 @@ SERVING_PLATE_SCALE = (1.5, 1.5, .22)
 SERVING_PLATE_POSITION = (.43, .035, TABLE_HEIGHT + .0178308 * .22 + .0003)
 # Inscribed radius of the pinned plate's actual convex XY outline.
 SERVING_PLATE_RADIUS = .0644821164 * SERVING_PLATE_SCALE[0]
+# Center-radius success check: 20 mm + bread's 75.044 mm bounding radius
+# stays within the plate's 96.723 mm inscribed radius (including 0.5 mm margin).
+SERVING_BREAD_CENTER_RADIUS = .020
 BREAD_BOUNDS = ((-.05838766, .05856051), (-.05828097, .05778116), (-.00029194, .01150705))
 
 
 def asset_path(name: str) -> str:
     """Resolve only when this task is instantiated, so other tasks need no download."""
-    path = ASSET_DIR / name / "object.usdz"
+    path = (ASSET_DIR.parent / "bread_slot" / "rack.usda" if name == "bread_shelf"
+            else ASSET_DIR / name / "object.usdz")
     if not path.is_file():
         raise FileNotFoundError(
             f"Missing Make Toast asset: {path}\n"

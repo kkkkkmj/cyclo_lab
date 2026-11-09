@@ -1,0 +1,107 @@
+{
+  "manifest_sha256": "e01b22564cb52b7f2e7edf2f8255270bdd9e972702a269b1bc01747dfee5e95e",
+  "asset_hashes": {
+    "source/cyclo_lab/data/objects/robodojo_make_toast/toaster/object.usdz": "0d80971f2a3d310e2fc65bc6ad624bab9866303099038ecbef91fe37b02e8e82",
+    "source/cyclo_lab/data/objects/robodojo_make_toast/plate/object.usdz": "c63472e16a20fb12e856d89c4f92e33546677285124838766c6555f8abfbf473",
+    "source/cyclo_lab/data/objects/robodojo_make_toast/bread/object.usdz": "e3a1e5796c033de3c1b29e28e1a13e03e2e60725884d9a071326cd9397f33839",
+    "source/cyclo_lab/data/objects/bread_slot/rack.usda": "bf9d759dba0cc619eda5483bfba87db934e2b7ae1c4ac86af833cfaa5323dd52",
+    "source/cyclo_lab/data/objects/bread_slot/bread_slot.usdz": "338eb23d759224c0686857b3e793070b2bf03f9c7fe25f872a3c598bd67330d8"
+  },
+  "contract": {
+    "status": "MATCHES_REQUESTED_CURRENT_SOURCE",
+    "start_press_ratio": 0.9,
+    "heating_seconds": 4.0,
+    "led_on_phases": [
+      1,
+      2
+    ],
+    "success": "any same-ID fully heated bread on plate",
+    "success_center_radius_m": 0.02,
+    "master_gains": [
+      100.0,
+      4.0
+    ],
+    "slave_gains": [
+      100.0,
+      4.0
+    ],
+    "master_velocity_limit_rad_s": 6.5,
+    "bread_offsets": [
+      [
+        0.084392445,
+        0.000249905,
+        0.04435133886520504
+      ],
+      [
+        0.024392445,
+        0.000249905,
+        0.04435133886520504
+      ],
+      [
+        -0.035607555,
+        0.000249905,
+        0.04435133886520504
+      ],
+      [
+        -0.095607555,
+        0.000249905,
+        0.04435133886520504
+      ]
+    ],
+    "bread_rotation": [
+      0.7071067811865476,
+      0.0,
+      0.7071067811865475,
+      0.0
+    ],
+    "baseline_source": "manifest_bread_slot.json, checked against current Python literals",
+    "robot_distance_origin_m": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "runtime_verified": false
+  },
+  "limits": {
+    "duration_s": 5.0,
+    "object_translation_m": 0.01,
+    "toaster_rotation_deg": 5.0,
+    "plate_rotation_deg": 9.936367072140724,
+    "bread_rotation_deg": 20.0,
+    "bread_rack_local_error_m": [
+      0.005,
+      0.003,
+      0.006
+    ],
+    "final_linear_speed_m_s": 0.15,
+    "final_angular_speed_rad_s": 0.5,
+    "below_table_m": 0.01,
+    "reset_position_m": 5e-05,
+    "reset_quaternion_dot_error": 5e-05,
+    "robot_joint_drift_rad_or_m": 0.05
+  },
+  "source_hashes": {
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/__init__.py": "8d6974ca3d90bcf9a96e33dccc5dcd7010546027af4729b1dd9d15214337b21f",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/bimanual_mdp.py": "23ec017ca9c82d7e546a853dc455cfb7d06d9cf6d2ed391b700325a9ab6b13ed",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/mdp.py": "44dae63bb8ab62b8235677a1a1bada484431767fe2f1eae3e2ecda848947bc6c",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/env_cfg.py": "4c2e8ed33474ebac19559d285012db1d4da5796c4c1e87dc4084cf02e882e6a1",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/bimanual_env.py": "1dbfb5b59497ff4f7af6f3a55a4bd19463f3a9bc7f0511a4263aef0c2a133462",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/mimic_env_cfg.py": "d38a60e6c408469b1fa001bf7825d29f60e2651df053ecf5cd234c96d67bd22b",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/mimic_env.py": "dc9a14b5d31c9c695b25df4e4c907b860fb75ad7e72451511327554c1b2c0168",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/scenarios.py": "bc00cf77181df078975b18eb884b3ee0189bd5f4e43c0c42220a7ade33958514",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/assets.py": "d4db00ff3600ac2fd342e5c80d4de93f116bee265d5ba1311497058a6a5674e9",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/bimanual_env_cfg.py": "8f0bf7e57bea65b074d5038781a84af8a5b64da6d20f55bfcff9ec6dcdd5de12",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/gripper_action.py": "79133f9450bdabcb11d1ff2d18f383459b528dc91a96509d6cf72f2136a2a5d1",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/recorders.py": "56b67896e55e0021662c4c47368ed59a32437d97f50b05afe481a3f79399977f",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/scene.py": "7d0ebe18891415d38ec00cf5c00a04aca51c0bd887f101dd442c41f6347b1ac9",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/bread_geometry.py": "cbcdb18df7eeea8c2a68247d0ab47307470c6289e1c6b5ed496f573cd1dccb57",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/lever_indicator.py": "fe4890b8f33031a34664655439b4571adb5e08b61edcd922f59b6e01b956ffe2",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/toast_cycle.py": "3a0cb9266e2bbb675d2e5d88c2ba4958e5960091d618aa2ea1523744a2535b15",
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/arm_action.py": "b42abd71fab2fdff38e9c3a8d821aa3a15143b59728ba9836bfff9001ad0e182"
+  },
+  "static_method": "Actual USD meshes/transforms/scales projected to convex XY hulls, major objects expanded 1mm; conservative lower bound, not exact 3D surface distance or cooked contact",
+  "rack_method": "Exact authored static triangles vs authored convex bread hull; 1mm lowered support; rigid-local equivalence all scenarios",
+  "success_method": "Actual predicate, synthetic cooked/placed states for each bread ID; logical witness only",
+  "robot": "Existing distance upper-bound filter only. Existing DLS action uses soft joint limits; historical IK probes have heuristic unvalidated grasp frames. No physical task IK, collision or path PASS.",
+  "runtime": "NOT_RUN"
+}

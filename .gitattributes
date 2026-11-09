@@ -29,3 +29,12 @@ source/cyclo_lab/data/object/texture/roasted_chestnut_bag/*.png filter=lfs diff=
 
 # Keep the primitive-only showroom human-readable and reviewable in Git.
 source/cyclo_lab/data/environments/robotis_showroom/robotis_showroom.usda -filter -merge diff text
+
+# New self-contained four-groove rack package.
+source/cyclo_lab/data/objects/bread_slot/*.usdz filter=lfs diff=lfs merge=lfs -text
+
+# Preserve original CSV bytes used by recorded delivery SHA256 checks.
+*.csv whitespace=cr-at-eol
+# Unified diff context lines and the hashed generator snapshot are evidence.
+measurements/toast_lift_35mm_20261109/change.patch -whitespace
+scripts/tools/toast_scenario_geometry.py whitespace=-blank-at-eof

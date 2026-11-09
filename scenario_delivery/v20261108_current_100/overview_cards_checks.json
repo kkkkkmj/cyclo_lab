@@ -1,0 +1,43 @@
+{
+  "scope": "V8 JavaScript with mock DOM; real IDs and assignments, geometry paths replaced in logic harness; not browser layout",
+  "filters": {
+    "all": 100,
+    "operator_A": 50,
+    "operator_B": 50,
+    "operator_A_1": 25,
+    "operator_A_2": 25,
+    "operator_B_1": 25,
+    "operator_B_2": 25
+  },
+  "default": "operator_A_1 / 25",
+  "columns": [
+    1,
+    2,
+    3
+  ],
+  "modal_logic": "open and close PASS; actual browser/Escape rendering NOT_VERIFIED",
+  "browser": {
+    "status": "NOT_RUN",
+    "reason": "Chrome sandbox_host_linux shutdown Operation not permitted; Firefox could not start",
+    "actual_html_screenshot": false
+  },
+  "svg_preview": {
+    "status": "RENDERED_AND_VISUALLY_INSPECTED",
+    "file": "overview_cards_svg_preview.png",
+    "scope": "Actual SVG geometry, not browser card layout"
+  },
+  "static": {
+    "ids": 100,
+    "groups": {
+      "operator_A_1": 25,
+      "operator_A_2": 25,
+      "operator_B_1": 25,
+      "operator_B_2": 25
+    },
+    "same_manifest_and_assignments": true,
+    "no_old_ids": true,
+    "all_seven_objects_present": true,
+    "external_resources": 0,
+    "asset_hashes_match": true
+  }
+}

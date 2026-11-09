@@ -3,8 +3,8 @@
 import torch
 import isaaclab.utils.math as math_utils
 from . import mdp
-from .assets import BIMANUAL_STANDBY_WRIST, SERVING_PLATE_RADIUS
-from .bread_geometry import bread_support_vertices
+from .assets import BIMANUAL_STANDBY_WRIST, SERVING_BREAD_CENTER_RADIUS
+from .bread_geometry import bread_support_vertices, bread_geometry_center
 
 
 def lift_position(env):
@@ -34,7 +34,7 @@ def toast_cycle_state(env):
 
 
 def bread_on_plate(env, name):
-    """Both full slices must lie flat within the plate, including the upper slice."""
+    """Geometry-center XY check; retain full-hull height, tilt and speed checks."""
     plate, bread = env.scene["plate"], env.scene[name]
     pos, quat = math_utils.subtract_frame_transforms(
         plate.data.root_pos_w, plate.data.root_quat_w, bread.data.root_pos_w, bread.data.root_quat_w,
@@ -44,7 +44,9 @@ def bread_on_plate(env, name):
         env._toast_bread_support_vertices = torch.tensor(bread_support_vertices(), device=env.device)
     corners = env._toast_bread_support_vertices
     points = torch.einsum("nij,vj->nvi", rotation, corners) + pos[:, None]
-    contained = torch.linalg.vector_norm(points[:, :, :2], dim=-1).amax(dim=-1) < SERVING_PLATE_RADIUS - .0005
+    center = torch.as_tensor(bread_geometry_center(), device=env.device, dtype=pos.dtype)
+    center_local = torch.einsum("nij,j->ni", rotation, center) + pos
+    contained = torch.linalg.vector_norm(center_local[:, :2], dim=-1) < SERVING_BREAD_CENTER_RADIUS
     flat = rotation[:, 2, 2].abs() > .94
     height = (points[:, :, 2].amin(dim=-1) > -.002) & (points[:, :, 2].amax(dim=-1) < .050)
     # Match the task's resting-contact tolerance: PhysX constraint stabilization
@@ -64,7 +66,10 @@ def task_done(env):
         plate = env.scene["plate"]
         upright = math_utils.matrix_from_quat(plate.data.root_quat_w)[:, 2, 2] > .985
         placed = mdp.object_position(env, "plate") - plate.data.default_root_state[:, :3]
-        occupied = (bread_on_plate(env, "bread_0") & bread_on_plate(env, "bread_1") & upright
+        cooked_and_placed = torch.stack([
+            cycle.heated_bread[:, i] & bread_on_plate(env, f"bread_{i}") for i in range(4)
+        ], dim=-1).any(dim=-1)
+        occupied = (cooked_and_placed & upright
                     & (torch.linalg.vector_norm(placed[:, :2], dim=-1) < .025)
                     & (mdp.object_position(env, "plate")[:, 0] > .419))
     else:
@@ -79,10 +84,14 @@ def task_done(env):
         position = robot.data.body_link_pos_w[:, index] - env.scene.env_origins
         standby &= torch.linalg.vector_norm(position - reference, dim=-1) < 0.04
     stable = torch.ones_like(standby)
-    for name in ("bread_0", "bread_1"):
-        stable &= torch.linalg.vector_norm(env.scene[name].data.root_lin_vel_w, dim=-1) < 0.15
+    # In serving tasks only the selected cooked/placed bread needs to be stable;
+    # bread_on_plate already checks it. Other slices impose no success condition.
+    if not serving:
+        for name in ("bread_0", "bread_1"):
+            stable &= torch.linalg.vector_norm(env.scene[name].data.root_lin_vel_w, dim=-1) < 0.15
+        stable &= spare_bread_on_shelf(env)
     finished = mdp.lever_pressed(env) if cycle is None else ((cycle.phase == 4) & ~mdp.lever_pressed(env))
-    return (occupied & stable & spare_bread_on_shelf(env) & finished
+    return (occupied & stable & finished
             & (gripper_positions(env) < 0.15).all(dim=-1) & standby & (lift_position(env)[:, 0].abs() < 0.02))
 
 
@@ -90,16 +99,20 @@ def spare_bread_on_shelf(env):
     shelf = env.cfg.scene.bread_shelf
     position = torch.tensor(shelf.init_state.pos, device=env.device).expand(env.num_envs, -1)
     orientation = torch.tensor(shelf.init_state.rot, device=env.device).expand(env.num_envs, -1)
-    scale_x = (shelf.spawn.scale or (1, 1, 1))[0]
+    from .assets import BREAD_OFFSETS
     result = torch.ones(env.num_envs, dtype=torch.bool, device=env.device)
     for name in ("bread_2", "bread_3"):
         point, quat = math_utils.subtract_frame_transforms(
             position, orientation, mdp.object_position(env, name), env.scene[name].data.root_quat_w,
         )
-        result &= (point[:, 0].abs() < .085 * scale_x) & (point[:, 1].abs() < .06)
-        result &= (point[:, 2] > .015) & (point[:, 2] < .16)
+        expected = torch.tensor(BREAD_OFFSETS[int(name[-1])], device=env.device)
+        error = (point - expected).abs()
+        # Each spare must remain seated in its own physical groove. These
+        # margins fit the 25 mm groove and 11.8 mm unchanged bread thickness.
+        result &= (error[:, 0] < .005) & (error[:, 1] < .003) & (error[:, 2] < .006)
         rotation = math_utils.matrix_from_quat(quat)
         result &= torch.maximum(rotation[:, 2, 0].abs(), rotation[:, 2, 1].abs()) > .866
+        result &= rotation[:, 0, 2].abs() > .94
     return result
 
 

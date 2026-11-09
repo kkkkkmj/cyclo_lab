@@ -1,0 +1,189 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Quest controller diagnostic</title>
+<style>body{background:#101c2b;color:#eef;font:20px system-ui;margin:30px}button{font:24px system-ui;padding:20px}pre{white-space:pre-wrap;font-size:15px}</style>
+<h1>Quest Touch Plus input / simulation test</h1>
+<p>Hold both controllers. Enter VR, move each controller and press its buttons.</p>
+<p>VR: HEAD 위 상태 바는 컨트롤러 연결만 표시합니다. 초록=연결됨, 회색=연결 안 됨. 연결 여부는 팔 제어 활성 여부와 다릅니다. 상세 입력·제어 판정은 아래 상세 진단에서 확인하세요.</p>
+<details><summary>상세 진단 / build · 지연 · 전체 차단 사유</summary>
+<p>CLIENT BUILD: <strong id="build">__QUEST_BUILD__</strong></p>
+<p>HUD revision: <strong id="hudRevision"></strong></p>
+<p id="previewStatus">Preview: waiting</p>
+<p>최근 VR에서 수신한 상세 상태입니다. VR 종료 후 펼쳐 확인하세요.</p>
+<pre id="controlDetails">상태 미수신</pre><pre id="status"></pre></details>
+<p id="capabilities">Checking WebXR…</p>
+<form id="pair"><label>PC pairing code (6 digits)<br>
+<input id="code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required style="font:32px monospace;width:9em;padding:12px"></label>
+<button id="pairButton" type="submit">Pair</button></form>
+<p id="pairState">Not paired</p>
+<fieldset id="displayControls"><legend>VR display / 캐스팅 보정</legend>
+<p>설정은 다음 VR 진입 때 적용됩니다. 종료 후 조정하고 다시 Enter VR을 누르세요.</p>
+<label>Mode <select id="hudMode"><option value="normal">Quest 기본</option><option value="casting">캐스팅 맞춤</option></select></label><br>
+<label>전체 배율 <input id="hudScale" type="range" min="0.35" max="0.85" step="0.01" value="0.65"></label><br>
+<label>가로 중심 (− 왼쪽 / + 오른쪽) <input id="hudX" type="range" min="-0.45" max="0.45" step="0.01" value="0" disabled></label><br>
+<label>세로 중심 (− 아래 / + 위) <input id="hudY" type="range" min="-0.45" max="0.45" step="0.01" value="0" disabled></label><br>
+<label>영상 내부 여백 (HEAD/WRIST 자동 배치) <input id="hudMargin" disabled type="range" min="0" max="0.18" step="0.02" value="0.02"></label><br>
+<label><input id="hudDiagnostic" type="checkbox">모서리 TL/TR/BL/BR · 테두리 (영상 위 십자 없음)</label>
+<p><button id="displayReset" type="button">현재 모드 기본값 복원</button></p>
+<p>캐스팅 기본: 배율 0.50, 가로 +0.24(오른쪽), 세로 +0.10(위). 실제 왼눈 투영 행렬을 참고한 추정값이며 실기 미검증입니다.
+표시 설정 v2: 새 기본값을 최초 1회 적용·저장한 뒤 사용자가 바꾼 값을 보존합니다. 설정은 이 브라우저의 같은 HTTPS 주소에 저장됩니다. 새로고침/VR 재진입에도 유지됩니다.
+중심 +0.10은 눈 viewport의 5% 이동입니다. 실제 적용값은 Applied XR display와 PC bridge 로그에 남습니다.</p>
+<p id="displayStorage"></p><pre id="displaySettings"></pre></fieldset>
+<details><summary>Applied XR display / 눈별 렌더링 정보 (VR 종료 후 확인)</summary><pre id="displayApplied">Not applied yet</pre></details>
+<button id="start" disabled>Enter VR diagnostic</button><p id="message" role="status"></p>
+<script src="/input.js?v=__QUEST_BUILD__"></script><script src="/hud.js?v=__QUEST_BUILD__"></script>
+<script src="/preview_client.js?v=__QUEST_BUILD__"></script>
+<script>
+'use strict';
+const message=document.querySelector('#message'), output=document.querySelector('#status');
+let paired=false, xrReady=false;
+const startButton=document.querySelector('#start');
+function updateStart(){startButton.disabled=!paired||!xrReady||!!session;}
+let session=null, ack=0, busy=false, lastSend=0, seq=0, generation=0;
+const empty=()=>emptyHand();
+const CLIENT_BUILD='__QUEST_BUILD__', previewClient=createPreviewClient();
+document.querySelector('#hudRevision').textContent=HUD_REVISION;
+let networkError='waiting for ACK';
+let receivedInputTime=-Infinity;
+let receivedHands={}; // Display-only: last controller slots accepted by the input server.
+const displayControls=document.querySelector('#displayControls');
+const displayValue=id=>document.querySelector(id);
+function requestedDisplay(){return hudSettings({mode:displayValue('#hudMode').value,
+  scale:displayValue('#hudScale').value,margin:displayValue('#hudMargin').value,
+  centerX:displayValue('#hudX').value,centerY:displayValue('#hudY').value,
+  diagnostic:displayValue('#hudDiagnostic').checked});}
+function showDisplay(){
+  const settings=requestedDisplay();
+  displayValue('#hudX').disabled=displayValue('#hudY').disabled=settings.mode!=='casting';
+  displayValue('#displaySettings').textContent=HUD_REVISION+' / requested for next VR: '+JSON.stringify(settings);
+}
+const loadedDisplay=loadHUDPreferences();
+const displayPreferences=loadedDisplay.state;
+displayValue('#displayStorage').textContent=loadedDisplay.status;
+function applyDisplayForm(settings){
+  displayValue('#hudMode').value=settings.mode;
+  displayValue('#hudScale').value=settings.scale;displayValue('#hudMargin').value=settings.margin;
+  displayValue('#hudX').value=settings.centerX;displayValue('#hudY').value=settings.centerY;
+  displayValue('#hudDiagnostic').checked=settings.diagnostic;showDisplay();
+}
+function persistDisplay(){
+  const settings=requestedDisplay();displayPreferences.mode=settings.mode;
+  displayPreferences.profiles[settings.mode]=settings;
+  displayValue('#displayStorage').textContent=saveHUDPreferences(displayPreferences);
+}
+displayControls.oninput=event=>{if(event.target.id!=='hudMode'){showDisplay();persistDisplay();}};
+displayValue('#displayReset').onclick=()=>{
+  applyDisplayForm(hudDefaults(displayValue('#hudMode').value));persistDisplay();
+};
+displayValue('#hudMode').onchange=()=>{
+  applyDisplayForm(displayPreferences.profiles[displayValue('#hudMode').value]);persistDisplay();
+};
+applyDisplayForm(displayPreferences.profiles[displayPreferences.mode]);
+let appliedDisplay=null;
+async function send(packet){
+  if(busy)return; busy=true;
+  try{
+    const response=await fetch('/input',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(packet),signal:AbortSignal.timeout(800)});
+    if(response.status===401){paired=false;updateStart();if(session)await session.end();}
+    if(!response.ok)throw Error(await response.text());
+    ack=performance.now();networkError="";receivedHands=packet.controllers||{};receivedInputTime=packet.client_ms;
+  }catch(error){ack=0;networkError=String(error);message.textContent=networkError;}finally{busy=false;}
+}
+async function start(){
+ try{
+  if(!paired||!xrReady)throw Error('Pair and pass WebXR checks first.');
+  persistDisplay();appliedDisplay=null;
+  const s=await navigator.xr.requestSession('immersive-vr',{requiredFeatures:['local-floor']});
+  session=s;displayControls.disabled=true;updateStart();
+  s.addEventListener('end',()=>{session=null;ack=0;displayControls.disabled=false;updateStart();});
+  const canvas=document.createElement('canvas'), gl=canvas.getContext('webgl',{xrCompatible:true});
+  if(!gl)throw Error('WebGL unavailable');
+  await gl.makeXRCompatible();
+  const drawHUD=makeHUD(gl,requestedDisplay());let displayReportAt=-Infinity;previewClient.invalidateDraw();
+  const layer=new XRWebGLLayer(s,gl);s.updateRenderState({baseLayer:layer});
+  const reference=await s.requestReferenceSpace('local-floor');
+  const id=crypto.randomUUID();seq=0;ack=0;
+  reference.addEventListener('reset',()=>{generation++;ack=0;});
+  s.addEventListener('end',()=>{session=null;ack=0;updateStart();
+    // A lost end packet is covered by the receiver's 250 ms timeout.
+    send({session:id,seq:seq++,client_ms:performance.now(),visibility:'ended',controllers:{left:empty(),right:empty()}});
+  });
+  function frame(t,f){
+   s.requestAnimationFrame(frame);
+   const hands=selectControllers(s.inputSources,f,reference,s.visibilityState);
+   const viewer=f.getViewerPose(reference);
+   const q=viewer?.transform.orientation;
+   const previewFresh=previewClient.fresh();
+   gl.bindFramebuffer(gl.FRAMEBUFFER,layer.framebuffer);gl.disable(gl.SCISSOR_TEST);
+   gl.clearColor(.025,.035,.055,1);gl.clear(gl.COLOR_BUFFER_BIT);
+   if(viewer){
+     try{
+       const drawn=drawHUD(viewer.views,layer,hands,
+         ack>0&&performance.now()-ack<250?'ACK OK':networkError||'ACK stale (>250 ms)',
+         previewClient.image(),previewFresh,t,previewClient.state,CLIENT_BUILD,previewClient.teleop(),!Number.isFinite(receivedInputTime)?null:performance.now()-receivedInputTime<250?receivedHands:{});
+       if(t-displayReportAt>1000){
+         displayReportAt=t;appliedDisplay={...drawHUD.info,reported_client_ms:t};
+         displayValue('#displayApplied').textContent=JSON.stringify(appliedDisplay,null,2);
+       }
+       if(drawn)previewClient.markDrawn();else previewClient.invalidateDraw();
+     }catch(error){previewClient.drawError(error);}
+   }else previewClient.invalidateDraw();
+   // Confirmation is sent only AFTER texture upload and draw submission succeed.
+   if(t-lastSend>=33&&!busy){lastSend=t;send({session:id,seq:seq++,client_ms:t,
+     client_protocol:3,client_build:CLIENT_BUILD,
+     xr_display:appliedDisplay,input_sources:diagnosticSources(s.inputSources),
+     reference_generation:generation,visibility:s.visibilityState,controllers:hands,
+     head_quaternion_xyzw:q?[q.x,q.y,q.z,q.w]:null,
+     preview_status:{...previewClient.state,...previewClient.diagnostics()},preview_ok:previewClient.confirmed()&&!!viewer});}
+
+  }
+  s.requestAnimationFrame(frame);
+ }catch(error){message.textContent=String(error);if(session)await session.end();updateStart();}
+}
+
+startButton.onclick=start;
+async function checkCapabilities(){
+ const secure=window.isSecureContext, api=!!navigator.xr;
+ let supported=false, error='';
+ try{
+   const version=await (await fetch('/version',{cache:'no-store'})).json();
+   if(version.server_build!==CLIENT_BUILD||version.disk_build!==CLIENT_BUILD)throw Error('Build mismatch: restart input server and reload page');
+   if(secure&&api)supported=await navigator.xr.isSessionSupported('immersive-vr');
+ }catch(e){error=String(e);}
+ xrReady=secure&&api&&supported;
+ document.querySelector('#capabilities').textContent=
+   `Secure context: ${secure}; WebXR: ${api}; immersive-vr: ${supported}. `+
+   (xrReady?'READY — pair, then enter VR.':'VR BLOCKED. Use Quest Browser and the HTTPS address; check certificate acceptance. ')+error;
+ updateStart();
+}
+document.querySelector('#pair').onsubmit=async(event)=>{
+ event.preventDefault();
+ const button=document.querySelector('#pairButton');button.disabled=true;
+ try{
+  const r=await fetch('/pair',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({code:document.querySelector('#code').value}),signal:AbortSignal.timeout(3000)});
+  const result=await r.json();if(!r.ok)throw Error(result.error);
+  document.querySelector('#code').value='';
+  await poll();
+  if(!paired)throw Error('Pairing cookie was not accepted. Check HTTPS and browser cookie settings.');
+  message.textContent='Paired. Enter VR when capability checks show READY.';
+ }catch(e){message.textContent=String(e);}finally{button.disabled=false;}
+};
+async function poll(){
+ if(session)return;
+ try{
+  const r=await fetch('/status',{signal:AbortSignal.timeout(2000)});
+  paired=r.ok;
+  document.querySelector('#pairState').textContent=paired?'PAIRED (8-hour session)':'Not paired — enter a new PC code';
+  output.textContent=r.ok?JSON.stringify(await r.json(),null,2):'';
+ }catch(e){paired=false;output.textContent=String(e);}
+ updateStart();
+}
+async function pollPreview(){
+ if(!paired||!session)return;
+ await previewClient.poll();
+ document.querySelector('#previewStatus').textContent=JSON.stringify(previewClient.state);
+ document.querySelector('#controlDetails').textContent=teleopStatusLines(previewClient.teleop(),previewClient.fresh()).join('\n')+
+   '\n'+JSON.stringify(previewClient.teleop(),null,2);
+}
+checkCapabilities();poll();setInterval(poll,1000);setInterval(pollPreview,100);
+</script></html>

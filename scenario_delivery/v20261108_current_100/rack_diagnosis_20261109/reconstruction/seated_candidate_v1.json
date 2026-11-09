@@ -1,0 +1,67 @@
+{
+  "version": "seated_candidate_v1",
+  "status": "EXPERIMENTAL_NOT_RUNTIME_VERIFIED",
+  "scenario_id": "toast_v20261108_000",
+  "manifest_sha256": "e01b22564cb52b7f2e7edf2f8255270bdd9e972702a269b1bc01747dfee5e95e",
+  "source_result_sha256": "15625c5f27e62c40f02f28d87faf61c55c2cfd7f429ffc736f88e06cffb2c99c",
+  "method": "Measured final orientation and XY; upward exact-authored-convex nonintersection search +0.3mm, not uniform lowering",
+  "poses": {
+    "bread_0": {
+      "position_m": [
+        0.4643125534057617,
+        -0.4862816333770752,
+        1.0691771533966064
+      ],
+      "quaternion_wxyz": [
+        0.4593072831630707,
+        0.49843457341194153,
+        0.5306041836738586,
+        -0.5089783668518066
+      ],
+      "clearance_raise_m": 0.005128147888183593
+    },
+    "bread_1": {
+      "position_m": [
+        0.46499937772750854,
+        -0.4263725280761719,
+        1.068919465827942
+      ],
+      "quaternion_wxyz": [
+        0.4584366977214813,
+        0.4992622435092926,
+        0.5313329100608826,
+        -0.5081912279129028
+      ],
+      "clearance_raise_m": 0.004866764831542968
+    },
+    "bread_2": {
+      "position_m": [
+        0.46564656496047974,
+        -0.3663673400878906,
+        1.0690276697158814
+      ],
+      "quaternion_wxyz": [
+        0.4586866796016693,
+        0.4990076720714569,
+        0.5312952399253845,
+        -0.5082550644874573
+      ],
+      "clearance_raise_m": 0.0049763992309570316
+    },
+    "bread_3": {
+      "position_m": [
+        0.46632546186447144,
+        -0.30637988448143005,
+        1.0689171197891236
+      ],
+      "quaternion_wxyz": [
+        0.45843306183815,
+        0.49926629662513733,
+        0.5313328504562378,
+        -0.5081906318664551
+      ],
+      "clearance_raise_m": 0.004864418792724609
+    }
+  },
+  "review": "WITHHELD: needs 4.86\u20135.13mm vertical clearance against authored convex; not accepted as a physical initial pose or production fix. Acquire live cooked/contact evidence first."
+}

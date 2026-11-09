@@ -8,6 +8,10 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/"tools"))
+from toast_overview import overview_cfg, position_overview
+from toast_recording_metadata import verify_static_rack, verify_initial_state
 
 import gymnasium as gym
 import h5py
@@ -16,8 +20,6 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import torch
 
-import isaaclab.sim as sim_utils
-from isaaclab.sensors import CameraCfg
 
 
 CAMERAS = (("head_cam", "HEAD"), ("left_wrist_cam", "LEFT WRIST"), ("right_wrist_cam", "RIGHT WRIST"))
@@ -85,15 +87,7 @@ def export_video(env_name, cfg, args, app):
                 setattr(cfg.scene, key, None)
             if hasattr(cfg.observations.policy, key):
                 setattr(cfg.observations.policy, key, None)
-        cfg.scene.replay_overview = CameraCfg(
-            prim_path="{ENV_REGEX_NS}/ReplayOverview",
-            width=OVERVIEW_WIDTH, height=OVERVIEW_HEIGHT, update_period=0,
-            data_types=["rgb"],
-            spawn=sim_utils.PinholeCameraCfg(
-                focal_length=20.0, horizontal_aperture=24.0,
-                clipping_range=(.05, 100.0),
-            ),
-        )
+        cfg.scene.replay_overview = overview_cfg()
         env = gym.make(env_name, cfg=cfg).unwrapped
         writer = None
         count = 0
@@ -103,11 +97,9 @@ def export_video(env_name, cfg, args, app):
         try:
             env.reset()
             camera = env.scene["replay_overview"]
-            origin = env.scene.env_origins[:1]
-            camera.set_world_poses_from_view(
-                torch.tensor([args.video_eye], device=env.device) + origin,
-                torch.tensor([args.video_target], device=env.device) + origin,
-            )
+            position_overview(env,args.video_eye,args.video_target)
+            scenario_metadata=getattr(cfg,'diagnostic_scenario_metadata',None)
+            if scenario_metadata: verify_static_rack(env,scenario_metadata)
             # Warm up lighting and render products; no physics is stepped.
             for _ in range(12):
                 env.sim.render()
@@ -138,6 +130,9 @@ def export_video(env_name, cfg, args, app):
                                 i = start + local
                                 state = initial if i == 0 else _frame(states, i - 1)
                                 env.scene.reset_to(state, is_relative=True)
+                                if i == 0 and scenario_metadata:
+                                    verify_static_rack(env,scenario_metadata)
+                                    verify_initial_state(env,initial,include_cycle=False)
                                 env.scene.write_data_to_sim()
                                 env.sim.render()
                                 camera.update(env.step_dt, force_recompute=True)
