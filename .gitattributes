@@ -36,5 +36,4 @@ source/cyclo_lab/data/objects/bread_slot/*.usdz filter=lfs diff=lfs merge=lfs -t
 # Preserve original CSV bytes used by recorded delivery SHA256 checks.
 *.csv whitespace=cr-at-eol
 # Unified diff context lines and the hashed generator snapshot are evidence.
-measurements/toast_lift_35mm_20261109/change.patch -whitespace
 scripts/tools/toast_scenario_geometry.py whitespace=-blank-at-eof

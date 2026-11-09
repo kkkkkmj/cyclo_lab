@@ -28,6 +28,13 @@ class Delivery(unittest.TestCase):
         cls.data=loader.load_manifest(MANIFEST)
         cls.entries=cls.data['scenarios']
 
+    def test_assignment_output_only(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp)
+            gen.write_assignments(output, self.entries)
+            self.assertEqual(sorted(p.name for p in output.iterdir()), ['ASSIGNMENTS.md'])
+            self.assertEqual((output/'ASSIGNMENTS.md').read_bytes(), (DELIVERY/'ASSIGNMENTS.md').read_bytes())
+
     def test_unique_and_balanced(self):
         entries=self.entries
         self.assertEqual(len(entries),100)

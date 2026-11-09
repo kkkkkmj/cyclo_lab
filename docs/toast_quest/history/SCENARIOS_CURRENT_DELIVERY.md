@@ -19,7 +19,7 @@
 - `manifest.json`: 100개 ID, 상위 operator/그룹/두 순번, 모든 7개 물체(toaster, plate, bread_shelf, bread_0~3)의 pose/scale, 기하 검사, 소스/asset SHA256.
 - `poses.csv`: 전체 700개 물체 초기 pose. quaternion은 wxyz, 거리 m.
 - `assignments.csv`, [ASSIGNMENTS.md](https://github.com/kkkkkmj/cyclo_lab/blob/a18eb900aea6d6110dedb45f3f616411f7750c42/scenario_delivery/v20261108_current_100/ASSIGNMENTS.md): 전체 배정표. 그룹1은 상위 순번1~25, 그룹2는26~50. 구 목록의 같은 순번과 같은 배치라는 의미는 아니다.
-- [overview.svg](https://github.com/kkkkkmj/cyclo_lab/blob/a18eb900aea6d6110dedb45f3f616411f7750c42/scenario_delivery/v20261108_current_100/overview.svg): 100개 위쪽 정적 배치도(주황 토스터, 파랑 접시, 초록 거치대+빵 외곽). 시뮬레이터 화면이 아니다.
+- [현재 카드형 배치도](../../../scenario_delivery/overview_cards.html): 100개 정적 배치도. 시뮬레이터 화면이 아니다.
 - `generation_config.json`: seed, 범위, 종류별 할당량과 분포 균형화 방식.
 - `distribution.json`: 각 그룹 및 A/B의 모든 위치/회전/거리 지표 min/max/mean/std/p25/median/p75.
 - `validation.json`, `cpu_tests.log`, `reproducibility.json`: 정적 검사, CPU 테스트, 8개 생성 산출물의 바이트 단위 재현성.

@@ -16,7 +16,7 @@ def verify_fingerprint(path, expected):
         assert expected == entry['generation_sha256'], f'Generation hash mismatch: {path}'
         assert hashlib.sha256(current).hexdigest() == entry['current_sha256'], f'Unrecorded relocation edit: {path}'
         return
-    # Other post-generation changes are checked against their archived source.
+    # Reconstruct generation-time bytes from the exact, reversible migration below.
 
     replacements = {
         PREFIX + 'bimanual_env_cfg.py': [
@@ -33,13 +33,11 @@ def verify_fingerprint(path, expected):
         ],
     }
     assert path in replacements, f'Unrecorded provenance change: {path}'
-    before = (ROOT / 'measurements/toast_lift_35mm_20261109/before' / Path(path).name).read_bytes()
-    assert hashlib.sha256(before).hexdigest() == expected, f'Historical source mismatch: {path}'
-    migrated = before.decode()
-    for old, new in replacements[path]:
-        assert migrated.count(old) == 1, (path, old)
-        migrated = migrated.replace(old, new)
-    assert migrated.encode() == current, f'Unexpected change beyond +35 mm migration: {path}'
+    before = current.decode()
+    for old, new in reversed(replacements[path]):
+        assert before.count(new) == 1, (path, new)
+        before = before.replace(new, old)
+    assert hashlib.sha256(before.encode()).hexdigest() == expected, f'Unexpected change beyond +35 mm migration: {path}'
     params = {}
     exec((ROOT / PREFIX / 'toast_parameters.py').read_text(), params)
     assert params['SERVING_POPUP_HEIGHT'] == .035

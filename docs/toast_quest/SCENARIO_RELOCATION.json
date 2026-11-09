@@ -1,7 +1,7 @@
 {
   "original_manifest_sha256": "e01b22564cb52b7f2e7edf2f8255270bdd9e972702a269b1bc01747dfee5e95e",
   "historical_commit": "a18eb900aea6d6110dedb45f3f616411f7750c42",
-  "note": "Original manifest is byte-identical. These current source hashes cover path/default selection and generation-input relocation only; they do not replace generation evidence.",
+  "note": "Original manifest is byte-identical. Current source hashes cover path/default selection, generation-input relocation and removal of the standalone SVG output; they do not replace generation evidence. The checks below record the original relocation, before SVG removal.",
   "sources": {
     "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/scenarios.py": {
       "generation_sha256": "bc00cf77181df078975b18eb884b3ee0189bd5f4e43c0c42220a7ade33958514",
@@ -9,7 +9,7 @@
     },
     "scripts/tools/generate_current_toast_scenarios.py": {
       "generation_sha256": "bdec7cd4555a9f5b9c85fc8403ee05f7fde053a29c08ed0f52916f930c8038fb",
-      "current_sha256": "8d93b31c777d5ddebe8a237343320a4ff575085dc54cc242f3fa1b45a51ad397"
+      "current_sha256": "3ffc004ab486d32b156b8dd70dee92456cfe0ed17c090f0c37270427607acb6b"
     },
     "scripts/tools/toast_scenario_geometry.py": {
       "generation_sha256": "c5bdce05ad89257768055d264b6e2bc630893cc38cf1676fa7df1bb38622898c",
@@ -34,7 +34,6 @@
     "poses.csv": "9f3aee3874027118234b9858b799632bd8f4c24c4f51765f709400c099f9f82b",
     "generation_config.json": "b6f499a50867b744dfba2434afdaac5e630ef9781db264cae3179eeddf5facf6",
     "distribution.json": "a794b715a304f60ae5861e836fd2d5692ce46d940e998a62ecf036299f7b284a",
-    "overview.svg": "1e67707dc5ebfa391667fd295c188aa36a49e5064a74e8179890fedb3c81ca4e",
     "overview_cards.html": "f043ac2dfaec44f6af91dbf65d06fd08a3c4da41bd0c803cec4272657125dfdc",
     "ASSIGNMENTS.md": "7cda2fcd675c291ab028dd49197c336ac789b5ac69bedc7f3487fd640684edf1",
     "inputs/geometry_evidence.json": "6cc1ea599daeb8484f67c3009dc42c38ce24ea7410605f8f2a148deb3bc8f752",

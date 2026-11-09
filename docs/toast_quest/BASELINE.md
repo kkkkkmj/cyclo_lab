@@ -47,7 +47,7 @@ README.md는 동일하고 수정 15개 중 README_TOAST.md가 1개다.
 | 기록·재생 | `scripts/imitation_learning/isaaclab_recorder/replay_demos.py`, `replay_video.py` 수정. 시나리오/가열 상태 복원, 검증·audit·gain 비교 도구 추가 |
 | Asset | `source/cyclo_lab/data/objects/bread_slot/{rack.usda,bread_slot.usdz}` 추가. 원본 robot USD·공용 FFW_BG2.py 변경 없음. 기존 외부 물체 다운로더/asset manifest는 원본부터 존재 |
 | 실행·저장소 | `docker/compose.mj.yaml`, `scripts/run_mj.sh`, `scripts/tools/mj_python.py` 추가. `.gitattributes`/`.gitignore` 수정. 기존 Dockerfile/기본 compose는 변경 없음 |
-| 측정·검사 | `measurements/toast_exposure_20261109/`, `toast_lift_35mm_20261109/`의 도구·과거 보고서 추가. `scripts/tools/check_toast_cycle.py`의 가열 시간 참조 수정 및 CPU 테스트 추가 |
+| 측정·검사 | 노출률·상승 높이 측정 도구와 과거 보고서는 로컬 백업으로 분리했다. `scripts/tools/check_toast_cycle.py`의 가열 시간 참조 수정 및 CPU 테스트 추가 |
 | 누락 의존 소스 복원 | `third_party/IsaacLab/source/isaaclab/isaaclab/utils/datasets/`의 `__init__.py`, `dataset_file_handler_base.py`, `episode_data.py`, `hdf5_dataset_file_handler.py` 추가. 기본 Git tree는 submodule gitlink 없이 소스를 포함 |
 
 **정정:** 원본 v2는 상위 bimanual 설정에서 slave 100/4를 상속한다. 현재 v2의 추가 명시는

@@ -97,4 +97,4 @@ docker/zenoh_cache/
 *.bak_*
 /core
 /core.[0-9]*
-/measurements/**/runs/
+/measurements/

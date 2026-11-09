@@ -230,28 +230,17 @@ def summaries(entries):
     return summary
 
 
-def write_preview(path,entries):
-    # Standalone static SVG overview: no server, plugin or external dependencies.
+def write_assignments(path,entries):
     lines=['# 전체 100개 배정표','', '| operator | 그룹 | 상위 순번 | 그룹 순번 | scenario ID | +Y → −Y 순서 |',
            '|---|---|---:|---:|---|---|']
-    svg=['<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="2200" viewBox="0 0 1200 2200">',
-         '<rect width="1200" height="2200" fill="white"/>']
-    colors={'toaster':'#ed9852','plate':'#4a85c3','bread_shelf':'#5f9975'}
-    for index,e in enumerate(sorted(entries,key=lambda s:(s['scenario_group'],s['group_index']))):
+    for e in sorted(entries,key=lambda s:(s['scenario_group'],s['group_index'])):
         lines.append(f"| {e['operator']} | {e['scenario_group']} | {e['operator_index']} | {e['group_index']} | {e['id']} | {' > '.join(e['order_positive_to_negative_y'])} |")
-        ox=(index%5)*240;oy=(index//5)*110
-        svg.append(f'<g transform="translate({ox},{oy})"><text x="4" y="14" font-size="10">{e["scenario_group"]} #{e["group_index"]}: {e["id"]}</text>')
-        for n,poly in e['footprints_xy'].items():
-            pts=' '.join(f'{120-y*180:.2f},{100-(x-.3)*180:.2f}' for x,y in poly)
-            svg.append(f'<polygon points="{pts}" fill="{colors[n]}" stroke="#222" stroke-width=".4"/>')
-        svg.append('</g>')
-    svg.append('</svg>');(path/'overview.svg').write_text('\n'.join(svg)+'\n')
     (path/'ASSIGNMENTS.md').write_text('\n'.join(lines)+'\n')
 
 
 def generate(output,evidence_path,seed=SEED):
     output=Path(output)
-    targets=['manifest.json','assignments.csv','generation_config.json','validation.json','distribution.json','poses.csv','ASSIGNMENTS.md','overview.svg']
+    targets=['manifest.json','assignments.csv','generation_config.json','validation.json','distribution.json','poses.csv','ASSIGNMENTS.md']
     if any((output/f).exists() for f in targets):raise ValueError('Delivery exists; choose a NEW output directory')
     base,contract=current_contract();points,asset_hashes=geometry(base)
     evidence=json.loads(Path(evidence_path).read_text())
@@ -315,7 +304,7 @@ def generate(output,evidence_path,seed=SEED):
         writer=csv.writer(f);writer.writerow(['scenario_id','object','x','y','z','qw','qx','qy','qz','sx','sy','sz'])
         for e in entries:
             for n,p in e['poses'].items():writer.writerow([e['id'],n,*p['position_m'],*p['quaternion_wxyz'],*p['scale']])
-    write_preview(output,entries)
+    write_assignments(output,entries)
     return validation
 
 if __name__=='__main__':
