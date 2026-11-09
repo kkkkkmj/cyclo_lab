@@ -25,7 +25,7 @@ def build_parser():
     parser.add_argument("--scenario_id", help="Omit all selection arguments for the original layout")
     parser.add_argument("--operator", choices=("operator_A", "operator_B"))
     parser.add_argument("--scenario_index", type=int, help="1-based position in this operator's CSV list (1–50)")
-    parser.add_argument("--scenario_manifest", help="Defaults to scenario_delivery/manifest_bread_slot.json")
+    parser.add_argument("--scenario_manifest", help="Defaults to scenario_delivery/manifest.json")
     parser.add_argument("--steps", type=int, default=0, help="Exit after N steps; 0 keeps viewing")
     parser.add_argument("--reset_every", type=int, default=0, help="Reset every N steps; 0 disables")
     add_group_arguments(parser)

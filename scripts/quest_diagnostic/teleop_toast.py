@@ -64,8 +64,8 @@ try:
     validate_recording_args(known)
     control_settings=options(known)
     if (Path(known.scenario_manifest).resolve()==DEFAULT_MANIFEST.resolve()
-            and known.operator=='operator_B' and known.scenario_index==1 and selected_id!='batch02_toast_001'):
-        raise ValueError('Operator B first assignment differs from batch02_toast_001')
+            and known.operator=='operator_B' and known.scenario_index==1 and selected_id!='toast_v20261108_041'):
+        raise ValueError('Operator B first assignment differs from toast_v20261108_041')
 except (ValueError,KeyError,OSError) as error:parser.error(str(error))
 if not (known.bridge_dir/'input.json').exists():parser.error('Start the input server with this --bridge-dir first')
 lock=(known.bridge_dir/'.simulation.lock').open('a')

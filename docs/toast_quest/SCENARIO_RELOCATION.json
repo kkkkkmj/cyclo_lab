@@ -1,0 +1,75 @@
+{
+  "original_manifest_sha256": "e01b22564cb52b7f2e7edf2f8255270bdd9e972702a269b1bc01747dfee5e95e",
+  "historical_commit": "a18eb900aea6d6110dedb45f3f616411f7750c42",
+  "note": "Original manifest is byte-identical. These current source hashes cover path/default selection and generation-input relocation only; they do not replace generation evidence.",
+  "sources": {
+    "source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/scenarios.py": {
+      "generation_sha256": "bc00cf77181df078975b18eb884b3ee0189bd5f4e43c0c42220a7ade33958514",
+      "current_sha256": "2db8f5be7512138636805ff91c6412671688721df8db111ebc75248800974a8b"
+    },
+    "scripts/tools/generate_current_toast_scenarios.py": {
+      "generation_sha256": "bdec7cd4555a9f5b9c85fc8403ee05f7fde053a29c08ed0f52916f930c8038fb",
+      "current_sha256": "8d93b31c777d5ddebe8a237343320a4ff575085dc54cc242f3fa1b45a51ad397"
+    },
+    "scripts/tools/toast_scenario_geometry.py": {
+      "generation_sha256": "c5bdce05ad89257768055d264b6e2bc630893cc38cf1676fa7df1bb38622898c",
+      "current_sha256": "aaa6cfe0dda6f8a27f2985b000d4f42e47a6704c3d7e6b49d81e591b5809f59e"
+    },
+    "scripts/tools/view_make_toast_scenario.py": {
+      "generation_sha256": "be9fb998a9a7aa5cae51c0c292aa23e24000e58f60542761f5aa7ff185d8a176",
+      "current_sha256": "1eac52b8e0d2a4024518ab0579a6be5dc62c309cb0fff9e1e0e3f531e6613529"
+    },
+    "scripts/quest_diagnostic/teleop_toast.py": {
+      "generation_sha256": "d4925a757be28877f59045094b6b244a436afdf874e055ea0bb71a94dd8d1e16",
+      "current_sha256": "cd962b10089ec39d4e3a284bbbecd75ccf269da5f8f00a9eaae8f0b8f2f8509e"
+    },
+    "scripts/tools/toast_recording_metadata.py": {
+      "generation_sha256": "30721d1b0724ba7155c1ea6c016de256d104c5ed08b9405a188bebcb60b89e19",
+      "current_sha256": "6c11b16dc0b33dbe569a05d09ff7046f9db6e6e0c8a982606ec3f1631f0d082b"
+    }
+  },
+  "retained_files_sha256": {
+    "manifest.json": "e01b22564cb52b7f2e7edf2f8255270bdd9e972702a269b1bc01747dfee5e95e",
+    "assignments.csv": "7b31755a692c5e5e8c7215029f6430fdd03f6d51e685b0396c6e2c6674daa575",
+    "poses.csv": "9f3aee3874027118234b9858b799632bd8f4c24c4f51765f709400c099f9f82b",
+    "generation_config.json": "b6f499a50867b744dfba2434afdaac5e630ef9781db264cae3179eeddf5facf6",
+    "distribution.json": "a794b715a304f60ae5861e836fd2d5692ce46d940e998a62ecf036299f7b284a",
+    "overview.svg": "1e67707dc5ebfa391667fd295c188aa36a49e5064a74e8179890fedb3c81ca4e",
+    "overview_cards.html": "f043ac2dfaec44f6af91dbf65d06fd08a3c4da41bd0c803cec4272657125dfdc",
+    "ASSIGNMENTS.md": "7cda2fcd675c291ab028dd49197c336ac789b5ac69bedc7f3487fd640684edf1",
+    "inputs/geometry_evidence.json": "6cc1ea599daeb8484f67c3009dc42c38ce24ea7410605f8f2a148deb3bc8f752",
+    "inputs/reference_generate_make_toast_scenarios.py": "c41476afc207d5e92bd39f98128de8aa87118a9242383edce1394b4575545c16",
+    "inputs/reference_toast_batch_lib.py": "1a7bf78663e568e4f0c2a4644ffd1319b79c253ef5c6ccb8455b10f9220300fb"
+  },
+  "generation_history_sha256": "2f8ef3874e5deaa0053125cd9342e53553a510817331f6264258c9af43fd2d09",
+  "checks": {
+    "retained_files_byte_identical": 11,
+    "pose_reconstruction_from_saved_jitter": 100,
+    "history_fingerprints_match_original_inputs": true,
+    "regeneration_or_reassignment_run": false,
+    "physx_vr_run": false,
+    "cpu_test_suites": {
+      "test_toast_scenario_runtime.py": {
+        "tests": 8,
+        "status": "PASS after correcting old-list fixtures"
+      },
+      "test_toast_recording_metadata.py": {
+        "tests": 6,
+        "status": "PASS after correcting old-list fixtures"
+      },
+      "test_current_toast_delivery.py": {
+        "tests": 6,
+        "status": "PASS"
+      },
+      "test_toast_collection_validation.py": {
+        "tests": 7,
+        "status": "PASS"
+      },
+      "test_bread_slot_logic.py": {
+        "tests": null,
+        "status": "PASS"
+      }
+    },
+    "local_markdown_links_checked": 58
+  }
+}

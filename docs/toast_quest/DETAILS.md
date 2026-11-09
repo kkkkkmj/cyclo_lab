@@ -7,7 +7,7 @@
 |---|---|
 | [원본 비교](BASELINE.md) | 고정 원본 커밋, 분야별 변화, 기존 README 보존 |
 | [검증 기록](VALIDATION.json) | 문서 통합 이전 CPU·파일 추출·재생성 결과 |
-| [거치대 진단](../../scenario_delivery/v20261108_current_100/rack_diagnosis_20261109/README.md) | 약 18.5 mm 내려앉음과 cooked contact 미확인 |
+| [거치대 진단](https://github.com/kkkkkmj/cyclo_lab/blob/a18eb900aea6d6110dedb45f3f616411f7750c42/scenario_delivery/v20261108_current_100/rack_diagnosis_20261109/README.md) | 약 18.5 mm 내려앉음과 cooked contact 미확인 |
 | [+35 mm 변경](../../measurements/toast_lift_35mm_20261109/REPORT.txt) | 정적 검사, 실제 노출·이탈 미측정 |
 | [+15 mm 실제 결과](../../measurements/toast_exposure_20261109/runs/run_20261109_122359_CrxPWU/results/status.json) | bread_0 슬롯0/1 당시 VALID, 현재 +35 mm 결과 아님 |
 | [거치대 교체 당시 기록](history/BREAD_SLOT.md) | 형상/초기 pose/과거 정적 판단 |

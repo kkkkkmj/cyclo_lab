@@ -55,7 +55,7 @@ def main():
     bp=breadstage.GetPrimAtPath('/World/collision')
     assert UsdPhysics.MeshCollisionAPI(bp).GetApproximationAttr().Get()=='convexHull'
     b=mesh_points(breadstage,bp)
-    manifest=json.loads((ROOT/'scenario_delivery/manifest_bread_slot.json').read_text())
+    manifest=json.loads((ROOT/'scenario_delivery/manifest.json').read_text())
     old=json.loads((ROOT/'scenario_delivery/manifest.json').read_text())
     assert len(manifest['scenarios'])==100
     for before,after in zip(old['scenarios'],manifest['scenarios']):

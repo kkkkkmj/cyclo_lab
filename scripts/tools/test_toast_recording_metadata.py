@@ -16,7 +16,7 @@ class RecordingContract(unittest.TestCase):
     def make(self, root):
         args=build_parser().parse_args(['--operator','operator_B','--scenario_index','1'])
         sid=resolve_selection(args)
-        self.assertEqual(sid,'batch02_toast_001')
+        self.assertEqual(sid,'toast_v20261108_041')
         return m.create_diagnostic(root/'new',m.DEFAULT_MANIFEST,args.operator,sid,args.scenario_index,seed=7)
 
     def test_recording_arguments_and_start_guard(self):
@@ -45,15 +45,15 @@ class RecordingContract(unittest.TestCase):
             self.assertFalse(meta['diagnostic_success'])
             other=Path(tmp)/'different name';out.rename(other)
             sid,path=m.scenario_for_replay(other,meta,m.TASK)
-            self.assertEqual(sid,'batch02_toast_001');self.assertEqual(Path(path),other/'manifest.json')
-            self.assertEqual(meta['initial_static_rack_pose'],json.loads((other/'manifest.json').read_text())['scenarios'][1]['poses']['bread_shelf'])
+            self.assertEqual(sid,'toast_v20261108_041');self.assertEqual(Path(path),other/'manifest.json')
+            self.assertEqual(meta['initial_static_rack_pose'],next(e for e in json.loads((other/'manifest.json').read_text())['scenarios'] if e['id']==sid)['poses']['bread_shelf'])
 
     def test_existing_output_and_bad_operator_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             out,meta=self.make(Path(tmp));before=(out/'manifest.json').read_bytes()
             with self.assertRaises(FileExistsError):self.make(Path(tmp))
             self.assertEqual((out/'manifest.json').read_bytes(),before)
-            with self.assertRaises(ValueError):m.create_diagnostic(Path(tmp)/'bad',m.DEFAULT_MANIFEST,'operator_A','batch02_toast_001',1)
+            with self.assertRaises(ValueError):m.create_diagnostic(Path(tmp)/'bad',m.DEFAULT_MANIFEST,'operator_A','toast_v20261108_041',1)
             self.assertFalse((Path(tmp)/'bad').exists())
 
     def test_hash_task_id_rack_guards(self):
@@ -77,7 +77,7 @@ class RecordingContract(unittest.TestCase):
             cfg=SimpleNamespace(sim=SimpleNamespace(dt=.01,render_interval=4),decimation=4)
             with patch.dict('sys.modules',{'h5py':SimpleNamespace(File=lambda *args:Header())}):
                 m.configure_replay(out/'dataset.hdf5',cfg,m.TASK)
-                self.assertEqual(cfg.scenario_id,'batch02_toast_001');self.assertEqual(cfg.seed,7)
+                self.assertEqual(cfg.scenario_id,'toast_v20261108_041');self.assertEqual(cfg.seed,7)
                 self.assertEqual(cfg.scenario_manifest,str(out/'manifest.json'))
                 cfg.decimation=2
                 with self.assertRaises(ValueError):m.configure_replay(out/'dataset.hdf5',cfg,m.TASK)

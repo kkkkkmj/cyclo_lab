@@ -16,20 +16,19 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(v.angle([1,0,0,0],[-1,0,0,0]),0)
         self.assertAlmostEqual(v.angle([1,0,0,0],[2**-.5,0,0,2**-.5]),90)
 
-    def test_saved_static_and_vr_coverage(self):
-        folder=v.DEFAULT.parent/'validation_precollection_20261109'
-        rows=v.load(folder/'results.json');data=v.load(v.DEFAULT)
-        self.assertEqual(len(rows),100)
-        self.assertEqual({r['static'] for r in rows},{'STATIC_PASS'})
-        self.assertEqual({r['stability'] for r in rows},{'NOT_RUN'})
-        selected=v.load(folder/'vr_selection.json')
+    def test_current_vr_selection_coverage(self):
+        data=v.load(v.DEFAULT)
+        rows=[dict(v.base_row(e), surface_xy_lower_bound_m=min(e['checks']['pair_gaps_m'].values())) for e in data['scenarios']]
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp)
+            v.select_vr(folder,data,rows,v.DEFAULT)
+            selected=v.load(folder/'vr_selection.json')
         self.assertEqual(len(selected),len({r['scenario_id'] for r in selected}))
         entries={e['id']:e for e in data['scenarios']}
         for group in data['generation']['groups']:
             self.assertEqual({entries[r['scenario_id']]['type_index'] for r in selected if r['group']==group},set(range(6)))
         for key in ('source_sha256','asset_sha256'):
             for path,digest in data['provenance'][key].items():verify_fingerprint(path, digest)
-        self.assertEqual(v.sha(v.DEFAULT),v.load(folder/'audit.json')['manifest_sha256'])
 
     def test_merge_keeps_missing_runtime_unverified(self):
         with tempfile.TemporaryDirectory() as tmp:

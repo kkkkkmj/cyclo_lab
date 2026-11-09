@@ -1,7 +1,7 @@
-# Scenario Design — v20261108_current_100
+# Scenario Design
 
 물체 배치 변화에 따른 토스트 작업 시연을 수집하기 위한 새 100개 배치다.
-아래 수치는 현재 [생성기](../../scripts/tools/generate_current_toast_scenarios.py),
+아래 수치는 현재 [생성기](../scripts/tools/generate_current_toast_scenarios.py),
 [생성 설정](generation_config.json), [manifest](manifest.json)을 대조한 값이다.
 
 ## 좌표와 배치 구성
@@ -42,7 +42,7 @@ pose와의 거리이며 위 생성 앵커에 대한 jitter 크기와 별도 지�
 | 빵끼리 | 네 빵 XY footprint 겹침/접촉(거리 ≤0) 제외 |
 | 접시 | X>0.419 m |
 | 모델 거리 제외 | 집기/삽입/추출/레버/서빙 probe 중 양팔 모두 shoulder lift 구간에서 링크 길이 상한 밖이면 제외 |
-| 중복 | 새 100개 및 기존 두 manifest와 pose signature 중복 제외. 위치 소수 6자리·정규화 quaternion 7자리 기준 |
+| 중복 | 새 100개 및 보존된 이전 입력의 pose signature SHA256과 중복 제외. 위치 소수 6자리·정규화 quaternion 7자리 기준 |
 | 초기 rack/bread 관통 | 별도 CPU/USD 검사에서 authored rack 삼각형과 bread convex 형상 교차 검사. 모든 배치의 rack-local pose 동일성도 검사 |
 
 거치대는 230×130×45 mm이며 네 빵을 독립적으로 랜덤 배치하지 않는다.
@@ -92,7 +92,7 @@ A/B 각 50개, 하위 그룹 각 25개다. T=toaster, P=plate, S=bread_shelf.
 ## 재현과 선택
 
 생성 seed **20261108**, 배정 seed **20261109**(생성 seed+1).
-설치는 [Changes](../../CHANGES.md)를 따른다. numpy/scipy/torch/pxr가 설치된
+설치는 [Changes](../CHANGES.md)를 따른다. numpy/scipy/torch/pxr가 설치된
 Python 실행 파일을 `TOAST_PYTHON`으로 지정하고 checkout 루트에서 실행한다.
 
 ```bash
@@ -100,14 +100,16 @@ export TOAST_PYTHON=python3
 MJ_SCENARIO_OUTPUT=$(mktemp -d /tmp/toast-scenarios-rebuild.XXXXXX)
 "$TOAST_PYTHON" scripts/tools/generate_current_toast_scenarios.py \
   --seed 20261108 \
-  --evidence scenario_delivery/v20261108_current_100/inputs/geometry_evidence.json \
+  --evidence scenario_delivery/inputs/geometry_evidence.json \
   --output "$MJ_SCENARIO_OUTPUT"
 "$TOAST_PYTHON" scripts/tools/test_current_toast_delivery.py
 ```
 
-기존 출력은 덮어쓰지 않는다. 현 환경 baseline/asset 및 저장된 형상 증거를 검사한 뒤 생성한다.
+기존 출력은 덮어쓰지 않는다. 현 환경 baseline/asset 및 저장된 형상 증거를 검사한 뒤 생성한다. 이전 목록을 다시 포함하지 않고
+`inputs/generation_history.json`의 원래 pose 서명 SHA256과 원본 입력 해시를 사용한다.
 저장 manifest의 소스 해시는 생성 당시 +15 mm 소스를 기록하므로 현재 +35 mm 소스로 재생성하면
-provenance 해시는 달라진다. 과거 manifest를 최신 해시로 덮어쓰지 않으며 pose/배정 재현과
+provenance 해시는 달라진다. 폴더 이동 전 manifest는 바이트 그대로 유지했으며, 경로를 수정한
+현재 소스 해시는 [별도 기록](../docs/toast_quest/SCENARIO_RELOCATION.json)으로 검증한다. 과거 manifest를 최신 해시로 덮어쓰지 않으며 pose/배정 재현과
 파일 전체 바이트 재현을 구분한다.
 
 | 식별자 | 관계 |
@@ -118,8 +120,8 @@ provenance 해시는 달라진다. 과거 manifest를 최신 해시로 덮어쓰
 
 예: `--scenario_group operator_A_2 --group_index 1`은
 `--operator operator_A --scenario_index 26`과 같고 ID는 `toast_v20261108_087`이다.
-새 목록을 쓰려면 반드시 `--scenario_manifest scenario_delivery/v20261108_current_100/manifest.json`을
-지정한다. ID/그룹/상위 operator 선택은 혼용하지 않는다. GUI·Quest 전체 명령은 [시나리오 README](../README.md)를 따른다.
+기본 manifest는 `scenario_delivery/manifest.json`이며,
+`--scenario_manifest scenario_delivery/manifest.json`으로 명시해도 같은 목록을 선택한다. ID/그룹/상위 operator 선택은 혼용하지 않는다. GUI·Quest 전체 명령은 [시나리오 README](README.md)를 따른다.
 
 [Manifest](manifest.json) · [CSV 배정표](assignments.csv) · [읽기용 배정표](ASSIGNMENTS.md) ·
 [700개 물체 pose CSV](poses.csv) · [카드형 100개 배치도](overview_cards.html) · [SVG 배치도](overview.svg)

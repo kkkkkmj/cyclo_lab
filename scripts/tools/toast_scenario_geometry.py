@@ -1,6 +1,6 @@
 """Local legacy geometry helpers, extended to probe all four breads.
 
-Source snapshot: scenario_delivery/v20261108_current_100/inputs/reference_toast_batch_lib.py.
+Source snapshot: scenario_delivery/inputs/reference_toast_batch_lib.py.
 No simulator imports. Distance bounds are exclusion tests, not reachability proofs.
 """
 import itertools

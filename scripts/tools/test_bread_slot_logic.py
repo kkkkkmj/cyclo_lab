@@ -44,7 +44,7 @@ class Scene(dict):pass
 class BreadSlotLogic(unittest.TestCase):
     def test_all_scenarios_reset_and_spare_predicate(self):
         check=function('spare_bread_on_shelf');reset=function('reset_objects')
-        data=json.loads((ROOT/'scenario_delivery/manifest_bread_slot.json').read_text())
+        data=json.loads((ROOT/'scenario_delivery/manifest.json').read_text())
         for entry in data['scenarios']:
             poses=entry['poses'];scene=Scene({n:Body(p) for n,p in poses.items() if n!='bread_shelf'})
             scene.env_origins=torch.tensor([[3.,6.,0.]],dtype=torch.float64)

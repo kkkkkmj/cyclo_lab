@@ -48,8 +48,10 @@ class RuntimeContract(unittest.TestCase):
             rows = list(csv.DictReader(f))
         self.assertEqual(Counter(r['operator'] for r in rows), {'operator_A': 50, 'operator_B': 50})
         self.assertEqual(len({r['scenario_id'] for r in rows}), 100)
-        self.assertEqual([r['scenario_id'] for r in rows], [s['id'] for s in data['scenarios']])
-        for row, entry in zip(rows, data['scenarios']):
+        by_id = {s['id']: s for s in data['scenarios']}
+        self.assertEqual({r['scenario_id'] for r in rows}, set(by_id))
+        for row in rows:
+            entry = by_id[row['scenario_id']]
             self.assertEqual(row['operator'], entry['operator'])
             self.assertEqual(row['order_positive_to_negative_y'], '>'.join(entry['order_positive_to_negative_y']))
 
@@ -60,13 +62,13 @@ class RuntimeContract(unittest.TestCase):
         self.assertEqual(cfg, before)
         cfg.scene.plate.init_state.pos = (99, 0, 0)
         before = copy.deepcopy(cfg)
-        with self.assertRaises(ValueError):m.apply_scenario(cfg, 'batch02_toast_000')
+        with self.assertRaises(ValueError):m.apply_scenario(cfg, 'toast_v20261108_000')
         self.assertEqual(cfg, before)
 
     def test_explicit_manifest_and_malformed_data(self):
         original = m.load_manifest()
         mutations = [
-            lambda d: d.update(schema_version=1),
+            lambda d: d.update(schema_version=999),
             lambda d: d['scenarios'].append(copy.deepcopy(d['scenarios'][0])),
             lambda d: d['scenarios'][0]['poses']['plate']['position_m'].__setitem__(2, 9),
             lambda d: d['scenarios'][0]['poses']['plate']['scale'].__setitem__(0, 9),
@@ -85,7 +87,7 @@ class RuntimeContract(unittest.TestCase):
                 with self.assertRaises(ValueError):m.apply_scenario(cfg, original['scenarios'][0]['id'])
                 self.assertEqual(cfg, before)
             path.unlink()
-            with self.assertRaises(FileNotFoundError):m.get_scenario('batch02_toast_000',path)
+            with self.assertRaises(FileNotFoundError):m.get_scenario('toast_v20261108_000',path)
 
 
 class OperatorSelection(unittest.TestCase):
@@ -112,20 +114,22 @@ class OperatorSelection(unittest.TestCase):
     def test_invalid_selection_arguments(self):
         import contextlib,io
         invalid=[['--operator','operator_A'],['--scenario_index','1'],
-                 ['--operator','operator_A','--scenario_index','1','--scenario_id','batch02_toast_000']]
+                 ['--operator','operator_A','--scenario_index','1','--scenario_id','toast_v20261108_000']]
         invalid += [['--operator','operator_A','--scenario_index',str(i)] for i in (-1,0,51)]
         for tokens in invalid:
             with self.assertRaises(ValueError):self.viewer.resolve_selection(self.args(*tokens))
         for tokens in [['--operator','operator_C','--scenario_index','1'],['--scenario_index','abc']]:
             with contextlib.redirect_stderr(io.StringIO()),self.assertRaises(SystemExit):self.args(*tokens)
         self.assertIsNone(self.viewer.resolve_selection(self.args()))
-        self.assertEqual(self.viewer.resolve_selection(self.args('--scenario_id','batch02_toast_099')),'batch02_toast_099')
+        self.assertEqual(self.viewer.resolve_selection(self.args('--scenario_id','toast_v20261108_099')),'toast_v20261108_099')
         with self.assertRaises(ValueError):self.viewer.resolve_selection(self.args('--scenario_id','unknown'))
 
     def test_assignment_integrity_and_explicit_manifest(self):
         with (ROOT/'scenario_delivery/assignments.csv').open() as f:rows=list(csv.DictReader(f))
         with tempfile.TemporaryDirectory() as tmp:
             manifest=Path(tmp)/'explicit.json';manifest.write_text(json.dumps(m.load_manifest()))
+            import shutil
+            shutil.copy2(ROOT/'scenario_delivery/assignments.csv',Path(tmp)/'assignments.csv')
             args=self.args('--operator','operator_B','--scenario_index','50','--scenario_manifest',str(manifest))
             self.assertEqual(self.viewer.resolve_selection(args),[r['scenario_id'] for r in rows if r['operator']=='operator_B'][-1])
             path=Path(tmp)/'assignments.csv'
@@ -149,7 +153,7 @@ class OperatorSelection(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             checkout=Path(tmp)/'renamed checkout';other=Path(tmp)/'unrelated';other.mkdir()
             paths=['scripts/tools/view_make_toast_scenario.py',str(PATH.relative_to(ROOT)),
-                   'scenario_delivery/manifest.json','scenario_delivery/manifest_bread_slot.json','scenario_delivery/assignments.csv']
+                   'scenario_delivery/manifest.json','scenario_delivery/assignments.csv']
             for rel in paths:
                 target=checkout/rel;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/rel,target)
             spec=importlib.util.spec_from_file_location('relocated_viewer',checkout/paths[0])

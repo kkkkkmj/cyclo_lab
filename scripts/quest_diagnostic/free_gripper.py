@@ -123,7 +123,7 @@ def main():
         from tip_contact_observation import stop_reason as tip_stop_reason, DURATION_S
         task = 'Cyclo-Make-Toast-FFW-BG2-Bimanual-IK-Rel-v2'
         cfg = parse_env_cfg(task, device=args.device, num_envs=1)
-        cfg.scenario_id = 'batch02_toast_001'
+        cfg.scenario_id = 'toast_v20261108_041'
         cfg.scenario_manifest = args.scenario_manifest
         cfg.seed = 1
         env = gym.make(task, cfg=cfg).unwrapped

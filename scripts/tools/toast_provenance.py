@@ -1,5 +1,6 @@
 """Verify generation-time evidence and the explicitly recorded +35 mm migration."""
 import hashlib
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -9,7 +10,14 @@ def verify_fingerprint(path, expected):
     current = (ROOT / path).read_bytes()
     if hashlib.sha256(current).hexdigest() == expected:
         return
-    # Only these two source files changed after the delivered layouts were generated.
+    relocation = json.loads((ROOT / 'docs/toast_quest/SCENARIO_RELOCATION.json').read_text())
+    if path in relocation['sources']:
+        entry = relocation['sources'][path]
+        assert expected == entry['generation_sha256'], f'Generation hash mismatch: {path}'
+        assert hashlib.sha256(current).hexdigest() == entry['current_sha256'], f'Unrecorded relocation edit: {path}'
+        return
+    # Other post-generation changes are checked against their archived source.
+
     replacements = {
         PREFIX + 'bimanual_env_cfg.py': [
             ('from .arm_action import StandbyPostureIKActionCfg\n',

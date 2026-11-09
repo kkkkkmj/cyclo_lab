@@ -1,119 +1,104 @@
-# 과거 버전 배정표 — batch02_toast
+# 전체 100개 배정표
 
-> 이 표는 이전 A/B 각 50개 배정이며 하위 그룹이 없습니다. 현재 네 그룹 배정은 [v20261108_current_100](v20261108_current_100/ASSIGNMENTS.md)을 사용하세요. 기존 ID·배정은 변경하지 않았습니다.
-
-Each operator has 50 scenarios. Use your assigned IDs below; the assignments are not split into the first and last 50 IDs.
-
-Object order is shown from robot left to right (+Y → −Y). A/B identify the operators, not the recording equipment or collection method.
-
-Source: [assignments.csv](assignments.csv). See [과거 안내](../docs/toast_quest/history/SCENARIOS_BATCH02.md) for the original layout description.
-
-## operator_A — 50 scenarios
-
-| Scenario ID | Object Order (Robot Left → Right) |
-|---|---|
-| `batch02_toast_000` | Toaster → Plate → Bread Rack |
-| `batch02_toast_002` | Toaster → Plate → Bread Rack |
-| `batch02_toast_004` | Toaster → Plate → Bread Rack |
-| `batch02_toast_006` | Toaster → Plate → Bread Rack |
-| `batch02_toast_008` | Toaster → Plate → Bread Rack |
-| `batch02_toast_010` | Toaster → Plate → Bread Rack |
-| `batch02_toast_012` | Toaster → Plate → Bread Rack |
-| `batch02_toast_014` | Toaster → Plate → Bread Rack |
-| `batch02_toast_016` | Toaster → Plate → Bread Rack |
-| `batch02_toast_018` | Toaster → Bread Rack → Plate |
-| `batch02_toast_020` | Toaster → Bread Rack → Plate |
-| `batch02_toast_022` | Toaster → Bread Rack → Plate |
-| `batch02_toast_024` | Toaster → Bread Rack → Plate |
-| `batch02_toast_026` | Toaster → Bread Rack → Plate |
-| `batch02_toast_028` | Toaster → Bread Rack → Plate |
-| `batch02_toast_030` | Toaster → Bread Rack → Plate |
-| `batch02_toast_032` | Toaster → Bread Rack → Plate |
-| `batch02_toast_034` | Plate → Toaster → Bread Rack |
-| `batch02_toast_036` | Plate → Toaster → Bread Rack |
-| `batch02_toast_038` | Plate → Toaster → Bread Rack |
-| `batch02_toast_040` | Plate → Toaster → Bread Rack |
-| `batch02_toast_042` | Plate → Toaster → Bread Rack |
-| `batch02_toast_044` | Plate → Toaster → Bread Rack |
-| `batch02_toast_046` | Plate → Toaster → Bread Rack |
-| `batch02_toast_048` | Plate → Toaster → Bread Rack |
-| `batch02_toast_050` | Plate → Toaster → Bread Rack |
-| `batch02_toast_052` | Plate → Bread Rack → Toaster |
-| `batch02_toast_054` | Plate → Bread Rack → Toaster |
-| `batch02_toast_056` | Plate → Bread Rack → Toaster |
-| `batch02_toast_058` | Plate → Bread Rack → Toaster |
-| `batch02_toast_060` | Plate → Bread Rack → Toaster |
-| `batch02_toast_062` | Plate → Bread Rack → Toaster |
-| `batch02_toast_064` | Plate → Bread Rack → Toaster |
-| `batch02_toast_066` | Plate → Bread Rack → Toaster |
-| `batch02_toast_068` | Bread Rack → Toaster → Plate |
-| `batch02_toast_070` | Bread Rack → Toaster → Plate |
-| `batch02_toast_072` | Bread Rack → Toaster → Plate |
-| `batch02_toast_074` | Bread Rack → Toaster → Plate |
-| `batch02_toast_076` | Bread Rack → Toaster → Plate |
-| `batch02_toast_078` | Bread Rack → Toaster → Plate |
-| `batch02_toast_080` | Bread Rack → Toaster → Plate |
-| `batch02_toast_082` | Bread Rack → Toaster → Plate |
-| `batch02_toast_084` | Bread Rack → Plate → Toaster |
-| `batch02_toast_086` | Bread Rack → Plate → Toaster |
-| `batch02_toast_088` | Bread Rack → Plate → Toaster |
-| `batch02_toast_090` | Bread Rack → Plate → Toaster |
-| `batch02_toast_092` | Bread Rack → Plate → Toaster |
-| `batch02_toast_094` | Bread Rack → Plate → Toaster |
-| `batch02_toast_096` | Bread Rack → Plate → Toaster |
-| `batch02_toast_098` | Bread Rack → Plate → Toaster |
-
-## operator_B — 50 scenarios
-
-| Scenario ID | Object Order (Robot Left → Right) |
-|---|---|
-| `batch02_toast_001` | Toaster → Plate → Bread Rack |
-| `batch02_toast_003` | Toaster → Plate → Bread Rack |
-| `batch02_toast_005` | Toaster → Plate → Bread Rack |
-| `batch02_toast_007` | Toaster → Plate → Bread Rack |
-| `batch02_toast_009` | Toaster → Plate → Bread Rack |
-| `batch02_toast_011` | Toaster → Plate → Bread Rack |
-| `batch02_toast_013` | Toaster → Plate → Bread Rack |
-| `batch02_toast_015` | Toaster → Plate → Bread Rack |
-| `batch02_toast_017` | Toaster → Bread Rack → Plate |
-| `batch02_toast_019` | Toaster → Bread Rack → Plate |
-| `batch02_toast_021` | Toaster → Bread Rack → Plate |
-| `batch02_toast_023` | Toaster → Bread Rack → Plate |
-| `batch02_toast_025` | Toaster → Bread Rack → Plate |
-| `batch02_toast_027` | Toaster → Bread Rack → Plate |
-| `batch02_toast_029` | Toaster → Bread Rack → Plate |
-| `batch02_toast_031` | Toaster → Bread Rack → Plate |
-| `batch02_toast_033` | Toaster → Bread Rack → Plate |
-| `batch02_toast_035` | Plate → Toaster → Bread Rack |
-| `batch02_toast_037` | Plate → Toaster → Bread Rack |
-| `batch02_toast_039` | Plate → Toaster → Bread Rack |
-| `batch02_toast_041` | Plate → Toaster → Bread Rack |
-| `batch02_toast_043` | Plate → Toaster → Bread Rack |
-| `batch02_toast_045` | Plate → Toaster → Bread Rack |
-| `batch02_toast_047` | Plate → Toaster → Bread Rack |
-| `batch02_toast_049` | Plate → Toaster → Bread Rack |
-| `batch02_toast_051` | Plate → Bread Rack → Toaster |
-| `batch02_toast_053` | Plate → Bread Rack → Toaster |
-| `batch02_toast_055` | Plate → Bread Rack → Toaster |
-| `batch02_toast_057` | Plate → Bread Rack → Toaster |
-| `batch02_toast_059` | Plate → Bread Rack → Toaster |
-| `batch02_toast_061` | Plate → Bread Rack → Toaster |
-| `batch02_toast_063` | Plate → Bread Rack → Toaster |
-| `batch02_toast_065` | Plate → Bread Rack → Toaster |
-| `batch02_toast_067` | Plate → Bread Rack → Toaster |
-| `batch02_toast_069` | Bread Rack → Toaster → Plate |
-| `batch02_toast_071` | Bread Rack → Toaster → Plate |
-| `batch02_toast_073` | Bread Rack → Toaster → Plate |
-| `batch02_toast_075` | Bread Rack → Toaster → Plate |
-| `batch02_toast_077` | Bread Rack → Toaster → Plate |
-| `batch02_toast_079` | Bread Rack → Toaster → Plate |
-| `batch02_toast_081` | Bread Rack → Toaster → Plate |
-| `batch02_toast_083` | Bread Rack → Toaster → Plate |
-| `batch02_toast_085` | Bread Rack → Plate → Toaster |
-| `batch02_toast_087` | Bread Rack → Plate → Toaster |
-| `batch02_toast_089` | Bread Rack → Plate → Toaster |
-| `batch02_toast_091` | Bread Rack → Plate → Toaster |
-| `batch02_toast_093` | Bread Rack → Plate → Toaster |
-| `batch02_toast_095` | Bread Rack → Plate → Toaster |
-| `batch02_toast_097` | Bread Rack → Plate → Toaster |
-| `batch02_toast_099` | Bread Rack → Plate → Toaster |
+| operator | 그룹 | 상위 순번 | 그룹 순번 | scenario ID | +Y → −Y 순서 |
+|---|---|---:|---:|---|---|
+| operator_A | operator_A_1 | 1 | 1 | toast_v20261108_097 | bread_shelf > plate > toaster |
+| operator_A | operator_A_1 | 2 | 2 | toast_v20261108_076 | bread_shelf > toaster > plate |
+| operator_A | operator_A_1 | 3 | 3 | toast_v20261108_058 | plate > bread_shelf > toaster |
+| operator_A | operator_A_1 | 4 | 4 | toast_v20261108_017 | toaster > bread_shelf > plate |
+| operator_A | operator_A_1 | 5 | 5 | toast_v20261108_012 | toaster > plate > bread_shelf |
+| operator_A | operator_A_1 | 6 | 6 | toast_v20261108_044 | plate > toaster > bread_shelf |
+| operator_A | operator_A_1 | 7 | 7 | toast_v20261108_055 | plate > bread_shelf > toaster |
+| operator_A | operator_A_1 | 8 | 8 | toast_v20261108_014 | toaster > plate > bread_shelf |
+| operator_A | operator_A_1 | 9 | 9 | toast_v20261108_080 | bread_shelf > toaster > plate |
+| operator_A | operator_A_1 | 10 | 10 | toast_v20261108_092 | bread_shelf > plate > toaster |
+| operator_A | operator_A_1 | 11 | 11 | toast_v20261108_024 | toaster > bread_shelf > plate |
+| operator_A | operator_A_1 | 12 | 12 | toast_v20261108_043 | plate > toaster > bread_shelf |
+| operator_A | operator_A_1 | 13 | 13 | toast_v20261108_060 | plate > bread_shelf > toaster |
+| operator_A | operator_A_1 | 14 | 14 | toast_v20261108_094 | bread_shelf > plate > toaster |
+| operator_A | operator_A_1 | 15 | 15 | toast_v20261108_031 | toaster > bread_shelf > plate |
+| operator_A | operator_A_1 | 16 | 16 | toast_v20261108_075 | bread_shelf > toaster > plate |
+| operator_A | operator_A_1 | 17 | 17 | toast_v20261108_008 | toaster > plate > bread_shelf |
+| operator_A | operator_A_1 | 18 | 18 | toast_v20261108_045 | plate > toaster > bread_shelf |
+| operator_A | operator_A_1 | 19 | 19 | toast_v20261108_096 | bread_shelf > plate > toaster |
+| operator_A | operator_A_1 | 20 | 20 | toast_v20261108_050 | plate > toaster > bread_shelf |
+| operator_A | operator_A_1 | 21 | 21 | toast_v20261108_013 | toaster > plate > bread_shelf |
+| operator_A | operator_A_1 | 22 | 22 | toast_v20261108_025 | toaster > bread_shelf > plate |
+| operator_A | operator_A_1 | 23 | 23 | toast_v20261108_056 | plate > bread_shelf > toaster |
+| operator_A | operator_A_1 | 24 | 24 | toast_v20261108_079 | bread_shelf > toaster > plate |
+| operator_A | operator_A_1 | 25 | 25 | toast_v20261108_000 | toaster > plate > bread_shelf |
+| operator_A | operator_A_2 | 26 | 1 | toast_v20261108_087 | bread_shelf > plate > toaster |
+| operator_A | operator_A_2 | 27 | 2 | toast_v20261108_003 | toaster > plate > bread_shelf |
+| operator_A | operator_A_2 | 28 | 3 | toast_v20261108_082 | bread_shelf > toaster > plate |
+| operator_A | operator_A_2 | 29 | 4 | toast_v20261108_046 | plate > toaster > bread_shelf |
+| operator_A | operator_A_2 | 30 | 5 | toast_v20261108_030 | toaster > bread_shelf > plate |
+| operator_A | operator_A_2 | 31 | 6 | toast_v20261108_053 | plate > bread_shelf > toaster |
+| operator_A | operator_A_2 | 32 | 7 | toast_v20261108_052 | plate > bread_shelf > toaster |
+| operator_A | operator_A_2 | 33 | 8 | toast_v20261108_004 | toaster > plate > bread_shelf |
+| operator_A | operator_A_2 | 34 | 9 | toast_v20261108_048 | plate > toaster > bread_shelf |
+| operator_A | operator_A_2 | 35 | 10 | toast_v20261108_022 | toaster > bread_shelf > plate |
+| operator_A | operator_A_2 | 36 | 11 | toast_v20261108_069 | bread_shelf > toaster > plate |
+| operator_A | operator_A_2 | 37 | 12 | toast_v20261108_089 | bread_shelf > plate > toaster |
+| operator_A | operator_A_2 | 38 | 13 | toast_v20261108_081 | bread_shelf > toaster > plate |
+| operator_A | operator_A_2 | 39 | 14 | toast_v20261108_067 | plate > bread_shelf > toaster |
+| operator_A | operator_A_2 | 40 | 15 | toast_v20261108_015 | toaster > plate > bread_shelf |
+| operator_A | operator_A_2 | 41 | 16 | toast_v20261108_028 | toaster > bread_shelf > plate |
+| operator_A | operator_A_2 | 42 | 17 | toast_v20261108_088 | bread_shelf > plate > toaster |
+| operator_A | operator_A_2 | 43 | 18 | toast_v20261108_047 | plate > toaster > bread_shelf |
+| operator_A | operator_A_2 | 44 | 19 | toast_v20261108_032 | toaster > bread_shelf > plate |
+| operator_A | operator_A_2 | 45 | 20 | toast_v20261108_074 | bread_shelf > toaster > plate |
+| operator_A | operator_A_2 | 46 | 21 | toast_v20261108_009 | toaster > plate > bread_shelf |
+| operator_A | operator_A_2 | 47 | 22 | toast_v20261108_042 | plate > toaster > bread_shelf |
+| operator_A | operator_A_2 | 48 | 23 | toast_v20261108_091 | bread_shelf > plate > toaster |
+| operator_A | operator_A_2 | 49 | 24 | toast_v20261108_063 | plate > bread_shelf > toaster |
+| operator_A | operator_A_2 | 50 | 25 | toast_v20261108_036 | plate > toaster > bread_shelf |
+| operator_B | operator_B_1 | 1 | 1 | toast_v20261108_041 | plate > toaster > bread_shelf |
+| operator_B | operator_B_1 | 2 | 2 | toast_v20261108_095 | bread_shelf > plate > toaster |
+| operator_B | operator_B_1 | 3 | 3 | toast_v20261108_002 | toaster > plate > bread_shelf |
+| operator_B | operator_B_1 | 4 | 4 | toast_v20261108_029 | toaster > bread_shelf > plate |
+| operator_B | operator_B_1 | 5 | 5 | toast_v20261108_070 | bread_shelf > toaster > plate |
+| operator_B | operator_B_1 | 6 | 6 | toast_v20261108_066 | plate > bread_shelf > toaster |
+| operator_B | operator_B_1 | 7 | 7 | toast_v20261108_016 | toaster > plate > bread_shelf |
+| operator_B | operator_B_1 | 8 | 8 | toast_v20261108_084 | bread_shelf > plate > toaster |
+| operator_B | operator_B_1 | 9 | 9 | toast_v20261108_077 | bread_shelf > toaster > plate |
+| operator_B | operator_B_1 | 10 | 10 | toast_v20261108_049 | plate > toaster > bread_shelf |
+| operator_B | operator_B_1 | 11 | 11 | toast_v20261108_059 | plate > bread_shelf > toaster |
+| operator_B | operator_B_1 | 12 | 12 | toast_v20261108_019 | toaster > bread_shelf > plate |
+| operator_B | operator_B_1 | 13 | 13 | toast_v20261108_006 | toaster > plate > bread_shelf |
+| operator_B | operator_B_1 | 14 | 14 | toast_v20261108_065 | plate > bread_shelf > toaster |
+| operator_B | operator_B_1 | 15 | 15 | toast_v20261108_085 | bread_shelf > plate > toaster |
+| operator_B | operator_B_1 | 16 | 16 | toast_v20261108_073 | bread_shelf > toaster > plate |
+| operator_B | operator_B_1 | 17 | 17 | toast_v20261108_039 | plate > toaster > bread_shelf |
+| operator_B | operator_B_1 | 18 | 18 | toast_v20261108_027 | toaster > bread_shelf > plate |
+| operator_B | operator_B_1 | 19 | 19 | toast_v20261108_001 | toaster > plate > bread_shelf |
+| operator_B | operator_B_1 | 20 | 20 | toast_v20261108_057 | plate > bread_shelf > toaster |
+| operator_B | operator_B_1 | 21 | 21 | toast_v20261108_040 | plate > toaster > bread_shelf |
+| operator_B | operator_B_1 | 22 | 22 | toast_v20261108_072 | bread_shelf > toaster > plate |
+| operator_B | operator_B_1 | 23 | 23 | toast_v20261108_093 | bread_shelf > plate > toaster |
+| operator_B | operator_B_1 | 24 | 24 | toast_v20261108_033 | toaster > bread_shelf > plate |
+| operator_B | operator_B_1 | 25 | 25 | toast_v20261108_026 | toaster > bread_shelf > plate |
+| operator_B | operator_B_2 | 26 | 1 | toast_v20261108_011 | toaster > plate > bread_shelf |
+| operator_B | operator_B_2 | 27 | 2 | toast_v20261108_035 | plate > toaster > bread_shelf |
+| operator_B | operator_B_2 | 28 | 3 | toast_v20261108_061 | plate > bread_shelf > toaster |
+| operator_B | operator_B_2 | 29 | 4 | toast_v20261108_099 | bread_shelf > plate > toaster |
+| operator_B | operator_B_2 | 30 | 5 | toast_v20261108_083 | bread_shelf > toaster > plate |
+| operator_B | operator_B_2 | 31 | 6 | toast_v20261108_018 | toaster > bread_shelf > plate |
+| operator_B | operator_B_2 | 32 | 7 | toast_v20261108_086 | bread_shelf > plate > toaster |
+| operator_B | operator_B_2 | 33 | 8 | toast_v20261108_021 | toaster > bread_shelf > plate |
+| operator_B | operator_B_2 | 34 | 9 | toast_v20261108_037 | plate > toaster > bread_shelf |
+| operator_B | operator_B_2 | 35 | 10 | toast_v20261108_010 | toaster > plate > bread_shelf |
+| operator_B | operator_B_2 | 36 | 11 | toast_v20261108_071 | bread_shelf > toaster > plate |
+| operator_B | operator_B_2 | 37 | 12 | toast_v20261108_051 | plate > bread_shelf > toaster |
+| operator_B | operator_B_2 | 38 | 13 | toast_v20261108_068 | bread_shelf > toaster > plate |
+| operator_B | operator_B_2 | 39 | 14 | toast_v20261108_062 | plate > bread_shelf > toaster |
+| operator_B | operator_B_2 | 40 | 15 | toast_v20261108_034 | plate > toaster > bread_shelf |
+| operator_B | operator_B_2 | 41 | 16 | toast_v20261108_023 | toaster > bread_shelf > plate |
+| operator_B | operator_B_2 | 42 | 17 | toast_v20261108_005 | toaster > plate > bread_shelf |
+| operator_B | operator_B_2 | 43 | 18 | toast_v20261108_090 | bread_shelf > plate > toaster |
+| operator_B | operator_B_2 | 44 | 19 | toast_v20261108_078 | bread_shelf > toaster > plate |
+| operator_B | operator_B_2 | 45 | 20 | toast_v20261108_054 | plate > bread_shelf > toaster |
+| operator_B | operator_B_2 | 46 | 21 | toast_v20261108_020 | toaster > bread_shelf > plate |
+| operator_B | operator_B_2 | 47 | 22 | toast_v20261108_098 | bread_shelf > plate > toaster |
+| operator_B | operator_B_2 | 48 | 23 | toast_v20261108_038 | plate > toaster > bread_shelf |
+| operator_B | operator_B_2 | 49 | 24 | toast_v20261108_007 | toaster > plate > bread_shelf |
+| operator_B | operator_B_2 | 50 | 25 | toast_v20261108_064 | plate > bread_shelf > toaster |

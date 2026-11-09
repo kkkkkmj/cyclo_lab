@@ -11,7 +11,14 @@ def qmul(a,b):
     return (w*v-x*i-y*j-z*k,w*i+x*v+y*k-z*j,w*j-x*k+y*v+z*i,w*k+x*j-y*i+z*v)
 
 def main():
-    source = ROOT/'scenario_delivery/manifest.json'
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source', type=Path, required=True, help='Historical input manifest')
+    parser.add_argument('--output', type=Path, required=True, help='New output outside the active delivery')
+    args = parser.parse_args()
+    if args.output.exists() or args.output.resolve().is_relative_to(ROOT/'scenario_delivery'):
+        parser.error('Choose a new output outside scenario_delivery')
+    source = args.source
     data = json.loads(source.read_text())
     data['rack_asset'] = 'source/cyclo_lab/data/objects/bread_slot/rack.usda'
     data['rack_pose_source'] = 'manifest.json (IDs, assignments and object transforms unchanged)'
@@ -34,6 +41,6 @@ def main():
         entry['poses']['bread_shelf']['scale']=[1.,1.,1.]
         for i in range(4):entry['poses'][f'bread_{i}']=bread(entry['poses']['bread_shelf'],i)
         entry['pose_signature_sha256'] = hashlib.sha256(json.dumps(entry['poses'],sort_keys=True).encode()).hexdigest()
-    (source.parent/'manifest_bread_slot.json').write_text(json.dumps(data,indent=2)+'\n')
+    args.output.write_text(json.dumps(data,indent=2)+'\n')
 
 if __name__=='__main__':main()

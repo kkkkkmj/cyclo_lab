@@ -34,9 +34,9 @@ class Delivery(unittest.TestCase):
         self.assertEqual(len({e['id'] for e in entries}),100)
         signatures={gen.signature(e['poses']) for e in entries}
         self.assertEqual(len(signatures),100)
-        for name in ('manifest.json','manifest_bread_slot.json'):
-            old=json.loads((ROOT/'scenario_delivery'/name).read_text())
-            self.assertFalse(signatures & {gen.signature(e['poses']) for e in old['scenarios']})
+        history=json.loads((DELIVERY/'inputs/generation_history.json').read_text())
+        import hashlib
+        self.assertFalse({hashlib.sha256(s.encode()).hexdigest() for s in signatures} & set(history['previous_pose_sha256']))
         self.assertEqual(Counter(e['scenario_group'] for e in entries),dict.fromkeys(gen.GROUPS,25))
         self.assertEqual(Counter(e['operator'] for e in entries),{'operator_A':50,'operator_B':50})
         totals=[]
@@ -73,7 +73,7 @@ class Delivery(unittest.TestCase):
             args=build_parser().parse_args(['--scenario_manifest',str(MANIFEST)]+tokens)
             with self.assertRaises(ValueError):resolve_selection(args)
         args=build_parser().parse_args(['--scenario_group','operator_A_1','--group_index','1'])
-        with self.assertRaises(ValueError):resolve_selection(args)
+        self.assertEqual(resolve_selection(args), 'toast_v20261108_097')
 
     def test_all_loader_and_actual_reset_function_mock_writes(self):
         tree=ast.parse((gen.CFG/'bimanual_mdp.py').read_text())
@@ -140,7 +140,12 @@ class Delivery(unittest.TestCase):
         provenance=self.data['provenance']
         for collection in ('source_sha256','asset_sha256'):
             for path,digest in provenance[collection].items():verify_fingerprint(path, digest)
-        for key,path in [('previous_manifest_sha256','manifest.json'),('previous_rack_manifest_sha256','manifest_bread_slot.json'),('previous_assignments_sha256','assignments.csv')]:
-            self.assertEqual(gen.sha(ROOT/'scenario_delivery'/path),provenance[key])
+        relocation=json.loads((ROOT/'docs/toast_quest/SCENARIO_RELOCATION.json').read_text())
+        for name,digest in relocation['retained_files_sha256'].items():
+            self.assertEqual(gen.sha(DELIVERY/name),digest,name)
+        self.assertEqual(gen.sha(DELIVERY/'inputs/generation_history.json'),relocation['generation_history_sha256'])
+        history=json.loads((DELIVERY/'inputs/generation_history.json').read_text())
+        for key,digest in history['source_sha256'].items():
+            self.assertEqual(digest,provenance[key])
 
 if __name__=='__main__':unittest.main()

@@ -1,7 +1,7 @@
 import asyncio,json,subprocess,tempfile,time,base64
 from pathlib import Path
 import websockets
-ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'scenario_delivery/v20261108_current_100';checks={}
+ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'scenario_delivery';checks={}
 async def test():
  with tempfile.TemporaryDirectory(prefix='toast-cards-chrome-') as profile:
   log=open('/tmp/toast-cards-chrome.log','w')
@@ -66,5 +66,6 @@ async def test():
    try:proc.wait(timeout=10)
    except subprocess.TimeoutExpired:proc.terminate();proc.wait(timeout=5)
    log.close()
- (OUT/'overview_cards_checks.json').write_text(json.dumps(checks,indent=2)+'\n');print(json.dumps(checks,indent=2))
+ report=ROOT/'logs/toast_overview/overview_cards_checks.json';report.parent.mkdir(parents=True,exist_ok=True)
+ report.write_text(json.dumps(checks,indent=2)+'\n');print(json.dumps(checks,indent=2))
 asyncio.run(test())

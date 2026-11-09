@@ -61,7 +61,7 @@ def main():
                 candidate[n]=dict(position_m=pos.tolist(),quaternion_wxyz=x['quaternion'],clearance_raise_m=hi+.0003)
             row['bread'][n]=dict(delta=(np.array(o['final']['position'])-o['initial']['position']).tolist(),max_rotation_deg=o['max_rotation_deg'],final_speed=o['final_linear_speed_m_s'],states=states,samples=samples)
         report['runs'].append(row)
-    manifest=ROOT/'scenario_delivery/v20261108_current_100/manifest.json'
+    manifest=ROOT/'scenario_delivery/manifest.json'
     proposal=dict(version='seated_candidate_v1',status='EXPERIMENTAL_NOT_RUNTIME_VERIFIED',scenario_id=sid,manifest_sha256=sha(manifest),
         source_result_sha256=sha(args.input),method='Measured final orientation and XY; upward exact-authored-convex nonintersection search +0.3mm, not uniform lowering',poses=candidate)
     (out/'analysis.json').write_text(json.dumps(report,indent=2)+'\n');(out/'seated_candidate_v1.json').write_text(json.dumps(proposal,indent=2)+'\n')

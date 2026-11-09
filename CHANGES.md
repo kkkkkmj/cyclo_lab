@@ -116,7 +116,7 @@ cd "$REPO"
 export DISPLAY="${DISPLAY:-:0}"
 export XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}"
 bash scripts/run_mj.sh --gui scripts/tools/view_make_toast_scenario.py \
-  --scenario_manifest scenario_delivery/v20261108_current_100/manifest.json \
+  --scenario_manifest scenario_delivery/manifest.json \
   --scenario_group operator_A_1 --group_index 1
 ```
 
@@ -152,7 +152,7 @@ GROUP=operator_A_1
 INDEX=1
 bash scripts/run_mj.sh scripts/quest_diagnostic/teleop_toast.py \
   --headless --keep-open --enable-grippers --control-profile practice \
-  --scenario_manifest scenario_delivery/v20261108_current_100/manifest.json \
+  --scenario_manifest scenario_delivery/manifest.json \
   --scenario_group "$GROUP" --group_index "$INDEX" \
   --bridge-dir /workspace/cyclo_lab/logs/quest_toast_quest \
   --position-scale 1 --rotation-scale 1

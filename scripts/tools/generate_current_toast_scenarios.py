@@ -21,7 +21,7 @@ from toast_scenario_geometry import hull, footprint, polygon_distance, supported
 ROOT=Path(__file__).resolve().parents[2]
 CFG=ROOT/'source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2'
 VERSION='v20261108_current_100'
-DEFAULT_OUTPUT=ROOT/'scenario_delivery'/VERSION
+DEFAULT_OUTPUT=ROOT/'scenario_delivery'
 OBJECTS=('toaster','plate','bread_shelf')
 GROUPS=('operator_A_1','operator_A_2','operator_B_1','operator_B_2')
 ORDERS=list(itertools.permutations(OBJECTS))
@@ -45,7 +45,7 @@ def current_contract():
     """Read real config literals without importing/starting Isaac Sim."""
     names=['TABLE_HEIGHT','BREAD_OFFSETS','BREAD_ROTATION','SERVING_PLATE_SCALE','SERVING_PLATE_POSITION','SERVING_BREAD_CENTER_RADIUS']
     values=scalar_assignments(CFG/'assets.py',names)
-    data=json.loads((ROOT/'scenario_delivery/manifest_bread_slot.json').read_text())
+    data=json.loads((ROOT/'scenario_delivery/manifest.json').read_text())
     cfg_tree=ast.parse((CFG/'bimanual_env_cfg.py').read_text())
     positions={}
     for node in ast.walk(cfg_tree):
@@ -90,7 +90,7 @@ def current_contract():
         led_on_phases=[1,2],success='any same-ID fully heated bread on plate',success_center_radius_m=.020,
         master_gains=[100.,4.],slave_gains=[100.,4.],master_velocity_limit_rad_s=6.5,
         bread_offsets=values['BREAD_OFFSETS'],bread_rotation=values['BREAD_ROTATION'],
-        baseline_source='manifest_bread_slot.json, checked against current Python literals',
+        baseline_source='manifest.json, checked against current Python literals',
         robot_distance_origin_m=[0.,0.,0.],runtime_verified=False)
 
 
@@ -257,8 +257,8 @@ def generate(output,evidence_path,seed=SEED):
     evidence=json.loads(Path(evidence_path).read_text())
     robot=ROOT/'source/cyclo_lab/data/robots/FFW/FFW_BG2_without_mimic.usd'
     assert sha(robot)==evidence['robot_usd_sha256'] and evidence['robot_model']['fk_validated']
-    old=json.loads((ROOT/'scenario_delivery/manifest.json').read_text())
-    old_signatures={signature(e['poses']) for d in (old,base) for e in d['scenarios']}
+    history=json.loads((DEFAULT_OUTPUT/'inputs/generation_history.json').read_text())
+    old_signatures=set(history['previous_pose_sha256'])
     rng=random.Random(seed);entries=[];rejections=Counter();seen=set();attempts=0
     # Latin hypercube candidates within each type; rejected candidates are replaced.
     for typ,order in enumerate(ORDERS):
@@ -275,7 +275,7 @@ def generate(output,evidence_path,seed=SEED):
             poses=build_poses(base,order,jitter);attempts+=1
             failures,polys,checks=validate_layout(poses,points,evidence,base)
             sig=signature(poses)
-            if sig in seen or sig in old_signatures:failures.append('duplicate_current_or_previous_pose')
+            if sig in seen or hashlib.sha256(sig.encode()).hexdigest() in old_signatures:failures.append('duplicate_current_or_previous_pose')
             if failures:rejections.update(failures);continue
             seen.add(sig);entry=dict(id=f'toast_v20261108_{len(entries):03d}',type_index=typ,
                 order_positive_to_negative_y=list(order),status='STATIC_CHECKED_NOT_GPU_VERIFIED',
@@ -295,14 +295,12 @@ def generate(output,evidence_path,seed=SEED):
         units=base['units'],generation=config,environment_contract=contract,
         provenance=dict(source_sha256={str(p.relative_to(ROOT)):sha(p) for p in sourcefiles},asset_sha256=asset_hashes,
             robot_usd_sha256=sha(robot),evidence_sha256=sha(evidence_path),
-            previous_manifest_sha256=sha(ROOT/'scenario_delivery/manifest.json'),
-            previous_rack_manifest_sha256=sha(ROOT/'scenario_delivery/manifest_bread_slot.json'),
-            previous_assignments_sha256=sha(ROOT/'scenario_delivery/assignments.csv'),
+            **history['source_sha256'],
             remote_reference='https://github.com/kkkkkmj/cyclo_lab/tree/toast-scenarios-100/scenario_delivery',
             remote_identity_verified=False,remote_access='GitHub and raw fetch failed (cache miss); local snapshots used'),
         extracted_table_support=evidence['table_support'],planning_table_envelope=base['planning_table_envelope'],scenarios=entries)
     validation=dict(count=len(entries),unique_ids=len({e['id'] for e in entries}),unique_poses=len(seen),
-        duplicate_previous_pose_count=len(seen&old_signatures),attempts=attempts,rejections=dict(rejections),
+        duplicate_previous_pose_count=len({hashlib.sha256(sig.encode()).hexdigest() for sig in seen}&old_signatures),attempts=attempts,rejections=dict(rejections),
         counts={g:distribution[g]['count'] for g in distribution},
         min_object_gap_m=min(min(e['checks']['pair_gaps_m'].values()) for e in entries),
         runtime_reset='NOT_RUN',physx='NOT_RUN',ik='NOT_RUN',manipulation='NOT_RUN',reachability='NOT_PROVEN')

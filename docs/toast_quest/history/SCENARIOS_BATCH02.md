@@ -1,4 +1,4 @@
-> 과거 안내/생성 기록 보존본입니다. 현재 공유 안내는 [Changes](../../../CHANGES.md)와 [현재 시나리오](../../../scenario_delivery/v20261108_current_100/README.md)를 따르세요. 아래 개인 경로·실행 결과는 당시 기록이며 최신 설정을 뜻하지 않습니다.
+> 과거 안내/생성 기록 보존본입니다. 현재 공유 안내는 [Changes](../../../CHANGES.md)와 [현재 시나리오](../../../scenario_delivery/README.md)를 따르세요. 아래 개인 경로·실행 결과는 당시 기록이며 최신 설정을 뜻하지 않습니다.
 
 # Toast Task — 100 Scenarios
 
@@ -72,7 +72,7 @@ Confirm that the mount source is this clone and the package path belongs to the 
 
 **operator_A and operator_B each have 50 scenarios.** A/B identify people responsible for collection, not VR or automatic generation methods.
 
-Use the [assignment tables](../../../scenario_delivery/ASSIGNMENTS.md) or [assignments.csv](../../../scenario_delivery/assignments.csv). Each object order is balanced between operators as closely as possible. Assignments are not inferred from odd/even IDs or the first/last 50 IDs.
+Use the [assignment tables](https://github.com/kkkkkmj/cyclo_lab/blob/a18eb900aea6d6110dedb45f3f616411f7750c42/scenario_delivery/ASSIGNMENTS.md) or [assignments.csv](https://github.com/kkkkkmj/cyclo_lab/blob/a18eb900aea6d6110dedb45f3f616411f7750c42/scenario_delivery/assignments.csv). Each object order is balanced between operators as closely as possible. Assignments are not inferred from odd/even IDs or the first/last 50 IDs.
 
 `--scenario_index` is a **1-based position in that operator's CSV list**, in its existing row order. It is not the numeric suffix of a scenario ID. IDs range from `batch02_toast_000` to `batch02_toast_099`.
 
@@ -152,10 +152,10 @@ A later headless smoke check of the minimal viewer completed for `batch02_toast_
 
 | File | Purpose |
 |---|---|
-| [README.md](../../../scenario_delivery/README.md) | Scenario design and loading instructions. |
-| [manifest.json](../../../scenario_delivery/manifest.json) | Fixed IDs and final object poses, with generation and provenance information. |
-| [assignments.csv](../../../scenario_delivery/assignments.csv) | Machine-readable operator assignments and object order. |
-| [ASSIGNMENTS.md](../../../scenario_delivery/ASSIGNMENTS.md) | Separate, readable tables for each operator. |
-| [preview.html](../../../scenario_delivery/preview.html) | Layout diagrams with an operator filter. |
+| [README.md](https://github.com/kkkkkmj/cyclo_lab/blob/a18eb900aea6d6110dedb45f3f616411f7750c42/scenario_delivery/README.md) | Scenario design and loading instructions. |
+| [manifest.json](https://github.com/kkkkkmj/cyclo_lab/blob/a18eb900aea6d6110dedb45f3f616411f7750c42/scenario_delivery/manifest.json) | Fixed IDs and final object poses, with generation and provenance information. |
+| [assignments.csv](https://github.com/kkkkkmj/cyclo_lab/blob/a18eb900aea6d6110dedb45f3f616411f7750c42/scenario_delivery/assignments.csv) | Machine-readable operator assignments and object order. |
+| [ASSIGNMENTS.md](https://github.com/kkkkkmj/cyclo_lab/blob/a18eb900aea6d6110dedb45f3f616411f7750c42/scenario_delivery/ASSIGNMENTS.md) | Separate, readable tables for each operator. |
+| [preview.html](https://github.com/kkkkkmj/cyclo_lab/blob/a18eb900aea6d6110dedb45f3f616411f7750c42/scenario_delivery/preview.html) | Layout diagrams with an operator filter. |
 
 Download `preview.html` and open it in a web browser to view the layouts and filter by operator. It is self-contained and does not need an internet connection. GitHub's file view does not run the HTML preview.

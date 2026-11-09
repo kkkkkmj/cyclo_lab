@@ -2,7 +2,7 @@
 
 ## Overview
 
-Current delivery: **[v20261108_current_100](v20261108_current_100/README.md)**. Use its manifest explicitly.
+Current delivery: **[manifest.json](manifest.json)** — 100 fixed scenarios.
 
 100 fixed object layouts for the humanoid toast task, with final poses for the toaster, plate, bread rack, and four bread slices. These are placement data, not recorded demonstrations. Loading an ID selects a saved layout; reset restores it rather than sampling another one.
 
@@ -47,14 +47,14 @@ The supplied 100 candidates were accepted without resampling. Do not regenerate 
 | Bread placement | Four breads move rigidly with the rack; reject bread-to-bread XY overlap. Separate CPU/USD checks compare bread convex geometry with authored rack triangles |
 | Plate | Environment-frame X >0.419 m |
 | Model distance filter | Reject probe points outside both arms’ conservative chain-length bounds from the shoulder lift segment. This is not IK or collision-aware reachability validation |
-| Duplicates | Reject matching pose signatures within this delivery or the previous two manifests |
+| Duplicates | Reject matching pose signatures within this delivery or the preserved fingerprints of the previous generation inputs |
 
 The measured minimum inter-object gap in this delivery is about 138.99 mm. Initial geometric
 non-intersection or contact within 1 mm does not establish stable PhysX support. Full robot reachability,
 manipulation, collision-free paths and full-task success are not established by these filters.
 Exact baseline coordinates, bread offsets, support polygon, units and reproducible generation commands
-are in [Scenario Design](v20261108_current_100/SCENARIO_DESIGN.md) and
-[generation_config.json](v20261108_current_100/generation_config.json).
+are in [Scenario Design](SCENARIO_DESIGN.md) and
+[generation_config.json](generation_config.json).
 
 ## Download and Setup
 
@@ -100,8 +100,8 @@ not VR or automatic generation methods. Each operator has two groups of 25 scena
 | operator_B | operator_B_1 | 25 | 1–25 | 1–25 | toast_v20261108_041 |
 | operator_B | operator_B_2 | 25 | 1–25 | 26–50 | toast_v20261108_011 |
 
-Use the [assignment tables](v20261108_current_100/ASSIGNMENTS.md) or
-[assignments.csv](v20261108_current_100/assignments.csv). Assignments are not inferred from odd/even
+Use the [assignment tables](ASSIGNMENTS.md) or
+[assignments.csv](assignments.csv). Assignments are not inferred from odd/even
 IDs or the first/last 50 IDs. IDs range from `toast_v20261108_000` to `toast_v20261108_099`.
 `group_index` is 1-based within a group; `operator_index` is the same number for group 1 and that number
 plus 25 for group 2. An ID suffix is not an assignment index.
@@ -110,7 +110,7 @@ Allocation keeps the six-order quotas in the design table. With the assignment s
 50,000 within-order group-label swaps balance standardized position/yaw offsets, their magnitudes,
 reference/robot distances, second moments and quartile occupancy. Order types are interleaved within
 each group's execution list. Distribution balance does **not** prove equal manipulation difficulty.
-See [distribution.json](v20261108_current_100/distribution.json) for the actual statistics.
+See [distribution.json](distribution.json) for the actual statistics.
 
 ## Load a Scenario
 
@@ -126,7 +126,7 @@ export XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}"
 GROUP=operator_A_1
 INDEX=1
 bash scripts/run_mj.sh --gui scripts/tools/view_make_toast_scenario.py \
-  --scenario_manifest scenario_delivery/v20261108_current_100/manifest.json \
+  --scenario_manifest scenario_delivery/manifest.json \
   --scenario_group "$GROUP" --group_index "$INDEX"
 ```
 
@@ -134,7 +134,7 @@ The program prints the selected operator, operator index and actual ID. Supply g
 The compatible parent selection `--operator operator_A --scenario_index 26` selects the same ID as
 `--scenario_group operator_A_2 --group_index 1`. Do not combine group, parent-operator or direct-ID modes.
 For a direct ID, replace the group/index arguments with `--scenario_id toast_v20261108_087`.
-Always retain the current `--scenario_manifest`: omitting it preserves the older default delivery.
+The default manifest is now `scenario_delivery/manifest.json`; specifying it explicitly is also supported.
 
 Focus the simulation window and press **R** to restore the selected initial layout. Reset does not
 advance to another scenario. Objects can settle under physics after reset. Close the window to exit;
@@ -168,7 +168,7 @@ GROUP=operator_B_2
 INDEX=1
 bash scripts/run_mj.sh scripts/quest_diagnostic/teleop_toast.py \
   --headless --keep-open --enable-grippers --control-profile practice \
-  --scenario_manifest scenario_delivery/v20261108_current_100/manifest.json \
+  --scenario_manifest scenario_delivery/manifest.json \
   --scenario_group "$GROUP" --group_index "$INDEX" \
   --bridge-dir /workspace/cyclo_lab/logs/quest_toast_quest \
   --position-scale 1 --rotation-scale 1
@@ -188,7 +188,7 @@ After checking GPU availability, a finite check can exercise initial placement a
 export REPO=/path/to/cyclo_lab_toast_quest
 cd "$REPO"
 bash scripts/run_mj.sh scripts/tools/view_make_toast_scenario.py \
-  --scenario_manifest scenario_delivery/v20261108_current_100/manifest.json \
+  --scenario_manifest scenario_delivery/manifest.json \
   --scenario_group operator_A_1 --group_index 1 \
   --headless --steps 150 --reset_every 50
 ```
@@ -212,7 +212,7 @@ from isaaclab_tasks.utils.parse_cfg import parse_env_cfg
 
 # Run from the repository root. Use the ID from the assignment table.
 scenario_id = "toast_v20261108_097"
-manifest = Path("scenario_delivery/v20261108_current_100/manifest.json").resolve()
+manifest = Path("scenario_delivery/manifest.json").resolve()
 task = "Cyclo-Make-Toast-FFW-BG2-Bimanual-IK-Rel-v2"
 cfg = parse_env_cfg(task, device="cuda:0", num_envs=1)
 cfg.scenario_id = scenario_id
@@ -231,21 +231,21 @@ successful training demonstration. Saved-state video also does not establish act
 The supplied 100 IDs are unique, with 25 per group and 50 per operator. CPU checks matched all 200
 group/parent selections, 100 metadata round trips, 700 pose CSV rows, and 100 card/SVG entries.
 These checks do not establish PhysX stability, robot reachability or full toast-task success.
-The current rack's settling remains under diagnosis. Detailed reports and original results remain in
-[the reference index](../docs/toast_quest/DETAILS.md) and the version folder; they are not rerun by opening a layout.
+The current rack's settling remains under diagnosis. Historical reports are linked from
+[the reference index](../docs/toast_quest/DETAILS.md); they are not included in this scenario data folder.
 
 ## Files
 
 | File | Purpose |
 |---|---|
 | [README.md](README.md) | Scenario design and loading instructions. |
-| [manifest.json](v20261108_current_100/manifest.json) | Fixed IDs and final poses, with generation/provenance information. |
-| [assignments.csv](v20261108_current_100/assignments.csv) | Operator/group assignments, both indices and object order. |
-| [ASSIGNMENTS.md](v20261108_current_100/ASSIGNMENTS.md) | Readable assignment table. |
-| [poses.csv](v20261108_current_100/poses.csv) | 700 object-pose rows; join to assignments by scenario_id. |
-| [overview_cards.html](v20261108_current_100/overview_cards.html) | Self-contained cards with all/A/B/four-group filters; default A_1. |
-| [overview.svg](v20261108_current_100/overview.svg) | All 100 layouts, ordered by group/index. |
-| [SCENARIO_DESIGN.md](v20261108_current_100/SCENARIO_DESIGN.md) | Exact ranges, criteria, seeds and generation instructions. |
+| [manifest.json](manifest.json) | Fixed IDs and final poses, with generation/provenance information. |
+| [assignments.csv](assignments.csv) | Operator/group assignments, both indices and object order. |
+| [ASSIGNMENTS.md](ASSIGNMENTS.md) | Readable assignment table. |
+| [poses.csv](poses.csv) | 700 object-pose rows; join to assignments by scenario_id. |
+| [overview_cards.html](overview_cards.html) | Self-contained cards with all/A/B/four-group filters; default A_1. |
+| [overview.svg](overview.svg) | All 100 layouts, ordered by group/index. |
+| [SCENARIO_DESIGN.md](SCENARIO_DESIGN.md) | Exact ranges, criteria, seeds and generation instructions. |
 
 Download the card HTML and open it in a web browser. It is self-contained and does not need an internet
 connection. GitHub's file view does not run it. Alternatively serve the checkout locally:
@@ -256,13 +256,14 @@ cd "$REPO"
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-Open `http://127.0.0.1:8000/scenario_delivery/v20261108_current_100/overview_cards.html`.
-These are static layout diagrams, not simulator images. Rebuilding the card HTML with its separate
-builder requires a historical `collision_geometry.json` snapshot excluded from Git; viewing the supplied
-HTML does not. This is separate from regenerating scenario poses.
+Open `http://127.0.0.1:8000/scenario_delivery/overview_cards.html`.
+These are static layout diagrams, not simulator images. Card rebuilding uses the compact
+`inputs/table_frame.json` extracted from the original table snapshot; no private log path is required.
+`inputs/geometry_evidence.json` supplies the generation geometry. `inputs/generation_history.json`
+retains only prior pose-signature hashes and original input hashes needed for the same duplicate filter;
+it is not an older scenario list. Reference generator source snapshots remain under `inputs/`.
 
-Previous [manifest.json](manifest.json), [rack-adjusted manifest](manifest_bread_slot.json),
-[A/B assignments](assignments.csv), [assignment table](ASSIGNMENTS.md) and [preview](preview.html)
-remain available as the historical `batch02_toast_*` delivery. Their A/B assignments have not been
-renamed into current subgroups. [Original delivery notes](../docs/toast_quest/history/SCENARIOS_BATCH02.md)
-retain the earlier execution records.
+The supplied manifest, poses, assignments, generation seeds and HTML/SVG data are unchanged by the
+folder move. The manifest's generation-time provenance is preserved verbatim; current source relocation
+hashes are recorded separately in [the relocation record](../docs/toast_quest/SCENARIO_RELOCATION.json).
+Detailed generation and reconstruction instructions are in [SCENARIO_DESIGN.md](SCENARIO_DESIGN.md).

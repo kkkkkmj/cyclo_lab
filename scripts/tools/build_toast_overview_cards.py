@@ -9,8 +9,8 @@ from shapely.ops import unary_union
 from shapely import polygons, area, union_all
 from shapely.affinity import affine_transform
 from check_bread_slot_geometry import rotation
-ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'scenario_delivery/v20261108_current_100'
-SOURCE=ROOT/'logs/quest_diagnostics/B001_geometry_plan_20261104_234341_3483525/collision_geometry.json'
+ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'scenario_delivery'
+SOURCE=ROOT/'scenario_delivery/inputs/table_frame.json'
 
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def mesh_parts(path):
@@ -53,13 +53,10 @@ def main():
  table=json.loads(SOURCE.read_text());assert 'pos=[0.7, -0.1, 0.0]' in table['table_initial_state']
  cfg=(ROOT/'source/cyclo_lab/cyclo_lab/manager_based/manipulation/pick_place/config/ffw_bg2/pick_place_env_cfg.py').read_text()
  assert 'pos=[0.70, -0.1, 0.0]' in cfg and 'rot=[-0.70710678, 0.0, 0.0, 0.70710678]' in cfg and 'scale=(1.0, 1.0, 1.0)' in cfg
- meshes=[m for body in table['table'] for m in body.get('meshes',[]) if 'world_points' in m]
- framepoints=np.concatenate([m['world_points'] for m in meshes]);lo=framepoints.min(0);hi=framepoints.max(0)
+ lo,hi=np.asarray(table['frame_bounds_m'])
  frame=Polygon([(lo[0],lo[1]),(hi[0],lo[1]),(hi[0],hi[1]),(lo[0],hi[1])])
- tops=[np.array(m['world_points']) for m in meshes if m['path'].endswith('/M_HeavyDutyPackingTable_C01_TableTop')]
- assert len(tops)==1
  support=Polygon(data['extracted_table_support']['convex_surface_polygons_xy'][0])
- top_points=tops[0][np.abs(tops[0][:,2]-tops[0][:,2].max())<1e-6]
+ top_points=np.asarray(table['table_top_points'])
  measured=Polygon(top_points[ConvexHull(top_points[:,:2]).vertices,:2]);assert measured.hausdorff_distance(support)<1e-5
  assets=ROOT/'source/cyclo_lab/data/objects';paths={n:assets/'robodojo_make_toast'/n/'object.usdz' for n in ('toaster','plate','bread')};paths['bread_shelf']=assets/'bread_slot/rack.usda'
  parts={n:mesh_parts(p) for n,p in paths.items()};assert all(parts.values())

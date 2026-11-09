@@ -31,7 +31,7 @@ if args.approach_plan:
     plan=json.loads(args.approach_plan.read_text());protocol=PlannedProtocol(plan,args.speed)
     if 1+2*(protocol.length+protocol.max_down)/args.speed+.4>150:p.error('planned duration exceeds 150 simulation seconds; choose supported speed .01 or .02')
 sid=resolve_selection(args)
-if sid!='batch02_toast_001':p.error('Expected B first scenario batch02_toast_001')
+if sid!='toast_v20261108_041':p.error('Expected B first scenario toast_v20261108_041')
 # Refuse to run alongside existing teleop on the same bridge. Never acquire/modify input packets.
 lock=(args.bridge_dir/'.simulation.lock').open('a')
 try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)

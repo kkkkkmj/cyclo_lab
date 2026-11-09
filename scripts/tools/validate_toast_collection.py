@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
-DEFAULT=ROOT/'scenario_delivery/v20261108_current_100/manifest.json'
+DEFAULT=ROOT/'scenario_delivery/manifest.json'
 NAMES=('toaster','plate','bread_shelf',*(f'bread_{i}' for i in range(4)))
 # Frozen before runtime; failures are not automatically repaired or relaxed.
 LIMITS=dict(duration_s=5.,object_translation_m=.010,toaster_rotation_deg=5.,
