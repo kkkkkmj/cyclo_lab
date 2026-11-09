@@ -231,7 +231,7 @@ def summaries(entries):
 
 
 def write_assignments(path,entries):
-    lines=['# 전체 100개 배정표','', '| operator | 그룹 | 상위 순번 | 그룹 순번 | scenario ID | +Y → −Y 순서 |',
+    lines=['# Assignments for All 100 Scenarios','', '| operator | Group | Operator index | Group index | scenario ID | +Y → −Y order |',
            '|---|---|---:|---:|---|---|']
     for e in sorted(entries,key=lambda s:(s['scenario_group'],s['group_index'])):
         lines.append(f"| {e['operator']} | {e['scenario_group']} | {e['operator_index']} | {e['group_index']} | {e['id']} | {' > '.join(e['order_positive_to_negative_y'])} |")

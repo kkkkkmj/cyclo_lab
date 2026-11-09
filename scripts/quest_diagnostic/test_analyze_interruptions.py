@@ -42,6 +42,9 @@ class InterruptionAnalysisTests(unittest.TestCase):
         self.assertTrue(unknown)
         self.assertTrue(all(x['joints']['joint_min'] is None and x['joints']['status']=='확인 불가' for x in unknown))
         self.assertTrue(s['provenance']['unchanged'])
+        report = (self.root/'out'/'candidates.md').read_text()
+        self.assertIn('HDF joints', report)
+        self.assertNotRegex(report, r'[\uac00-\ud7a3]')
     def test_multiple_episodes_keep_local_frame_ids_and_separate_ranges(self):
         self.write_hdf(True);s=analyze(self.log,self.dataset,self.root/'out')
         self.assertEqual(s['verified_hdf_frames'],4)

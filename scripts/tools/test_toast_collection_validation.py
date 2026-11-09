@@ -23,6 +23,7 @@ class AuditTests(unittest.TestCase):
             folder=Path(tmp)
             v.select_vr(folder,data,rows,v.DEFAULT)
             selected=v.load(folder/'vr_selection.json')
+            self.assertNotRegex((folder/'VR_CHECKLIST.md').read_text(), r'[\uac00-\ud7a3]')
         self.assertEqual(len(selected),len({r['scenario_id'] for r in selected}))
         entries={e['id']:e for e in data['scenarios']}
         for group in data['generation']['groups']:

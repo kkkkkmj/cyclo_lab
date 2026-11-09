@@ -1,88 +1,88 @@
-> **과거 작업 기록**: 원래 설명·수치·실행 결과를 보존한 자료이며 현재 실행 안내가 아닙니다. 최신 설정과 명령은 [Changes](../../../CHANGES.md)를 따르세요. 특히 2/0.5 gain은 원본 v2 기본값이 아니라 중간 비교 설정이며, 거치대 안정 지지와 실기 검증 주장은 최신 진단 상태와 함께 읽어야 합니다. 본문의 호스트 경로·logs는 당시 로컬 증거 위치입니다.
+> **Historical development record**: Preserves the original descriptions, values, and execution results; this is not the current run guide. See [Changes](../../../CHANGES.md) for current settings and commands. In particular, gains of 2/0.5 were an intermediate comparison configuration, not the original v2 defaults. Claims about stable rack support and runtime validation must be read alongside the latest diagnostics. Host paths/logs below identify local evidence from that time.
 
-> 현재 실행 진입점: [Changes](../../../CHANGES.md). 아래 단계별 작업·측정 기록의 과거 값은 당시 설정입니다. 현재 v2 상승 목표/상한은 +35 mm이며 하한은 -45 mm입니다. 기록 속 PC IP·호스트 절대 경로·컨테이너 이름은 실행 환경에 맞게 설정해야 합니다. 최신 문서의 변수 기반 명령을 사용하세요.
+> Current entry point: [Changes](../../../CHANGES.md). Historical values in the development and measurement records below describe their respective configurations. The current v2 rising target/upper limit is +35 mm and the lower limit is -45 mm. Adapt recorded PC IPs, absolute host paths, and container names to your environment. Use the variable-based commands in the current guide.
 
-현재 v2 속도 상한은 좌우 master joint1 모두 6.5 rad/s다(기존 2.2에서 변경).
-slave 기본 속도와 gain 100/4는 유지했다. 상세 근거와 검증:
+The current v2 velocity limit is 6.5 rad/s for both left/right master joint1 (changed from 2.2).
+Default slave velocity limits and gains of 100/4 are retained. Detailed evidence and validation:
 [README_GRIPPER_SPEED.md](GRIPPER_SPEED.md).
 
-# v2 토스트 / Quest 그리퍼 gain 100/4
+# v2 Toast / Quest Gripper Gains 100/4
 
-현재 `/home/mj/nrf_humanoid/cyclo_lab_mj`의
-`Cyclo-Make-Toast-FFW-BG2-Bimanual-IK-Rel-v2` 설정이다.
+These are the current settings in `/home/mj/nrf_humanoid/cyclo_lab_mj`
+for `Cyclo-Make-Toast-FFW-BG2-Bimanual-IK-Rel-v2`.
 
-| 관절 | 역할 | stiffness | damping |
+| Joint | Role | stiffness | damping |
 |---|---|---:|---:|
-| gripper_l_joint1 | master, 유지 | 100.0 | 4.0 |
-| gripper_l_joint2 | slave, 변경 | 100.0 | 4.0 |
-| gripper_l_joint3 | slave, 변경 | 100.0 | 4.0 |
-| gripper_l_joint4 | slave, 변경 | 100.0 | 4.0 |
-| gripper_r_joint1 | master, 유지 | 100.0 | 4.0 |
-| gripper_r_joint2 | slave, 변경 | 100.0 | 4.0 |
-| gripper_r_joint3 | slave, 변경 | 100.0 | 4.0 |
-| gripper_r_joint4 | slave, 변경 | 100.0 | 4.0 |
+| gripper_l_joint1 | master, retained | 100.0 | 4.0 |
+| gripper_l_joint2 | slave, changed | 100.0 | 4.0 |
+| gripper_l_joint3 | slave, changed | 100.0 | 4.0 |
+| gripper_l_joint4 | slave, changed | 100.0 | 4.0 |
+| gripper_r_joint1 | master, retained | 100.0 | 4.0 |
+| gripper_r_joint2 | slave, changed | 100.0 | 4.0 |
+| gripper_r_joint3 | slave, changed | 100.0 | 4.0 |
+| gripper_r_joint4 | slave, changed | 100.0 | 4.0 |
 
-## 적용 경로 및 override 확인
+## Configuration Path and Override Checks
 
-- 공용 `assets/robots/FFW_BG2.py`의 slave 기본값 2/0.5는 다른 task에 영향을 주지 않도록
-  그대로 두었다. master joint1은 원래부터 100/4이며 변경하지 않았다.
-- `MakeToastFFWBG2BimanualEnvCfg`가 slave를 100/4로 설정한다.
-- 기존에는 파생 `MakeToastFFWBG2BimanualServeEnvCfg`가 마지막에 2/0.5로 낮췄다.
-  이 v2 override를 **100/4**로 바꿨다. 현재 v2 뷰어와 Quest 모두 이 설정을 사용한다.
-- Quest `configure_slave_gains()`는 현재 여섯 slave 매핑과 100/4를 검증한다.
-  다른 값이면 실행 전에 실패한다. 설정을 몰래 다시 쓰지 않는다.
-- 이전 비교 옵션 `--gripper-slave-gains-official`은 2/0.5로 되돌리는 경로였으므로
-  이제 명시적 오류를 내도록 했다. 현재 실행 명령에서는 이 옵션을 빼야 한다.
-- 선택적 J1/J3 속도 비교 옵션은 최종 actuator를 복사하며 gain 100/4를 보존한다.
-  기본 speed/effort 값과 VR 입력 매핑은 변경하지 않았다.
-- 시작 reset 및 후속 reset의 기존 PhysX readback hook을 유지했다.
-  기대값은 master와 slave 모두 100/4다. cfg가 2/0.5로 변경돼도 이를 기대값으로
-  받아들이지 않는다. 각 관절 이름으로 실제 PhysX tensor를 조회하고 불일치 시 실패한다.
-- 시뮬레이터가 이미 실행 중인 경우 이 변경을 hot reload하지 않는다.
+- The shared slave defaults of 2/0.5 in `assets/robots/FFW_BG2.py` were left unchanged to avoid
+  affecting other tasks. Master joint1 was already 100/4 and was unchanged.
+- `MakeToastFFWBG2BimanualEnvCfg` sets the slaves to 100/4.
+- Previously, derived `MakeToastFFWBG2BimanualServeEnvCfg` lowered them to 2/0.5 at the end.
+  This v2 override was changed to **100/4**. Both the current v2 viewer and Quest use this configuration.
+- Quest `configure_slave_gains()` now validates the six slave mappings and gains of 100/4.
+  Other values fail before execution. It does not silently rewrite settings.
+- The previous comparison option `--gripper-slave-gains-official` reverted to 2/0.5,
+  so it now raises an explicit error. Omit it from current execution commands.
+- Optional J1/J3 velocity comparisons copy the final actuator while preserving gains of 100/4.
+  Default speed/effort values and VR input mappings were unchanged.
+- Existing PhysX readback hooks at startup reset and subsequent resets were retained.
+  Expected gains are 100/4 for both master and slave. A cfg change to 2/0.5 is not accepted
+  as a new expectation. Actual PhysX tensors are queried by joint name, with mismatches rejected.
+- This change is not hot-reloaded into an already running simulator.
 
-## 변경 파일
+## Changed Files
 
 - `source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/config/ffw_bg2/bimanual_env_cfg.py`:
-  v2의 마지막 slave gain override만 100/4로 변경.
+  Only the final v2 slave-gain override was changed to 100/4.
 - `scripts/quest_diagnostic/teleop_slave_gains.py`:
-  soft-gain override 거부, 설정 검증 및 엄격한 100/4 readback 기대값.
-- `scripts/quest_diagnostic/teleop_toast.py`: 폐기한 옵션의 도움말 갱신.
+  Soft-gain override rejection, configuration validation, and strict 100/4 readback expectations.
+- `scripts/quest_diagnostic/teleop_toast.py`: updated help for the retired option.
 - `scripts/quest_diagnostic/test_teleop_slave_gains.py`:
-  최종 gain·옵션·reset·관절별 잘못된 readback 거부 검사 갱신.
+  Updated final-gain/option/reset checks and rejection of incorrect per-joint readback.
 - `scripts/quest_diagnostic/test_teleop_gripper_options.py`:
-  J3 속도 비교 후 gain 기대값을 100/4로 변경.
+  Changed expected gains after J3 velocity comparison to 100/4.
 - `README_QUEST.md`, `README_TOASTER_LED.md`, `README_BREAD_SLOT.md`:
-  현재 gain 안내와 과거 2/0.5 기록의 구분.
-- `README_GRIPPER_GAINS.md`: 이 보고서.
+  Distinguished current gains from historical 2/0.5 records.
+- `README_GRIPPER_GAINS.md`: this report.
 
-## 검증 결과
+## Validation Results
 
-CPU 테스트 **13개 통과**:
-실제 robot 설정 literal과 task override를 평가해 좌우 joint1~4의 최종 gain을 확인했다.
-기본 Quest 설정이 값을 바꾸지 않음, 과거 soft override 거부, J1/J3 속도 옵션의 gain 보존,
-시작/reset readback 호출 위치, 각 관절 stiffness/damping 불일치 거부를 검사했다.
-readback 테스트의 PhysX tensor API는 **모의 객체**이며 실제 PhysX 조회 결과가 아니다.
-Python 구문 검사 및 git diff --check 통과.
+**13 CPU tests passed**:
+Actual robot configuration literals and task overrides were evaluated to check final left/right joint1–4 gains.
+Checks covered unchanged values under the default Quest configuration, rejection of the old soft override, gain preservation
+under J1/J3 velocity options, startup/reset readback call sites, and rejection of per-joint stiffness/damping mismatches.
+The readback tests use **mocked** PhysX tensor APIs, not actual PhysX readback results.
+Python syntax checks and git diff --check passed.
 
-실제 GUI smoke는 Docker 소켓 접근 거부로 시작 전에 실패했다.
-**실제 PhysX joint gain readback, GUI·Quest 제어 응답은 미검증**이다.
-CPU 설정값을 실제 런타임 readback으로 보고하지 않는다.
+The actual GUI smoke attempt failed before startup because Docker socket access was denied.
+**Actual PhysX joint-gain readback and GUI/Quest control response remain unverified.**
+CPU configuration values are not reported as actual runtime readback.
 
-증거:
-- `logs/gripper_gains_100_4_validation/configured_gains.json` — CPU 최종 설정
+Evidence:
+- `logs/gripper_gains_100_4_validation/configured_gains.json` — final CPU configuration
 - `logs/gripper_gains_100_4_validation/cpu_tests.log`
 - `logs/gripper_gains_100_4_validation/gui_attempt.log`
 
-새 거치대·빵 배치, 90% 레버 시작, 4초 가열, phase 기반 LED, 최근 가열 ID 기반 성공 조건,
-VR 입력과 다른 관절 설정, 시나리오는 변경하지 않았다.
-원본 `/home/mj/nrf_humanoid/cyclo_lab` 및 실행 중인 프로세스는 건드리지 않았다.
-commit/push 없음.
+The new rack/bread configuration, 90% lever activation, 4-second heating, phase-based LED, recent-heated-ID success criteria,
+VR input, other joint settings, and scenarios were unchanged.
+The original `/home/mj/nrf_humanoid/cyclo_lab` and running processes were untouched.
+No commit/push was performed.
 
-## 실행 / 재검증
+## Execution / Revalidation
 
-기존 수정본 명령을 그대로 사용하되 `--gripper-slave-gains-official`은 넣지 않는다.
-GUI와 Quest 전체 명령은 [README_TOASTER_LED.md](TOASTER_LED.md) 참조.
-새 프로세스에서 적용된다.
+Use the existing modified-checkout commands without `--gripper-slave-gains-official`.
+See [README_TOASTER_LED.md](TOASTER_LED.md) for full GUI and Quest commands.
+Changes apply in a new process.
 
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab_mj
@@ -93,5 +93,5 @@ DISPLAY=:1 XAUTHORITY=/run/user/1000/gdm/Xauthority \
   --operator operator_B --scenario_index 1
 ```
 
-Quest 시작/reset에서 `GRIPPER_RUNTIME_OK` 로그의 joint_names/stiffness/damping을 확인할 수 있다.
-이 로그는 actual PhysX readback이 기대값을 통과했을 때만 출력된다.
+At Quest startup/reset, inspect joint_names/stiffness/damping in the `GRIPPER_RUNTIME_OK` log.
+This log appears only when actual PhysX readback passes the expected values.

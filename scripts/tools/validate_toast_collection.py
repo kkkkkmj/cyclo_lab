@@ -47,9 +47,9 @@ def write_report(out,rows):
     fields=list(dict.fromkeys(k for r in flat for k in r))
     with (out/'results.csv').open('w',newline='') as f:
         w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(flat)
-    lines=['# 시연 수집 전 검증 결과','',
-      'STATIC_PASS는 아래 정적 범위만 통과했다는 뜻이다. PhysX 미실행과 작업 접근/충돌/경로 미검증을 전체 작업 PASS로 취급하지 않는다.', '',
-      '| scenario | 그룹/번호 | 종류 | table 여유 m | 보수적 표면 XY 간격 m | 정적 | 안정성 | reset | 이유/미검증 |',
+    lines=['# Pre-Collection Validation Results','',
+      'STATIC_PASS covers only the static checks below. Unexecuted PhysX and unverified task approach/collision/paths do not constitute full-task PASS.', '',
+      '| scenario | Group/index | Type | Table clearance m | Conservative surface XY gap m | Static | Stability | reset | Reason/unverified |',
       '|---|---|---|---:|---:|---|---|---|---|']
     for r in rows:
         lines.append(f"| {r['scenario_id']} | {r['group']}/{r['group_index']} | {r['layout_type']} | {r.get('table_margin_m',float('nan')):.4f} | {r.get('surface_xy_lower_bound_m',float('nan')):.4f} | {r['static']} | {r['stability']} | {r['reset']} | {'; '.join(r['reasons'])} |")
@@ -137,12 +137,12 @@ def select_vr(out,data,rows,manifest):
         add(max(group,key=lambda e:e['metrics']['max_probe_shoulder_distance_m']),f'{g} farthest heuristic probe distance')
         add(min(group,key=lambda e:byid[e['id']]['surface_xy_lower_bound_m']),f'{g} narrowest surface-bound gap')
         add(max(group,key=lambda e:max(abs(v[2]) for v in e['jitter'].values())),f'{g} largest absolute yaw perturbation')
-    selected=[];lines=['# VR 수집 전 확인 대상','',
-        '6종류 × 4그룹 대표 24개 + 그룹별 최장 거리/최소 간격/최대 yaw 변화. 중복 ID는 한 번만 실행한다. 거리의 의미는 휴리스틱 probe–리프트 어깨 구간 거리이며 도달성 증명이 아니다.', '',
-        '먼저 Ubuntu GUI 터미널:', '```bash',f'cd {ROOT}','export DISPLAY=:1','export XAUTHORITY=/run/user/1000/gdm/Xauthority','```','',
-        'Quest 전용 서버(별도 터미널, 기존 프로세스를 종료하지 않음; IP는 실제 PC 주소로 확인, 포트 점유 시 미사용 포트 사용):','```bash',f'cd {ROOT}',
+    selected=[];lines=['# Checks Before VR Collection','',
+        '24 representatives across 6 types × 4 groups, plus per-group longest distance/minimum gap/maximum yaw offset. Run duplicate IDs only once. Distance is the heuristic probe-to-shoulder-lift-segment distance, not proof of reachability.', '',
+        'First, in an Ubuntu GUI terminal:', '```bash',f'cd {ROOT}','export DISPLAY=:1','export XAUTHORITY=/run/user/1000/gdm/Xauthority','```','',
+        'Dedicated Quest server (separate terminal; do not stop existing processes; verify the actual PC IP and use an unused port if occupied):','```bash',f'cd {ROOT}',
         'python3 scripts/quest_diagnostic/server.py --host 192.168.10.116 --port 8766 --bridge-dir '+str(ROOT/'logs/quest_precollection_v20261109'),'```',
-        'Quest에서 https://192.168.10.116:8766/ 접속 후 Pair. 이미 동일 bridge를 사용하는 시뮬레이션이 있으면 종료시키지 말고 별도 bridge를 지정한다. 아래 명령은 하나씩 실행한다.','']
+        'Open https://192.168.10.116:8766/ on Quest and Pair. If a simulation already uses this bridge, select a separate bridge without stopping it. Run the following commands one at a time.','']
     rel=str(Path(manifest).resolve().relative_to(ROOT))
     for e in sorted((e for e in entries if e['id'] in chosen),key=lambda e:(e['scenario_group'],e['group_index'])):
         reasons=chosen[e['id']];selected.append(dict(scenario_id=e['id'],group=e['scenario_group'],group_index=e['group_index'],reasons=reasons))
@@ -150,15 +150,15 @@ def select_vr(out,data,rows,manifest):
         lines += [f"## {e['id']} · {e['scenario_group']} #{e['group_index']}",'', '; '.join(reasons),'','```bash',
             f'bash scripts/run_mj.sh --gui scripts/tools/view_make_toast_scenario.py {selection}',
             f'bash scripts/run_mj.sh --gui scripts/quest_diagnostic/teleop_toast.py --bridge-dir /workspace/cyclo_lab/logs/quest_precollection_v20261109 {selection} --enable-grippers --keep-open','```','',
-            '- [ ] 초기 빵 4개 지지·테이블 여유·로봇 대기 확인; 시험한 bread ID와 사용 손/슬롯 기록',
-            '- [ ] 빵 집기: 손가락 접근·접촉·안정 집기 확인',
-            '- [ ] 토스터 삽입: 주변 물체/로봇 충돌 없이 정상 적재 확인',
-            '- [ ] 레버 90% 진입 시 실제 cycle 시작·LED ON',
-            '- [ ] 하강 완료 후 4초 가열·상승 시작 LED OFF·복귀 완료',
-            '- [ ] 같은 가열 완료 빵을 접시에 배치(중심20mm/높이/기울기/속도)',
-            '- [ ] 양 그리퍼 열림·양팔 standby·리프트 복귀 후 실제 success 확인',
-            '- [ ] reset 후 pose·LED·가열 기록 초기화 및 재시도',
-            '- [ ] 영상/기록 경로, 성공/실패, 실패 단계 기록. 미시험 빵은 UNVERIFIED 유지','']
+            '- [ ] Check support for all 4 initial slices, table clearance, and robot standby; record tested bread ID and hand/slot',
+            '- [ ] Bread grasp: verify finger approach, contact, and stable grasp',
+            '- [ ] Toaster insertion: verify correct loading without collisions with nearby objects/robot',
+            '- [ ] Crossing 90% normalized lever depression starts the actual cycle and turns LED ON',
+            '- [ ] 4-second heating after lowering completes; LED OFF at rising start; return completes',
+            '- [ ] Place the same fully heated slice on the plate (center 20 mm/height/tilt/speed)',
+            '- [ ] Verify actual success after both grippers open, both arms reach standby, and lift returns',
+            '- [ ] After reset, check restored poses/LED/heating records and retry',
+            '- [ ] Record video/recording paths, success/failure, and failure stage. Untested slices remain UNVERIFIED','']
     dump(out/'vr_selection.json',selected);(out/'VR_CHECKLIST.md').write_text('\n'.join(lines)+'\n')
 
 # Runtime code deliberately imports Isaac only in isolated worker processes.

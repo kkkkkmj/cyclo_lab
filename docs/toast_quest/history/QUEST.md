@@ -1,108 +1,59 @@
-> **과거 작업 기록**: 원래 설명·수치·실행 결과를 보존한 자료이며 현재 실행 안내가 아닙니다. 최신 설정과 명령은 [Changes](../../../CHANGES.md)를 따르세요. 특히 2/0.5 gain은 원본 v2 기본값이 아니라 중간 비교 설정이며, 거치대 안정 지지와 실기 검증 주장은 최신 진단 상태와 함께 읽어야 합니다. 본문의 호스트 경로·logs는 당시 로컬 증거 위치입니다.
+> **Historical development record**: Preserves the original descriptions, values, and execution results; this is not the current run guide. See [Changes](../../../CHANGES.md) for current settings and commands. In particular, gains of 2/0.5 were an intermediate comparison configuration, not the original v2 defaults. Claims about stable rack support and runtime validation must be read alongside the latest diagnostics. Host paths/logs below identify local evidence from that time.
 
-> 현재 실행 진입점: [Changes](../../../CHANGES.md). 아래 단계별 작업·측정 기록의 과거 값은 당시 설정입니다. 현재 v2 상승 목표/상한은 +35 mm이며 하한은 -45 mm입니다. 기록 속 PC IP·호스트 절대 경로·컨테이너 이름은 실행 환경에 맞게 설정해야 합니다. 최신 문서의 변수 기반 명령을 사용하세요.
+> Current entry point: [Changes](../../../CHANGES.md). Historical values in the development and measurement records below describe their respective configurations. The current v2 rising target/upper limit is +35 mm and the lower limit is -45 mm. Adapt recorded PC IPs, absolute host paths, and container names to your environment. Use the variable-based commands in the current guide.
 
-현재 v2의 좌우 master joint1 속도 상한은 기본 6.5 rad/s이며 별도 속도 옵션이 필요 없다.
-[설정/검증 보고서](GRIPPER_SPEED.md) 참조. 아래 과거 속도 비교 기록의 2.2는 당시 값이다.
+Current v2 left/right master joint1 velocity limits default to 6.5 rad/s; no separate velocity option is needed.
+See the [configuration/validation report](GRIPPER_SPEED.md). Values of 2.2 in historical comparisons below apply to those runs.
 
-현재 v2 그리퍼 설정: 좌우 master joint1 및 slave joint2/3/4 모두 stiffness=100.0,
-damping=4.0이다. 과거 `--gripper-slave-gains-official`(2/0.5 비교) 옵션은 이제 거부된다.
-현재 실행·readback 검증 결과는 [README_GRIPPER_GAINS.md](GRIPPER_GAINS.md) 참조.
-아래 기존 실험 기록은 당시 결과이며 현재 기본값을 뜻하지 않는다.
+Current v2 gripper settings: left/right master joint1 and slave joint2/3/4 all use stiffness=100.0,
+damping=4.0. The old `--gripper-slave-gains-official` option (2/0.5 comparison) is now rejected.
+See [README_GRIPPER_GAINS.md](GRIPPER_GAINS.md) for current execution/readback validation results.
+The experiments below describe their historical results, not current defaults.
 
 # Quest Touch Plus → Toast v2: bounded two-arm test
 
-## Meta 웹 캐스팅 기본 배치·설정 유지 — casting-fit-3
+## Meta Web Casting Defaults and Persistence — casting-fit-3
 
-**실제 캐스팅 중앙 일치는 미검증이다.** 기본 배율 .50은 사용자 지정값이고 가로 중심 +.24는
-실측 행렬을 참고한 추정값이다. 상태·네 카메라·테두리·십자가가 들어 있는 전체 패널을 함께 이동한다.
+**Actual casting-center alignment is unverified.** Default scale .50 was user-specified; horizontal center +.24 is
+an estimate based on a measured matrix. The entire panel—status, four cameras, border, and crosshairs—moves together.
 
-수정 전 최신 `packet.xr_display`에서 client build `preview-v3-643d85fe9ef3`, revision `casting-fit-2`,
-배율 .60, 중심 (+.12,+.10), framebuffer 3360×1760을 확인했다.
-왼눈 viewport는 (0,0,1680,1760), 오른눈은 (1680,0,1680,1760)이며 실제 중심도 요청값과 같아 clamp는 없었다.
-왼눈 projectionMatrix[8] = −0.2425125688이다. 눈의 정면 벡터 (0,0,−1,1)를 투영하면
-NDC x = −P[8] = +0.2425125688이므로 이를 +.24로 반올림했다.
-현재 +.12에서 이동량은 (.24−.12)×1680/2 = **100.8 eye-viewport pixels 오른쪽**이다.
-새 .50 배율에서 패널은 840×840 pixels, 눈 내부 중심은 (1041.6,968), NDC bounds는
-[−.26,−.3772727,+.74,+.5772727]로 잘리지 않는다 (픽셀 y는 아래 원점 기준).
-이 값은 Meta가 왼눈의 정면점을 캐스팅 중앙으로 삼는다는 가정의 추정이며 실제 crop 변환은 알 수 없다.
-확인 가능한 첨부 캡처만으로 현재 분홍 십자와 영상 경계의 픽셀 대응을 정확히 구할 수는 없다.
+The latest pre-change `packet.xr_display` showed client build `preview-v3-643d85fe9ef3`, revision `casting-fit-2`,
+scale .60, center (+.12,+.10), and framebuffer 3360×1760.
+Left-eye viewport was (0,0,1680,1760), right-eye (1680,0,1680,1760); applied centers matched requests without clamping.
+Left-eye projectionMatrix[8] = −0.2425125688. Projecting the eye-forward vector (0,0,−1,1)
+gives NDC x = −P[8] = +0.2425125688, rounded to +.24.
+From the current +.12, displacement is (.24−.12)×1680/2 = **100.8 eye-viewport pixels rightward**.
+At the new .50 scale, the panel is 840×840 pixels, eye-local center (1041.6,968), with NDC bounds
+[−.26,−.3772727,+.74,+.5772727], so it is not clipped (pixel y uses a bottom origin).
+This estimate assumes Meta centers casting on the left-eye forward point; the actual crop transform is unknown.
+The available attached capture alone cannot establish exact pixel correspondence between the current pink crosshair and video boundaries.
 
-눈별 viewport와 framebuffer 크기를 혼용하거나 십자만 따로 이동하지 않는다.
-제어·시나리오·카메라 원본·기록·재생·입력 보호 코드는 변경하지 않았다.
+Per-eye viewport and framebuffer dimensions are not conflated; crosshairs are not moved independently.
+Control, scenarios, source cameras, recording, replay, and input-protection code were unchanged.
 
-### 새 기본값과 저장
+### New Defaults and Persistence
 
-| 설정 | 캐스팅 맞춤(최초 기본 모드) | Quest 기본 모드 |
+| Setting | Casting fit (initial default mode) | Quest default mode |
 |---|---|---|
-| 배율 | .50 | .65 |
-| 가로 중심 | +.24 (눈 viewport 폭의 12% 오른쪽) | 0 |
-| 세로 중심 | +.10 (높이의 5% 위) | 0 |
-| 영상 내부 여백 | .02 | .02 |
-| 모서리 진단 | ON | OFF |
+| Scale | .50 | .65 |
+| Horizontal center | +.24 (12% of eye-viewport width rightward) | 0 |
+| Vertical center | +.10 (5% of height upward) | 0 |
+| Inner video margin | .02 | .02 |
+| Corner diagnostics | ON | OFF |
 
-전체 패널(상태+네 카메라)을 함께 오른쪽·위로 이동하며, 배율은 .60에서 사용자 지정 .50으로 조정했다.
-영상 종횡비·원본 카메라·UV는 그대로이며 영상을 잘라 채우지 않는다.
-브라우저 localStorage `cyclo.quest.display.v2` (schema 2)에 모드와 모드별 배율/중심/여백/진단 표시를 저장한다.
-v2 키가 없으면 페이지 로드 시 새 기본값을 즉시 한 번 저장한다. 기존 v1 키는 그대로 두되 읽지 않는다.
-이후 v2의 사용자 수정값을 복원하며 기본값을 매번 덮어쓰지 않는다. 설정 변경 또는 VR 진입 시에도 저장하고, 새로고침·VR 재진입·일반 브라우저 재실행 후 같은 origin에서 복원한다.
-IP/포트 변경, 사이트 데이터 삭제, 비공개 창 종료는 저장 범위를 바꿀 수 있다.
-저장 차단/용량 오류는 페이지에 명시하고 현재 VR 표시는 계속 가능하다.
-`현재 모드 기본값 복원`은 위 기본값으로 되돌리고 저장한다. 모드를 바꿔도 다른 모드의 저장값은 유지한다.
+The entire panel (status + four cameras) moves right/up together; scale changed from .60 to the user-specified .50.
+Video aspect ratio, original cameras, and UVs are unchanged; video is not cropped to fill the panel.
+Browser localStorage `cyclo.quest.display.v2` (schema 2) stores mode and per-mode scale/center/margin/diagnostic settings.
+If the v2 key is absent, new defaults are saved once immediately on page load. The old v1 key is retained but not read.
+Subsequent loads restore user edits in v2 rather than overwriting defaults each time. Settings also save on changes or VR entry and restore on the same origin after reloads, VR re-entry, or normal browser restarts.
+Changing IP/port, clearing site data, or closing a private window may change persistence scope.
+Storage denial/quota errors are displayed; the current VR display remains usable.
+`Restore defaults for this mode` restores and saves the defaults above. Switching modes retains the other mode's saved values.
 
-### 최소 적용 절차 — 기본값으로 한 번 확인
+### Minimal Application Procedure — Check Defaults Once
 
-1. 가능하면 A로 기록을 마감하고 WAITING에서 진행한다. 시뮬레이터와 배치 작업은 재시작하지 않는다.
-2. 사용자가 **입력 서버 터미널만** Ctrl+C로 종료하고 재실행한다. 서버가 시작 시 build를 고정하기 때문이다.
-
-```bash
-cd /home/mj/nrf_humanoid/cyclo_lab
-python3 scripts/quest_diagnostic/server.py \
-  --host 192.168.10.116 --port 8765 \
-  --bridge-dir /home/mj/nrf_humanoid/cyclo_lab/logs/quest_teleop
-```
-
-3. Quest에서 VR을 종료하고 `https://192.168.10.116:8765/` 페이지를 새로고침한다.
-   새 PIN으로 Pair한 뒤 CLIENT BUILD가 서버의 SERVER BUILD와 같은지 확인한다.
-4. `casting-fit-3`, 캐스팅 맞춤 / .50 / +.24 / +.10이 자동 표시된다.
-   **슬라이더는 조절하지 말고 Enter VR을 한 번 누른다.** 이미 v2 설정을 저장한 상태라면
-   캐스팅 맞춤에서 `현재 모드 기본값 복원` 한 번으로 같은 기준에 맞출 수 있다.
-5. Meta 캐스팅에서 TL/TR/BL/BR, 상태 문구와 하단 세 영상까지 들어오는지 한 번 확인한다.
-   이후 새로고침·VR 재진입에도 설정은 유지된다. 이 확인 전에는 해결 완료로 보고하지 않는다.
-
-이번부터 Applied XR 진단은 약 1초마다 갱신하여 기존 입력 패킷의 `xr_display`에 싣는다.
-`logs/quest_teleop/input.json`과 `server_status.json`의 `packet.xr_display`에서 revision/build,
-요청 설정, framebuffer, 각 눈 viewport·실제 scale/center/bounds·projectionMatrix,
-`reported_client_ms`를 확인할 수 있다. 입력 수신 시각과 함께 오래된 진단인지 판단한다.
-마지막 정상 draw의 진단이며 VR 종료 후 마지막 값이 남을 수 있다. 캐스팅 결과를 자동 판정하는 값은 아니다.
-이 필드는 관찰용이고 제어 좌표·버튼·영상 유효성 판정에는 사용하지 않는다.
-
-CPU/모의 검사: HUD geometry/render 16개 + 저장/복원 8개 + 버전 이전/실측 viewport 검사 6개 통과. 기존 Python 테스트는 앞선 작업에서 57개 통과했다.
-실제 Quest 광학·Meta 캐스팅 중심과 가독성은 미검증이다.
-
-## 현재 상태
-
-- 사용자 실기 확인: 양손 `meta-quest-touch-plus`, `valid:true`, 위치/회전 수신, 버튼 `pressed:true`, 양쪽 초록 표시.
-- **스틱은 실기 미검증이며 로봇 action에 사용하지 않는다.**
-- 이번 수정: 엄격한 입력 소스 선택, 무효 사유/통신 구분, 로컬 IPC, bounded 양팔 제어, 선택적 그리퍼,
-  착용 상태에서 확인할 카메라 패널 구현. 변경된 HUD·로봇 움직임·그리퍼는 GPU/Quest 실기 미검증.
-- CPU 테스트 57개 PASS(Quest 43, metadata 6, scenario loader 8), 소스 선택 JS 테스트 10개 및 preview client 모의 테스트 8개 PASS, JS 문법 검사 PASS.
-- 이 세션에서는 NVIDIA/NVML 및 Docker 소켓 접근이 불가능했다. GPU 유휴 여부는 확인되지 않았다.
-  시뮬레이터를 시작하지 않았으며 실행 중 진단 서버/시나리오 작업을 중지하지 않았다.
-- 기존 recorder 연결 및 B 첫 시나리오 테스트 저장/replay 경로 구현. 실제 저장·replay는 미검증, 이 작업의 수집 시연 0회. 로봇 하드웨어/Zenoh 연결 없음.
-
-## Operator B 첫 시나리오: 현재 실행 절차
-
-아래 1–4단계를 현재 운영 절차로 사용한다. marker-file 입력은 호환용으로만 남아 있으며 X/A 또는 n/s를 사용한다. 구현은 준비되었으나
-**실제 GPU 기록·재생 및 Quest 화면/캐스팅 개선은 미검증**이다. 이 작업에서 실제 시연은 저장하지 않았다.
-`operator_B`, `scenario_index=1`은 `scenario_delivery/assignments.csv` 순서로 해석하며
-`batch02_toast_001`인지 별도로 검사한다. 전체 목록의 51번을 사용하는 방식이 아니다.
-
-### 1. 입력 서버 적용
-
-실행 중인 서버와 시뮬레이터를 자동 종료하지 않았다. 사용자가 현재 teleop 터미널에서 Ctrl+C로
-종료한 뒤, **진단 서버 터미널만** Ctrl+C로 종료하고 다음 명령으로 다시 실행한다.
-시나리오 배치 작업은 종료하지 않는다. 새 GPU 작업 전 `nvidia-smi`로 기존 작업 사용량을 확인한다.
+1. If possible, finish recording with A and proceed in WAITING. Do not restart the simulator or batch jobs.
+2. The user stops **only the input-server terminal** with Ctrl+C and restarts it, because the server fixes its build at startup.
 
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
@@ -111,15 +62,64 @@ python3 scripts/quest_diagnostic/server.py \
   --bridge-dir /home/mj/nrf_humanoid/cyclo_lab/logs/quest_teleop
 ```
 
-Quest를 착용하고 Browser에서 **https://192.168.10.116:8765/** 를 다시 연다.
-터미널의 새 6자리 PIN으로 Pair한다. `CLIENT BUILD`가 터미널 `SERVER BUILD`와 같고
-`Secure context / WebXR / immersive-vr`가 모두 true인지 확인한 다음 **Enter VR diagnostic**을 누른다.
-서버 재시작은 쿠키를 무효화한다. 같은 서버에서 다음 에피소드/일반 새로고침/VR 재진입은 유효한
-8시간 쿠키가 있으면 PIN 재입력이 필요 없다. 브라우저 재실행은 쿠키 보존 여부에 달려 있다.
+3. Exit VR on Quest and reload `https://192.168.10.116:8765/`.
+   Pair with the new PIN, then verify CLIENT BUILD matches the server's SERVER BUILD.
+4. `casting-fit-3`, Casting fit / .50 / +.24 / +.10 appear automatically.
+   **Do not adjust sliders; press Enter VR once.** If v2 settings are already saved,
+   use `Restore defaults for this mode` once in Casting fit to establish the same baseline.
+5. In Meta casting, check once that TL/TR/BL/BR, status text, and all three bottom images are visible.
+   Settings then persist across reloads/VR re-entry. Do not report resolution before this check.
 
-### 2. 움직이지 않고 네 카메라 확인
+Applied XR diagnostics now update approximately every 1 second and are included in the existing input packet's `xr_display`.
+Inspect revision/build in `packet.xr_display` within `logs/quest_teleop/input.json` and `server_status.json`,
+along with requested settings, framebuffer, per-eye viewport/applied scale/center/bounds/projectionMatrix,
+and `reported_client_ms`. Use input receipt time as well to assess diagnostic freshness.
+These describe the last successful draw and may persist after VR exits. They do not automatically assess casting results.
+This field is observational and is not used for control coordinates, buttons, or video-validity decisions.
 
-기존 teleop이 종료되었고 다른 GPU 작업과 중복되지 않는 시점에 한 번만 실행한다.
+CPU/mock checks passed: HUD geometry/render 16 + persistence 8 + version migration/measured viewport 6. Previously, 57 Python tests passed.
+Actual Quest optics, Meta casting centering, and readability remain unverified.
+
+## Current Status
+
+- User runtime confirmation: both hands `meta-quest-touch-plus`, `valid:true`, position/rotation received, buttons `pressed:true`, both indicators green.
+- **Thumbsticks remain unverified on the headset and are not used for robot actions.**
+- This change implements strict input-source selection, separate invalidity/communication reasons, local IPC, bounded bimanual control, optional grippers,
+  and an in-headset camera panel. Modified HUD, robot motion, and grippers remain unverified on GPU/Quest.
+- 57 CPU tests PASS (Quest 43, metadata 6, scenario loader 8), 10 source-selection JS tests and 8 mocked preview-client tests PASS, JS syntax checks PASS.
+- NVIDIA/NVML and Docker socket access were unavailable in this session. GPU idle status was not established.
+  No simulator was started; running diagnostic-server/scenario jobs were not stopped.
+- Existing recorder integration and first-B-scenario test recording/replay paths were implemented. Actual recording/replay remain unverified; 0 demonstrations collected in this work. No robot-hardware/Zenoh connection.
+
+## Operator B First Scenario: Current Procedure
+
+Use steps 1–4 below as the current procedure. Marker-file input remains only for compatibility; use X/A or n/s. Implementation is ready, but
+**actual GPU recording/replay and Quest display/casting improvements remain unverified**. No actual demonstrations were saved in this work.
+`operator_B`, `scenario_index=1` is resolved using the order in `scenario_delivery/assignments.csv`,
+with a separate check for `batch02_toast_001`. It does not select item 51 of the full list.
+
+### 1. Apply the Input Server
+
+Running servers and simulators were not automatically stopped. After the user exits the current teleop terminal with Ctrl+C,
+stop **only the diagnostic-server terminal** with Ctrl+C and restart with the following command.
+Do not stop scenario batch jobs. Check existing GPU usage with `nvidia-smi` before a new GPU run.
+
+```bash
+cd /home/mj/nrf_humanoid/cyclo_lab
+python3 scripts/quest_diagnostic/server.py \
+  --host 192.168.10.116 --port 8765 \
+  --bridge-dir /home/mj/nrf_humanoid/cyclo_lab/logs/quest_teleop
+```
+
+Wear Quest and reopen **https://192.168.10.116:8765/** in Browser.
+Pair with the terminal's new 6-digit PIN. Verify `CLIENT BUILD` matches terminal `SERVER BUILD`
+and `Secure context / WebXR / immersive-vr` are all true, then press **Enter VR diagnostic**.
+Restarting the server invalidates cookies. On the same server, subsequent episodes, ordinary reloads, and VR re-entry do not
+require another PIN while the 8-hour cookie is valid. Browser restart behavior depends on cookie retention.
+
+### 2. Inspect Four Cameras Without Moving
+
+Run once after the previous teleop has exited, without overlapping other GPU jobs.
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -129,19 +129,19 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   --headless --preview-only --keep-open
 ```
 
-시작 로그에 `SCENARIO_SELECTED ... id=batch02_toast_001 seed=1`, manifest SHA256,
-`RESET_POSES_OK`의 7개 실제 pose, `READY / WAITING`이 보여야 한다.
-**X/n을 누르지 않아도 WAITING에서 영상은 갱신된다.** WAITING은 render만 하며 물리 시간은 진행하지 않는다.
-상단 FRONT OVERVIEW, 하단 HEAD / LEFT WRIST / RIGHT WRIST를 확인한다.
-VR 패널은 종횡비를 보존한다. 잘리면 VR에서 나온 뒤 웹페이지의 `Scale`을 줄이고 다시 진입한다.
-`Inner margin`은 패널 내부 여백이다. Quest 기본 모드 scale=.65, margin=.02. 캐스팅 맞춤은 상단의 저장형 기본값을 사용한다.
-PC 캐스팅의 실제 crop 개선은 별도로 확인해야 한다. 이 페이지가 PC 입력 모드를 제공하는 것은 아니다.
-카메라를 확인했으면 이 teleop 터미널에서 Ctrl+C로 종료한다. 입력 서버는 유지한다.
+Startup logs should show `SCENARIO_SELECTED ... id=batch02_toast_001 seed=1`, manifest SHA256,
+7 measured poses under `RESET_POSES_OK`, and `READY / WAITING`.
+**Images update in WAITING without pressing X/n.** WAITING renders only; physics time does not advance.
+Check FRONT OVERVIEW above and HEAD / LEFT WRIST / RIGHT WRIST below.
+The VR panel preserves aspect ratio. If clipped, exit VR, lower the webpage's `Scale`, and re-enter.
+`Inner margin` is padding inside the panel. Quest default mode uses scale=.65, margin=.02; Casting fit uses the persistent defaults above.
+Actual PC-casting crop improvements require separate verification. This page does not provide a PC input mode.
+After inspecting cameras, exit this teleop terminal with Ctrl+C. Keep the input server running.
 
-### 3. 같은 시나리오에서 짧게 조작·저장
+### 3. Brief Teleoperation and Recording in the Same Scenario
 
-아래 디렉터리는 **새 경로**여야 한다. 이미 존재하면 `B001_test_002` 등 새 이름을 사용한다.
-정식 성공 시연과 구분해 `datasets/quest_tests/`에만 이 테스트를 보관한다.
+The directory below must be a **new path**. If it exists, use another name such as `B001_test_002`.
+Keep this test only under `datasets/quest_tests/`, separate from formal successful demonstrations.
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -153,32 +153,32 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   --record-seconds 8
 ```
 
-1. Quest를 착용하고 정면을 본다. 양손 squeeze(옆면 쥐기 버튼)를 모두 놓는다.
-   양손 유효 입력과 최신 영상이 있어야 시작 가능하다.
-2. **왼쪽 X를 한 번 누른 뒤 놓는다.** 또는 PC teleop 터미널에서 `n`+Enter.
-   같은 시나리오/seed로 reset 후 `EPISODE_STARTED`가 출력된다. 이때부터 기록한다.
-3. squeeze가 놓인 상태에서 새 기준을 설정한 후 **왼쪽 squeeze만 다시 눌러** 컨트롤러를
-   앞으로 2–4cm 정도 천천히 움직이고 놓는다. 목표 이동은 그 0.25배다. 첫 테스트는 한쪽 팔만 사용한다.
-4. **오른쪽 A를 한 번 누르거나 `s`+Enter**로 짧게 마감한다. 누르지 않아도 시작 후
-   약 8 wall seconds에 마감한다. GPU 지연이 있으면 실제 simulation 기록 길이는 더 짧다.
-   `RECORD_SAVED demo_0 ... success=False`와 `EPISODE_WAITING`을 확인한다.
-5. 다음 테스트는 squeeze를 모두 놓고 X/n으로 명시적 시작한다. 파일 안에 demo_1 등이 추가된다.
-   `--keep-open`은 앱 유지 옵션이며 원래 **240 simulation seconds timeout**을 늘리지 않는다.
-6. 최종 종료는 Ctrl+C (또는 `q`+Enter). 활성 기록을 마감하고 HDF5를 닫은 뒤
-   `RECORD_FINALIZED`와 producer `stopped` 상태를 남긴다. 중간 step에서 중단됐다면
-   obs/actions/states가 모두 있는 완결 행까지만 저장한다. 완결 행이 없으면 빈 에피소드는 저장하지 않는다.
+1. Wear Quest and look forward. Release both squeeze buttons (side grip buttons).
+   Valid input from both hands and fresh video are required to start.
+2. **Press and release left X once**, or enter `n`+Enter in the PC teleop terminal.
+   After resetting the same scenario/seed, `EPISODE_STARTED` is printed. Recording begins then.
+3. Establish a new reference with squeeze released, then **press only left squeeze again** and move the controller
+   slowly forward about 2–4 cm, then release. Target displacement is 0.25× that motion. Use one arm for the first test.
+4. **Press right A once or `s`+Enter** to finish the short recording. Otherwise it finishes
+   approximately 8 wall seconds after starting. GPU delays shorten the recorded simulation duration.
+   Check `RECORD_SAVED demo_0 ... success=False` and `EPISODE_WAITING`.
+5. For another test, release both squeezes and explicitly start with X/n. demo_1, etc. are appended to the file.
+   `--keep-open` keeps the application alive; it does not extend the original **240 simulation seconds timeout**.
+6. Exit finally with Ctrl+C (or `q`+Enter). The active recording is finalized and HDF5 closed,
+   followed by `RECORD_FINALIZED` and producer `stopped` status. If interrupted mid-step,
+   only complete rows containing obs/actions/states are saved. Without any complete rows, no empty episode is saved.
 
-X=reset/start, A=save/wait는 edge 방식이다. 버튼을 계속 누른 채로 다음 에피소드가 시작되지 않는다.
-B/Y는 기존 정면 재설정, squeeze는 clutch다. 위치 .25/회전 .5, 초기 기준 5cm/15도 제한,
-그리퍼 열린 상태 고정과 lift 고정을 유지한다. 트리거/스틱으로 물체를 잡는 단계가 아니다.
-입력/영상 손실 때 목표 유지, 복구 후 squeeze 해제·재입력 조건도 유지한다.
-실패·미완료 기록도 테스트 파일에 저장되며 `success=False`, `diagnostic=True`이다.
-원래 성공 판정 결과는 별도 `task_success_observed`에 남긴다. 폐기할 테스트는 정식 수집에 포함하지 말고
-파일을 그대로 두거나 종료 후 별도 보관한다. 이 실행기에는 저장한 에피소드 삭제 버튼이 없다.
+X=reset/start and A=save/wait are edge-triggered. Holding a button does not start the next episode.
+B/Y retain forward-reference reset; squeeze is the clutch. Position .25/rotation .5, initial-reference 5 cm/15° bounds,
+fixed-open grippers, and fixed lift are retained. This is not the trigger/thumbstick object-grasping stage.
+Holding targets on input/video loss and requiring squeeze release/re-engagement after recovery are also retained.
+Failed/incomplete recordings are saved in the test file with `success=False`, `diagnostic=True`.
+The original success result is recorded separately as `task_success_observed`. Exclude discarded tests from formal collection;
+leave files intact or archive separately after shutdown. This launcher has no button to delete saved episodes.
 
-### 4. 종료 후 CPU 파일 검사 → action replay → 참고 영상
+### 4. After Shutdown: CPU File Checks → Action Replay → Reference Video
 
-시뮬레이터를 종료하고 HDF5가 닫힌 뒤 검사한다. 입력 서버는 켜 두어도 된다.
+Inspect after the simulator exits and HDF5 closes. The input server may remain running.
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -186,10 +186,10 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   /workspace/cyclo_lab/datasets/quest_tests/B001_test_001/dataset.hdf5
 ```
 
-이 명령은 시뮬레이터를 시작하지 않는다. actions [N,15], 세 RGB [N,244,244,3],
-초기 상태/후속 상태, toast_cycle, 프레임 정합성과 manifest hash를 검사한다.
+This command does not start the simulator. It checks actions [N,15], three RGB streams [N,244,244,3],
+initial/subsequent states, toast_cycle, frame alignment, and manifest hash.
 
-다음은 **action으로 실제 물리를 다시 계산하는 replay**다. 앞의 teleop과 동시에 실행하지 않는다.
+Next is **replay that recomputes actual physics from actions**. Do not run it concurrently with the teleop above.
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -200,12 +200,12 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
 ```
 
 `SCENARIO_REPLAY batch02_toast_001`, `STATIC_RACK_POSE_OK`, `REPLAY_INITIAL_STATE_OK`,
-마지막 `REPLAY_VALIDATION checked=... mismatched=0`을 확인한다.
-초기 로봇/물체 상태·toast cycle을 검사하고, static rack은 별도 world pose로 검사한다.
-후속 상태 비교는 기존 replay의 절대 오차 .01 기준이다. mismatch가 있으면 진단 replay는 오류로 종료한다.
-replay의 기존 termination 비활성화 동작은 그대로이며 원래 작업 정의의 판정을 변경하지 않는다.
+Check the final `REPLAY_VALIDATION checked=... mismatched=0`.
+Initial robot/object states and toast cycle are checked; the static rack is checked separately by world pose.
+Subsequent-state comparisons use the existing replay absolute-error threshold .01. A mismatch terminates diagnostic replay with an error.
+Replay's existing termination-disabling behavior is retained and does not change the original task definition.
 
-그다음 참고 영상처럼 **저장 상태를 렌더링하는 MP4**를 만든다. 이 명령은 action 물리 replay 검증과 다르다.
+Then produce an **MP4 rendering saved states** as a reference video. This is distinct from action-based physics replay validation.
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -216,141 +216,141 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   --video_file /workspace/cyclo_lab/datasets/quest_tests/B001_test_001/replay.mp4
 ```
 
-PC 파일 위치: `datasets/quest_tests/B001_test_001/replay.mp4`.
-FRONT OVERVIEW는 저장된 scene state를 새 카메라로 렌더링하며, 아래 세 영상은 원래 기록된 RGB다.
-live/replay는 같은 `toast_overview.py` 카메라(eye 3.1,0,2 / target .35,0,1)를 사용한다.
-새 overview는 학습 policy 관측이나 HDF5 RGB에 추가하지 않았다.
+PC file location: `datasets/quest_tests/B001_test_001/replay.mp4`.
+FRONT OVERVIEW renders saved scene states from a new camera; the three bottom images are the originally recorded RGB.
+Live/replay use the same `toast_overview.py` camera (eye 3.1,0,2 / target .35,0,1).
+The new overview is not added to training-policy observations or HDF5 RGB.
 
-### 메타데이터와 검증 범위
+### Metadata and Validation Scope
 
-기록 디렉터리에는 원본 manifest의 byte-for-byte snapshot, metadata.json, 기존 Isaac Lab recorder의
-`dataset.hdf5`가 들어간다. HDF5와 sidecar에 operator/index/ID/seed/hash/측정 reset pose/
-physics dt/decimation/control dt를 저장하고 에피소드에 종료 사유와 판정 결과를 추가한다.
-시간은 wall-monotonic, simulation elapsed time, 시작·종료 Unix time을 저장한다.
-기존 policy의 로봇 관측, 세 카메라 RGB, actions, processed_actions, 초기/후속 scene state,
-toast_cycle을 재사용한다. raw Quest pose/buttons와 새 overview RGB는 학습 데이터로 저장하지 않는다.
+The recording directory contains a byte-for-byte snapshot of the original manifest, metadata.json, and the existing Isaac Lab recorder's
+`dataset.hdf5`. HDF5 and the sidecar store operator/index/ID/seed/hash/measured reset poses/
+physics dt/decimation/control dt; episodes include termination reasons and verdicts.
+Timing includes wall-monotonic, simulation elapsed time, and start/end Unix time.
+Existing policy robot observations, three camera RGB streams, actions, processed_actions, initial/subsequent scene states,
+and toast_cycle are reused. Raw Quest poses/buttons and the new overview RGB are not stored as training data.
 
-replay는 기록 옆 manifest snapshot의 hash를 확인하고 **gym.make 전에** scenario/manifest/seed를 적용한다.
-누락·변조·task/timing/static-rack metadata 불일치에는 오류로 중단한다. 현재 프로젝트 manifest로
-조용히 대체하지 않는다. 실제 reset과 초기 상태 복원의 일치는 GPU 실행 시 추가 assert한다.
+Replay checks the adjacent manifest snapshot's hash and applies scenario/manifest/seed **before gym.make**.
+Missing/tampered data or task/timing/static-rack metadata mismatches cause errors. The current project manifest is not
+silently substituted. Actual reset/initial-state restoration agreement is additionally asserted during GPU execution.
 
-CPU: Python 57개(Quest 43 + metadata 6 + 기존 scenario loader 8), JS 입력 10개,
-preview 8개 모의 테스트, Python/JS 문법, 합성 영상 종횡비 검사 통과.
-모의 recorder 테스트는 실제 HDF5 write의 증거가 아니다. GPU 접근 불가로 실제 HDF5 생성·static rack
-world pose·물리 replay 일치·Quest 네 영상·캐스팅은 미검증이다.
+CPU: 57 Python tests (Quest 43 + metadata 6 + existing scenario loader 8), 10 JS input tests,
+8 mocked preview tests, Python/JS syntax checks, and synthetic-image aspect-ratio checks passed.
+Mock recorder tests do not establish actual HDF5 writes. Without GPU access, actual HDF5 creation, static-rack
+world pose, physics replay agreement, four Quest images, and casting remain unverified.
 
 
-## 적용 환경과 실제 action 계약
+## Environment and Actual Action Contract
 
-`docker/.env.base`는 Isaac Sim 5.1.0, `/isaac-sim`, `/workspace/cyclo_lab`을 지정한다.
-체크아웃의 `third_party/IsaacLab/VERSION`은 2.3.0이고 기존 시나리오 로그에도 Sim 5.1 기록이 있다.
-실행 중 컨테이너의 패치 버전/드라이버는 직접 조회하지 못했다. 업그레이드하지 않았다.
-프로젝트 및 scripts 경로에서 적용 대상 AGENTS.md를 발견하지 못했다.
+`docker/.env.base` specifies Isaac Sim 5.1.0, `/isaac-sim`, and `/workspace/cyclo_lab`.
+The checkout's `third_party/IsaacLab/VERSION` is 2.3.0; existing scenario logs also record Sim 5.1.
+The running container's patch version/driver could not be queried directly. No upgrade was performed.
+No applicable AGENTS.md was found in the project or scripts paths.
 
-대상: `Cyclo-Make-Toast-FFW-BG2-Bimanual-IK-Rel-v2`, FFW-BG2,
+Target: `Cyclo-Make-Toast-FFW-BG2-Bimanual-IK-Rel-v2`, FFW-BG2,
 `MakeToastFFWBG2BimanualEnv` + `MakeToastFFWBG2BimanualServeEnvCfg`.
 
-| action 인덱스 | 실제 의미 |
+| Action indices | Actual meaning |
 |---|---|
-| 0:6 | 왼손목 arm_l_link7, base-frame 위치 delta 3 + axis-angle 회전 delta 3 |
-| 6:12 | 오른손목 arm_r_link7, 같은 형식 |
-| 12,13 | 왼/오른 CoupledGripperPositionAction: +1 열기, -1 닫기, 중간값 연속 보간 |
-| 14 | lift target = .25 × action − .25, joint 범위 [-.5,0] |
+| 0:6 | Left wrist arm_l_link7, base-frame position delta 3 + axis-angle rotation delta 3 |
+| 6:12 | Right wrist arm_r_link7, same format |
+| 12,13 | Left/right CoupledGripperPositionAction: +1 open, -1 close, continuous interpolation between |
+| 14 | lift target = .25 × action − .25, joint range [-.5,0] |
 
-기존 `StandbyPostureIKAction`/DLS/relative pose/scale=.3을 그대로 사용한다.
-`arm_action.py`의 null-space standby 보정과 관절 제한 회피도 그대로 남는다.
-그리퍼 joint target은 open=0, closed=1.10이며 단순 bool action이 아니다.
-테스트 실행기는 action 이름/차원/IK 설정을 assert하고, 기존
-`action_to_target_eef_pose` ↔ `target_eef_pose_to_action` round-trip을 비영(非零) 샘플로 검사한다.
-이 샘플 action은 로봇에 적용하지 않는다.
+Existing `StandbyPostureIKAction`/DLS/relative pose/scale=.3 is used unchanged.
+Null-space standby correction and joint-limit avoidance in `arm_action.py` remain unchanged.
+Gripper joint targets are open=0, closed=1.10, not simple Boolean actions.
+The test launcher asserts action names/dimensions/IK settings and checks the existing
+`action_to_target_eef_pose` ↔ `target_eef_pose_to_action` round trip with a nonzero sample.
+This sample action is not applied to the robot.
 
-## 입력 선택과 상태 표시
+## Input Selection and Status Display
 
-`input.js`는 아래 규칙을 적용한다.
+`input.js` applies these rules:
 
-1. `source.hand`가 있거나 profiles 중 `hand`가 포함된 이름이 있으면 제외. `meta-fixed-hand`도 제외.
-2. **`meta-quest-touch-plus`가 profiles에 있어야 허용**. 다른 controller fallback만 있는 경우도 현재는 거부.
-3. tracked-pointer, xr-standard gamepad, 실제 grip pose, !emulatedPosition, visible 세션 검사.
-4. 같은 handedness 후보를 각각 새 객체로 평가한다. 유효 Touch Plus 우선, 복수 유효 소스는 안정적인 source ID 순.
-5. 유효 소스가 없으면 선택된 무효 후보의 reason만 표시하며 이전 pose/button을 섞지 않는다.
-   후보 요약 `candidates`와 선택된 `source_id`를 로그에서 확인할 수 있다.
+1. Reject sources with `source.hand` or a profile name containing `hand`, including `meta-fixed-hand`.
+2. **Require `meta-quest-touch-plus` in profiles**. Sources with only other controller fallbacks are currently rejected too.
+3. Check tracked-pointer, xr-standard gamepad, an actual grip pose, !emulatedPosition, and a visible session.
+4. Evaluate each same-handedness candidate as a fresh object. Prefer valid Touch Plus; break ties by stable source ID.
+5. If none is valid, display only the selected invalid candidate's reason without mixing in previous poses/buttons.
+   Candidate summaries `candidates` and selected `source_id` are available in logs.
 
-Python 수신기와 제어 어댑터도 프로필을 다시 검사한다. 구버전 페이지에서 손 프로필을 valid=true로 보내도
-서버가 valid=false로 바꾸고 pose/button을 지운다.
+The Python receiver and control adapter recheck profiles. Even if an old page sends a hand profile as valid=true,
+the server changes it to valid=false and clears poses/buttons.
 
-HUD의 왼손/오른손 패널: 초록=유효 입력, 밝은 초록=버튼 pressed, 황색=무효 입력과 reason.
-COMM은 별도: ACK OK / 응답 지연 / HTTP 오류. 초록 입력 패널만으로 통신 정상 또는 로봇 활성화를 뜻하지 않는다.
-손 입력 제외, profile 거부, grip pose 없음, emulated position, visibility 등의 원인을 문자열로 표시한다.
+HUD left/right panels: green=valid input, bright green=button pressed, yellow=invalid input with reason.
+COMM is separate: ACK OK / delayed response / HTTP error. A green input panel alone does not imply healthy communication or active robot control.
+Hand exclusion, profile rejection, missing grip pose, emulated position, visibility, and other reasons are displayed as strings.
 
-서버 `communication=receiving`은 최근 패킷 도착을 뜻한다.
-`live=true`는 최근 250ms 내 패킷 + visibility=visible이며, 양손 valid와 별개다.
-입력/preview 유효→무효 전환 및 수신 공백은 `safety_epoch`에 남겨 시뮬레이터가 짧은 손실 프레임을 건너뛰어도
-복귀 직후 버튼 release가 필요하도록 했다. 실제 입력 소스 교체도 재기준화한다.
+Server `communication=receiving` indicates recent packet arrival.
+`live=true` means a packet within 250 ms plus visibility=visible, independently of both hands being valid.
+Input/preview valid→invalid transitions and receipt gaps increment `safety_epoch`, requiring button release after recovery
+ even if the simulator skips a brief loss frame. Actual input-source replacement also reanchors control.
 
-## 제어 방식과 제한
+## Control Method and Limits
 
-- CPU 어댑터의 pose는 **로봇 root/base 기준 손목 위치와 xyzw quaternion**이다.
-  Isaac의 wxyz를 입력/출력 경계에서 바꾼다. 손가락 TCP offset을 새로 추가하지 않는다.
-- WebXR는 local-floor metre 좌표: +X 오른쪽, +Y 위, -Z 정면.
-- 초기/재기준 시 헤드셋 정면을 바닥 평면에 투영하여 사용자 forward/right를 구한다.
-  사용자 forward→로봇 +X, 사용자 left→로봇 +Y, 위→로봇 +Z.
-  헤드셋이 기본 정면이면 `(xr_x,xr_y,xr_z) → (-xr_z,-xr_x,xr_y)`.
-- 양손 squeeze를 모두 놓고 로봇의 정면으로 삼을 방향을 보면 초기 기준을 설정한다.
-  이후 머리 회전은 제어 좌표계를 계속 회전시키지 않는다.
-- 각 손 squeeze를 새로 누르는 순간 controller pose와 유지 중인 robot target을 anchor로 잡는다.
-  그 순간에는 이동하지 않는다. 이후 anchor 대비 이동 × **0.25**, 회전 × **0.5**를 적용한다.
-  회전은 `q_current × inverse(q_anchor)`의 shortest axis-angle을 같은 기저로 변환 후 robot anchor에 왼쪽 곱한다.
-- 목표 범위: 초기 안정화된 손목에서 반경 **5cm**, 초기 방향에서 **15도**. 여러 번 clutch/rebase해도 범위는 누적 확장되지 않는다.
-- IK action은 매 step 측정 자세와 유지 목표의 오차를 구해 `.3`으로 나눈다.
-  오차 보정은 **0.05m/s**, **0.5rad/s**에 해당하는 step별 한도로 제한한다.
-  25Hz라면 1 step 최대 2mm / .02rad 보정이다. 실제 손목 속도를 보장하는 물리 속도 제한은 아니다.
-- 버튼 해제/추적 손실/250ms 수신 공백/1초 이상 오래된 화면/시뮬레이션 loop 지연 시 **마지막 목표 유지**.
-  zero action을 반복해서 목표가 현재 자세로 떠다니게 하지 않는다.
-  기존 IK servo가 유지 목표로 수렴하거나 null-space 자세를 보정하는 움직임은 남을 수 있다.
-- 복귀/새 session/새 source/reference reset/server 교체 시 squeeze를 놓았다 다시 눌러 새 anchor 설정.
-  1 sample 이동 >20cm 또는 회전 >60도도 동작 중단 후 release 요구.
-- 목표와 실제 손목 위치 차이가 8cm를 넘으면 실행기를 종료한다.
-- 리프트는 초기 관절 위치에 대응하는 action으로 고정한다. 스틱/베이스 이동 없음.
-- 원래 termination/timeout은 유지한다. 발생하면 기록을 마감하고 환경의 원래 reset 동작 후 WAITING으로 전환한다.
-  WAITING에서는 render만 수행한다. `--keep-open`이면 X/n으로 다음 에피소드를 시작할 때까지 앱을 유지한다.
+- CPU-adapter poses are **wrist positions and xyzw quaternions relative to the robot root/base**.
+  Isaac wxyz is converted at input/output boundaries. No new fingertip TCP offset is added.
+- WebXR uses local-floor coordinates in metres: +X right, +Y up, -Z forward.
+- Initial/reanchoring projects headset forward onto the floor plane to obtain user forward/right.
+  User forward→robot +X, user left→robot +Y, up→robot +Z.
+  With the headset facing the default direction: `(xr_x,xr_y,xr_z) → (-xr_z,-xr_x,xr_y)`.
+- Release both squeezes and look in the direction to use as robot forward to establish the initial reference.
+  Subsequent head rotation does not continuously rotate the control frame.
+- A new squeeze press anchors that controller pose and the held robot target.
+  There is no motion at anchoring. Subsequent anchor-relative translation is scaled by **0.25**, rotation by **0.5**.
+  Rotation uses the shortest axis-angle of `q_current × inverse(q_anchor)`, transformed into the same basis and left-multiplied onto the robot anchor.
+- Target bounds: radius **5 cm** from the initially settled wrist and **15°** from its initial orientation. Repeated clutch/rebase does not expand these bounds cumulatively.
+- Each step computes IK action from the measured-pose error to the held target, divided by `.3`.
+  Error correction is limited per step to the equivalent of **0.05 m/s**, **0.5 rad/s**.
+  At 25 Hz, this is at most 2 mm / .02 rad per step. It is not a physical velocity limit guaranteeing actual wrist velocity.
+- Button release/tracking loss/250 ms receipt gaps/video older than 1 second/simulation-loop delays **hold the last target**.
+  Repeated zero actions do not let the target drift with the measured pose.
+  Existing IK servo convergence toward the held target or null-space posture correction may still produce motion.
+- Recovery/new session/new source/reference reset/server replacement requires squeeze release and re-engagement for a new anchor.
+  A single-sample jump >20 cm or rotation >60° also interrupts control and requires release.
+- The launcher exits if target-to-measured wrist position error exceeds 8 cm.
+- Lift is fixed using the action corresponding to its initial joint position. No thumbstick/base motion.
+- Original termination/timeout remain. On occurrence, recording finalizes, the environment performs its original reset, then enters WAITING.
+  WAITING renders only. With `--keep-open`, the app remains open until X/n starts another episode.
 
-| 버튼 | 역할 |
+| Button | Function |
 |---|---|
-| 각 손 중지 squeeze, buttons[1] | 그 손 clutch. 값 >=.8 활성, <.2 완전히 놓음/재활성 준비 |
-| 각 손 검지 trigger, buttons[0] | `--enable-grippers`에서만: squeeze 중 +1−2×trigger값으로 열기/닫기 |
-| 오른손 B / 왼손 Y, buttons[5] | 양손 squeeze를 놓은 상태에서 정면 기준 재설정; 로봇/환경 reset 아님 |
-| 왼손 X, buttons[4] / 터미널 n+Enter | WAITING에서 같은 시나리오 reset 후 시작. RUNNING에서는 무시 |
-| 오른손 A, buttons[4] / 터미널 s+Enter | RUNNING에서 기록 마감 후 WAITING. 기록 옵션이 없으면 저장 없이 대기 |
-| thumbstick | 로봇 명령 없음. 스틱 실기 미검증 |
+| Each hand's middle-finger squeeze, buttons[1] | That hand's clutch. Value >=.8 activates; <.2 fully releases/rearms |
+| Each hand's index trigger, buttons[0] | Only with `--enable-grippers`: while squeezing, open/close via +1−2×trigger value |
+| Right B / left Y, buttons[5] | Reset forward reference with both squeezes released; not a robot/environment reset |
+| Left X, buttons[4] / terminal n+Enter | Reset the same scenario and start from WAITING. Ignored while RUNNING |
+| Right A, buttons[4] / terminal s+Enter | Finalize recording from RUNNING and enter WAITING. Without recording options, wait without saving |
+| thumbstick | No robot command. Unverified on the headset |
 
-버튼 인덱스는 [공식 WebXR input profile](https://github.com/immersive-web/webxr-input-profiles/blob/main/packages/registry/profiles/meta/meta-quest-touch-plus.json)에 맞춘다.
-사용자의 A/X/trigger 입력은 확인되었지만 **squeeze와 B/Y 매핑은 새 테스트 전에 로그로 확인**한다.
-첫 실행은 `--enable-grippers`를 주지 않아 그리퍼를 열린 상태로 고정한다.
+Button indices follow the [official WebXR input profile](https://github.com/immersive-web/webxr-input-profiles/blob/main/packages/registry/profiles/meta/meta-quest-touch-plus.json).
+The user's A/X/trigger inputs were confirmed, but **verify squeeze and B/Y mappings in logs before a new test**.
+For the first run, omit `--enable-grippers` to keep grippers open.
 
-## 연결 구조와 카메라
+## Connection Architecture and Cameras
 
 ```text
-Quest HTTPS → 인증된 Python 입력 서버 → 로컬 input.json → Isaac Sim test → 기존 15D IK
+Quest HTTPS → authenticated Python input server → local input.json → Isaac Sim test → existing 15D IK
                          ↑                     ↓
-                   /preview.jpg ← FRONT OVERVIEW + head/left wrist/right wrist 합성 JPEG
+                   /preview.jpg ← composite JPEG of FRONT OVERVIEW + head/left wrist/right wrist
 ```
 
-`--bridge-dir`을 주지 않은 서버는 로봇용 IPC를 쓰지 않는다.
-IPC 디렉터리는 사용자 전용, input.json은 0600 atomic replace. Linux monotonic 수신시각을 사용한다.
-기본 host-network Docker는 호스트와 monotonic clock을 공유한다. 별도 time namespace는 지원하지 않는다.
-같은 디렉터리의 입력 서버/시뮬레이터 중복 실행을 각각 flock으로 막는다.
+A server without `--bridge-dir` does not write robot IPC.
+The IPC directory is user-only; input.json uses 0600 atomic replacement and Linux monotonic receipt timestamps.
+Default host-network Docker shares the host monotonic clock. Separate time namespaces are unsupported.
+Separate flock locks prevent duplicate input-server/simulator instances using the same directory.
 
-약 5Hz의 합성 화면 위에는 관찰용 FRONT OVERVIEW, 아래에는 기존 244×244 세 카메라를 표시한다.
-기존 세 카메라와 학습 관측은 유지한다. overview는 학습 RGB에 저장하지 않으며 replay 영상에서 저장 상태로 재렌더링한다.
-헤드셋의 정면 고정 패널이며 **입체 CloudXR 스트리밍이 아니다**. GPU→CPU JPEG 변환 비용이 있다.
-HTTP 이미지 age와 요청시간을 고려해 1초 이상 오래된 영상이면 화면/조작을 무효화한다.
-서버 종료/영상 중단 때도 시뮬레이션은 마지막 손목/그리퍼 목표를 유지한다.
-preview.jpg는 root Docker writer와 호스트 reader 간 공유를 위해 0644, 외부 디렉터리는 기본 0700이다.
+The approximately 5 Hz composite displays observational FRONT OVERVIEW above the three existing 244×244 cameras.
+The three existing cameras and training observations are retained. Overview is not stored as training RGB; replay video rerenders saved states.
+This is a head-fixed panel, **not stereoscopic CloudXR streaming**. GPU→CPU JPEG conversion has a cost.
+HTTP image age and request duration invalidate display/control when video is older than 1 second.
+On server shutdown/video interruption, simulation retains the last wrist/gripper targets.
+preview.jpg uses 0644 for sharing between the root Docker writer and host reader; the enclosing directory defaults to 0700.
 
-## 실행 전 GPU 작업 확인
+## Check GPU Jobs Before Running
 
-실행 명령과 버튼 순서는 이 문서 상단의 **Operator B 첫 시나리오: 현재 실행 절차**를 사용한다.
-이전의 `--headless --duration 180`만 사용한 명령은 B 시나리오 선택·기록·무기한 대기를 지정하지 않으므로 이 목표에 사용하지 않는다.
+Use the execution commands and button sequence under **Operator B First Scenario: Current Procedure** above.
+The older command using only `--headless --duration 180` does not select the B scenario, recording, or indefinite waiting and is unsuitable for this objective.
 
 ```bash
 nvidia-smi
@@ -358,28 +358,28 @@ docker ps --format '{{.Names}} {{.Image}} {{.Status}}'
 docker top cyclo_lab
 ```
 
-시나리오 배치/다른 Isaac Sim이 실행 중이면 새 시뮬레이터를 중복 실행하지 않는다.
-이 세션의 NVIDIA/Docker 접근 실패는 연구실 PC 드라이버 고장을 뜻하지 않는다.
-현재 서버와 페이지의 build가 같으면 이번 문서 정리만을 위해 서버를 재시작할 필요는 없다.
+Do not start a duplicate simulator while scenario batches/other Isaac Sim jobs are running.
+NVIDIA/Docker access failure in this session does not imply a driver failure on the lab PC.
+If server and page builds already match, document cleanup alone does not require a server restart.
 
-## PIN 재입력이 필요한 시점
+## When PIN Re-entry Is Required
 
-코드 수명과 인증 세션 수명은 다르다. PIN은 5분/5회/1회 사용,
-인증 쿠키와 서버 token은 **페어링 시점부터 8시간**이며 활동할 때마다 연장하지 않는다.
-쿠키는 Secure, HttpOnly, SameSite=Strict, Max-Age=28800; token 목록은 서버 메모리에만 있다.
+Code lifetime differs from authentication-session lifetime. PIN limits: 5 minutes/5 attempts/one use;
+authentication cookies and server tokens last **8 hours from pairing**, without extension on activity.
+Cookies use Secure, HttpOnly, SameSite=Strict, Max-Age=28800; tokens exist only in server memory.
 
-| 상황 | PIN 재입력 |
+| Situation | PIN re-entry |
 |---|---|
-| 같은 연결에서 다음 시연/시뮬레이션 시작 | 원칙적으로 불필요. 입력 서버와 8시간 인증이 유지되어야 함. X/n으로 다음 기록 시작 가능 |
-| Quest 페이지 새로고침 또는 VR 종료 후 재진입 | 원칙적으로 불필요. 쿠키/서버 token 유지 시 자동 확인. VR 기준과 clutch는 새로 설정 |
-| 브라우저 종료 후 다시 실행 | 일반 창에서 영속 쿠키가 보존되고 8시간 이내면 불필요. 비공개 창/쿠키 삭제/브라우저 정책으로 지워졌으면 필요 |
-| PC **입력 서버** 재시작 | **필요**. 기존 쿠키가 남아도 새 서버 메모리에 token이 없음. 인증서 재사용과 무관 |
-| Isaac Sim 테스트 실행기만 재시작 | 입력 서버가 그대로면 불필요. 로봇 기준/초기 위치는 새 실행에서 재설정 |
+| Next demonstration/simulation on the same connection | Normally unnecessary if the input server and 8-hour authentication remain valid. X/n can start the next recording |
+| Quest page reload or VR exit/re-entry | Normally unnecessary with retained cookie/server token. VR reference and clutch must be re-established |
+| Browser exit/restart | Unnecessary within 8 hours if a normal window retains the persistent cookie. Required if private-window behavior, cookie deletion, or browser policy removes it |
+| PC **input server** restart | **Required**: the new server has no token even if the cookie remains. Independent of certificate reuse |
+| Isaac Sim test launcher restart only | Unnecessary if the input server is unchanged. Robot reference/initial pose reset in the new run |
 
-8시간 만료, 새 브라우저 프로필, PC IP 변경, 쿠키 삭제 또는 8개 인증 세션 제한으로 오래된 token 제거 시에도 필요하다.
-서버 터미널 `p`는 새 PIN만 만들며 기존 인증 세션을 즉시 취소하지 않는다.
+Also required after 8-hour expiry, a new browser profile, PC IP change, cookie deletion, or eviction of an old token under the 8-session limit.
+Server-terminal `p` generates only a new PIN; it does not immediately revoke existing sessions.
 
-## 검증과 남은 작업
+## Validation and Remaining Work
 
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
@@ -387,86 +387,86 @@ python3 -m unittest discover -s scripts/quest_diagnostic -p 'test_*.py' -v
 python3 -m py_compile scripts/quest_diagnostic/*.py
 ```
 
-현재 Python CPU 테스트 57개(Quest 43 + metadata 6 + scenario loader 8): 기존 인증/TLS/수신기 + hand 차단, bridge timeout/손실 epoch,
-좌표 및 head yaw/회전 변환, 양팔 독립, clutch/재연결/rebase, loop stall/영상 손실,
-workspace/회전/action 보정 범위, 선택적 그리퍼/lift 고정.
-`test_input.js`의 10개 소스 선택 테스트는 V8에서 실행했다.
-preview client의 HTTP 실패/디코딩 실패/그리기 확인/만료를 모의 API로 8개 테스트했다.
-실제 WebGL texture 렌더링 및 Quest의 화면 표시는 확인이 필요하다.
-**사용자 실행에서 환경 초기화/READY와 실제 카메라 JPEG 생성은 확인했다. 새 HUD 표시/영상 확인 전달/양팔 동작은 검증 대기**다.
+Current Python CPU tests: 57 (Quest 43 + metadata 6 + scenario loader 8), covering authentication/TLS/receiver, hand rejection, bridge timeout/loss epochs,
+coordinate/head-yaw/rotation transforms, independent arms, clutch/reconnection/rebase, loop stalls/video loss,
+workspace/rotation/action-correction bounds, optional grippers, and fixed lift.
+The 10 source-selection tests in `test_input.js` ran in V8.
+Eight mocked-API tests covered preview-client HTTP/decode failures, draw confirmation, and expiry.
+Actual WebGL texture rendering and Quest display still require verification.
+**The user's run confirmed environment initialization/READY and actual camera JPEG generation. New HUD display/video confirmation/bimanual behavior await validation.**
 
-기존 README_TOAST.md 사용자 변경, 환경 정의, 물리/보상/성공 조건, 시나리오 정의를 수정하지 않았다.
-현재 연결 파일: `scripts/quest_diagnostic/teleop_toast.py`, `episode_control.py`, `diagnostic_recorder.py`,
+Existing user changes to README_TOAST.md, environment definitions, physics/rewards/success criteria, and scenario definitions were untouched.
+Currently integrated files: `scripts/quest_diagnostic/teleop_toast.py`, `episode_control.py`, `diagnostic_recorder.py`,
 `index.html`/`hud.js`, `scripts/tools/toast_overview.py`, `toast_recording_metadata.py`,
-`replay_demos.py`, `replay_video.py` 및 CPU 테스트.
+`replay_demos.py`, `replay_video.py`, and CPU tests.
 
-기존 ActionStateRecorderManagerCfg를 연결했으며 initial_state, states, actions, processed_actions,
-policy obs(기존 세 카메라 포함), toast_cycle, step별 wall/simulation 시간을 저장한다.
-Quest raw 입력은 저장하지 않는다. 실제 GPU 저장·재생은 검증 대기다.
+The existing ActionStateRecorderManagerCfg is connected, recording initial_state, states, actions, processed_actions,
+policy obs (including the three existing cameras), toast_cycle, and per-step wall/simulation times.
+Raw Quest input is not recorded. Actual GPU recording/replay await validation.
 
-## 과거 진단 기록: 영상 미표시 조사와 preview-v3 수정 (2026-11-02)
+## Historical Diagnostics: Missing Video and preview-v3 Fix (2026-11-02)
 
-아래는 당시 증거와 문제 해결 기록이다. 현재 카메라 구성·실행 명령·조작은 상단의 B 시나리오 절차를 따른다.
+The following records evidence and troubleshooting at that time. For current cameras/commands/control, use the B-scenario procedure above.
 
-### 확인된 증거와 한계
+### Confirmed Evidence and Limitations
 
-- 조사 시 `logs/quest_teleop/preview.jpg`는 732×280 JPEG, 13,661 bytes, 0644,
-  sandbox에서 uid/gid 65534(nobody/nogroup)로 보였다. 파일을 직접 열어 토스터/로봇 영상을 확인했다.
-  따라서 적어도 마지막 JPEG의 RGB 생성·인코딩·호스트 읽기까지는 성공했다.
-- `args.enable_cameras=True`가 AppLauncher 생성 전에 설정된다. 체크아웃된 Lab app_launcher.py는
-  headless+enable_cameras에서 `isaaclab.python.headless.rendering.kit`을 선택한다.
-  headless 자체가 카메라를 끄는 구성이 아니며 실제 JPEG도 이를 뒷받침한다.
-- `input.json`에는 visibility=visible이지만 `preview_ok`, `head_quaternion_xyzw`가 없었다.
-  이 필드들은 직전 페이지의 매 XR frame 패킷에 항상 들어가므로 **예전 진단 페이지가 계속 실행 중인 정황**이다.
-  사용자가 본 '초록 네모만 있음'도 이전 scissor-only 렌더링과 일치한다.
-- 기존 make_handler는 HTML을 서버 시작 시 한 번 읽었다. `Cache-Control: no-store`가 있어도 이미 열린
-  탭의 실행 중 JavaScript를 교체하지 않으며, 이전 서버의 메모리에 든 HTML도 바꾸지 않는다.
-  브라우저 캐시인지, 열린 탭인지, 오래된 서버 페이지인지는 당시 served HTML에 접근하지 못해 확정할 수 없다.
-- 기존에는 preview 메타데이터/HTTP 카운터가 없었다. 남은 JPEG 하나로 연속 갱신 주기나 당시 HTTP 200,
-  이미지 디코딩/VR 표시 성공까지 증명하지 않는다.
-- Docker inspect와 HTTPS 직접 조회는 이 세션에서 실패했다. 현행 컨테이너 mount와 서버 프로세스 UID의
-  직접 검증은 남았다. 그러나 사용자 로그의 live:true와 호스트 JPEG 존재는 양방향 파일 공유 성공의 근거다.
-- 실행기가 셸로 돌아온 것은 --duration 180에 따른 종료일 수 있다. 마지막 exit code/종료 로그가 없으므로
-  정확한 종료 원인은 단정하지 않는다. 남은 JPEG는 기존 finally의 삭제가 실제 수행됐다는 증거가 아니다.
+- During inspection, `logs/quest_teleop/preview.jpg` was a 732×280 JPEG, 13,661 bytes, mode 0644,
+  appearing as uid/gid 65534(nobody/nogroup) in the sandbox. Opening it confirmed toaster/robot imagery.
+  Thus at least the final JPEG's RGB generation, encoding, and host read succeeded.
+- `args.enable_cameras=True` is set before AppLauncher construction. The checked-out Lab app_launcher.py
+  selects `isaaclab.python.headless.rendering.kit` for headless+enable_cameras.
+  Headless does not itself disable cameras; the actual JPEG supports this.
+- `input.json` had visibility=visible but lacked `preview_ok` and `head_quaternion_xyzw`.
+  The immediately preceding page always included these fields in every XR-frame packet, indicating **an older diagnostic page remained active**.
+  The user's “only green squares” observation also matched the previous scissor-only rendering.
+- Existing make_handler read HTML once at server startup. `Cache-Control: no-store` does not replace JavaScript
+  running in an already open tab or HTML retained in the old server's memory.
+  Browser cache, an open tab, and an old server page could not be distinguished without access to the served HTML.
+- No preview metadata/HTTP counters existed. A single remaining JPEG cannot establish continuous update rate, HTTP 200 at the time,
+  image decoding, or successful VR display.
+- Docker inspect and direct HTTPS queries failed in this session. Actual container mounts and server-process UID
+  remain to be verified. However, live:true in user logs and a host JPEG support successful bidirectional file sharing.
+- Returning to the shell may reflect --duration 180 expiry. Without a final exit code/shutdown log,
+  the exact exit cause is unknown. A remaining JPEG does not prove the previous finally deletion executed.
 
-### preview_not_live 판정과 강화한 경로
+### preview_not_live Decision and Strengthened Path
 
-기존 control.py는 `live=true`, loop gap 없음, `packet.get('preview_ok',False)==false`이면
-`preview_not_live`를 출력했다. **필드가 아예 없어도 false**이다. 입력 수신 live와 영상 live는 별개다.
-기존 페이지는 HTTP 200→createImageBitmap 성공→유효기간 1초 + viewer 존재만으로 preview_ok를 보냈으며
-그리기 성공 자체는 확인하지 않았다. 비200/디코딩 예외도 화면 밖에서 숨겨졌다.
+Previously, control.py reported `preview_not_live` when `live=true`, there was no loop gap,
+and `packet.get('preview_ok',False)==false`. **A missing field also means false.** Input liveness and video liveness are distinct.
+The previous page sent preview_ok based only on HTTP 200→successful createImageBitmap→1-second freshness plus viewer presence,
+without checking draw success. Non-200/decode exceptions were also hidden offscreen.
 
-수정 경로:
+Updated path:
 
-1. 생산자: `preview.jpg` + `preview.json`에 run_id/frame_id, monotonic capture 시각,
-   SHA-256/크기, RGB shape/dtype/min/max/mean/std, step 시간/프레임 간격을 남긴다.
-   메타데이터를 commit record로 마지막에 쓰고 읽는 쪽은 hash/신선도를 확인한다.
-2. 서버: 인증된 `/preview.jpg`에서 JPEG + age/frame/run 헤더를 반환한다.
-   bridge 미설정, 파일 없음, 권한 오류, 오래된 프레임, 생산자 종료, publication 경합을
-   HTTP 503 JSON reason으로 구분한다. 401도 요청 카운터에 남긴다.
-3. 브라우저: HTTP/디코딩 상태·오류와 received/decoded/drawn 카운터, frame/run ID를 표시·전송한다.
-   숨기는 catch 대신 `fetch_or_decode_error`, `http_error`, `draw_error`를 남긴다.
-4. HUD: 새 이미지면 즉시 texture 업로드한다. WebGL context/error를 검사하고 view draw 제출이 성공한
-   **다음에** preview_ok를 보낸다. 이미지가 1초 이상 오래되면 여전히 false.
-5. 서버: client protocol/build 일치, 유효한 producer run/frame과 `draw_submitted` 확인을 추가한다.
-   이를 통과한 preview_ok만 로컬 IPC에 전달한다. 구버전 client는 입력 로그를 받더라도 로봇은 hold한다.
+1. Producer: `preview.jpg` + `preview.json` record run_id/frame_id, monotonic capture time,
+   SHA-256/size, RGB shape/dtype/min/max/mean/std, step duration/frame interval.
+   Metadata is written last as the commit record; readers verify hash/freshness.
+2. Server: authenticated `/preview.jpg` returns JPEG with age/frame/run headers.
+   Missing bridge configuration/file, permission errors, stale frames, producer shutdown, and publication races
+   have distinct HTTP 503 JSON reasons. Requests returning 401 are counted too.
+3. Browser: displays/transmits HTTP/decode status/errors, received/decoded/drawn counters, and frame/run IDs.
+   Instead of silent catches, it records `fetch_or_decode_error`, `http_error`, and `draw_error`.
+4. HUD: uploads new images immediately, checks WebGL context/errors, and sends preview_ok only **after**
+   successful view-draw submission. Images older than 1 second still produce false.
+5. Server: additionally checks client protocol/build, valid producer run/frame, and `draw_submitted` confirmation.
+   Only passing preview_ok reaches local IPC. Old clients leave the robot holding even if input logs arrive.
 
-`draw_submitted`는 소프트웨어가 WebGL 그리기를 제출했다는 의미다. 실제 사용자의 눈에 영상이 보였다는
-증명은 아니므로 **Quest 화면의 직접 확인은 필수**다. 영상 보호 조건은 완화하지 않았다.
-생산자가 종료하면 JPEG는 조사용으로 보존하되 metadata=stopped로 무효화한다.
-강제 종료로 stopped 기록이 없더라도 기존 1초 freshness 제한으로 거부한다.
+`draw_submitted` means software submitted a WebGL draw, not proof that the user saw the image.
+Therefore **direct Quest display inspection is required**. Video-protection conditions were not relaxed.
+On producer exit, JPEG is preserved for diagnostics but invalidated with metadata=stopped.
+Even without a stopped record after forced exit, the existing 1-second freshness limit rejects it.
 
-### 적용 절차와 정확한 영상 전용 실행 명령
+### Application Procedure and Exact Preview-Only Command
 
-1. 기존 입력 서버를 수정 작업 중 종료하지 않았다. 적용할 때 사용자가 **그 입력 서버 터미널만** Ctrl+C하고
-   위의 `server.py --host ... --port ... --bridge-dir ...` 명령으로 재시작한다.
-2. Quest에서 VR을 나와 기존 진단 탭을 닫고 Browser에서 **`https://192.168.10.116:8765/`**를 다시 연다.
-   PC의 `SERVER BUILD: preview-v3-…`와 페이지의 **CLIENT BUILD**가 정확히 같아야 한다.
-   `/version`에서도 server_build와 disk_build를 확인할 수 있다. 다르면 VR 진입 버튼이 활성화되지 않는다.
-   새 서버이므로 PIN을 다시 입력한다. 버전 query와 no-store를 사용하고 HTML은 GET마다 읽는다.
-3. 다른 GPU/시나리오 작업이 없는지 확인한 다음 아래 **영상 전용** 테스트를 실행한다.
-   이 모드는 controller.update를 호출하지 않아 사용자 입력으로 목표를 바꾸지 않는다.
-   기존 IK로 초기 자세를 유지하는 물리 안정화 움직임은 있을 수 있다.
+1. The existing input server was not stopped during development. To apply the change, the user Ctrl+C's **only that input-server terminal**
+   and restarts it with the above `server.py --host ... --port ... --bridge-dir ...` command.
+2. Exit VR, close the old diagnostic tab, and reopen **`https://192.168.10.116:8765/`** in Quest Browser.
+   PC `SERVER BUILD: preview-v3-…` must exactly match the page's **CLIENT BUILD**.
+   `/version` also exposes server_build and disk_build. A mismatch disables VR entry.
+   Re-enter the PIN for the new server. Version queries and no-store are used; HTML is read on every GET.
+3. Check for other GPU/scenario jobs, then run the **preview-only** test below.
+   This mode does not call controller.update, so user input does not change targets.
+   Existing IK may still produce physical settling motion while holding the initial pose.
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab \
@@ -475,11 +475,11 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab \
   --headless --preview-only --duration 180
 ```
 
-4. Quest에서 Enter VR. **버전 문구, COMM, 좌우 상태, 실제 3개 카메라 영상**이 보여야 한다.
-   PC에 CAMERA FIRST FRAME이 나오고, 서버의 preview_http.sent 증가,
-   client preview_status의 decoded/drawn 증가와 stage=draw_submitted를 각각 확인한다.
-   input.json의 최종 preview_ok=true, preview_guard_reason=ok까지 확인한다.
-5. 영상이 보이지 않으면 보호 조건을 우회하지 말고, 실행 중 별도 PC 터미널에서 아래 읽기 전용 진단을 실행한다.
+4. Enter VR on Quest. **Version text, COMM, left/right status, and actual images from 3 cameras** should be visible.
+   Check PC CAMERA FIRST FRAME, increasing server preview_http.sent,
+   and increasing client preview_status decoded/drawn counters with stage=draw_submitted.
+   Also check final preview_ok=true and preview_guard_reason=ok in input.json.
+5. If video is missing, do not bypass protection conditions. Run the read-only diagnostics below in another PC terminal while running.
 
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
@@ -491,45 +491,45 @@ docker exec -w /workspace/cyclo_lab cyclo_lab \
   --bridge-dir /workspace/cyclo_lab/logs/quest_teleop
 ```
 
-같은 producer run_id/frame_id(갱신 중이면 근접한 번호)와 JPEG 크기/메타데이터가 보이면 경로 공유를 확인할 수 있다.
-모든 파일에 대해 uid/gid/mode와 읽기 오류를 보고한다. 서버는 server_status.json에 최신 진단을 남긴다.
+Matching producer run_id/frame_id (or nearby frame IDs during updates), JPEG size, and metadata establish shared paths.
+UID/gid/mode and read errors are reported for every file. The server records current diagnostics in server_status.json.
 
-| 관찰 | 실패 구간 |
+| Observation | Failure stage |
 |---|---|
-| CAMERA FIRST FRAME 없음 / preview metadata 없음 | 시뮬레이터 RGB/인코딩/파일쓰기 확인 |
-| producer=ok, HTTP requests=0 | 열린 페이지가 새 버전인지, VR 세션/페어링/preview poll 실행 확인 |
-| HTTP last=file_missing/permission_denied | 서버 bridge 경로·권한 |
-| HTTP last=frame_stale | 생산 갱신/성능. step_ms와 frame_interval_ms 확인, 보호 시간 늘리지 않음 |
-| HTTP sent 증가, decoded=0 | HTTP 응답 수신/이미지 decode 오류 확인 |
-| decoded 증가, drawn=0 | viewer/WebGL texture 업로드·그리기 오류 확인 |
-| drawn 증가, preview_guard_reason 오류 | client/server build, run/frame, metadata freshness 확인 |
-| preview_ok=true지만 눈에 안 보임 | 실제 HUD/양안 표시 조사 필요. 그리기 제출 성공과 가시성은 다름 |
+| No CAMERA FIRST FRAME / no preview metadata | Check simulator RGB/encoding/file writes |
+| producer=ok, HTTP requests=0 | Check new page version, VR session/pairing/preview polling |
+| HTTP last=file_missing/permission_denied | Server bridge path/permissions |
+| HTTP last=frame_stale | Producer updates/performance. Check step_ms and frame_interval_ms; do not extend protection timeout |
+| HTTP sent increases, decoded=0 | Check HTTP response receipt/image decoding errors |
+| decoded increases, drawn=0 | Check viewer/WebGL texture upload/draw errors |
+| drawn increases, preview_guard_reason error | Check client/server build, run/frame, metadata freshness |
+| preview_ok=true but nothing visible | Investigate actual HUD/binocular display. Draw submission and visibility are distinct |
 
-이번 수정은 CPU 테스트와 mock HTTP/JS까지만 검증했다. GPU를 중복 실행하거나 실제 Quest에 접속하지 않았다.
-영상 전용 확인을 마치기 전에는 --preview-only를 빼고 양팔 테스트를 진행하지 않는다.
+This change was validated only with CPU tests and mocked HTTP/JS. No duplicate GPU job or actual Quest connection was started.
+Do not remove --preview-only for bimanual testing until preview-only verification is complete.
 
 
-## action replay 첫 프레임 지연 조사 및 demo_8 선택
+## Action Replay First-Frame Delay Investigation and demo_8 Selection
 
-실제 B001_test_001 HDF5의 이름 순서는 demo_0, demo_1, demo_10, demo_2, …이다.
-**목록 인덱스 8은 demo_7, demo_8의 인덱스는 9**이다. 이름 선택을 사용한다.
-원본 demo_8/actions는 [95,15]이며 데이터 파일은 읽기 전용으로 검사했다.
+Actual B001_test_001 HDF5 name ordering is demo_0, demo_1, demo_10, demo_2, ….
+**List index 8 is demo_7; demo_8 is at index 9.** Select by name.
+Original demo_8/actions has shape [95,15]; the dataset was inspected read-only.
 
-기존 비교는 GPU 원소마다 Python 조건문을 실행했고 NaN을 실패로 처리하지 않았다.
-새 비교기는 텐서 필드 전체를 CPU로 옮긴 뒤 NumPy로 벡터 비교한다. 절대 허용오차 .01은 유지하고
-상대 허용오차는 없다. shape/key 불일치 및 NaN/Inf는 실패다. 상세 오차 출력은 길이를 제한한다.
+The previous comparison used a Python condition per GPU element and did not treat NaN as failure.
+The new comparator transfers each tensor field to CPU and compares vectorwise with NumPy. Absolute tolerance .01 is retained,
+with no relative tolerance. Shape/key mismatches and NaN/Inf fail. Detailed error output is length-limited.
 get_state BEGIN/END, compare_states BEGIN/END, compare.cpu_transfer BEGIN/END,
-compare.numpy BEGIN/END가 flush와 elapsed_s를 출력한다. get_state 시간은 호스트 반환까지이며,
-GPU 완료 대기는 cpu_transfer 단계에서 드러날 수 있다. 원래 멈춤 위치는 아직 실기로 확정하지 않았다.
+compare.numpy BEGIN/END flush output and report elapsed_s. get_state timing ends at host return;
+GPU completion waits may appear in cpu_transfer. The original stall location is not yet confirmed at runtime.
 
-이번 환경에서는 Docker 접근이 거부되고 NVML 조회가 실패했다. 격리된 ps로 기존 replay PID를
-확인할 수 없어 프로세스를 종료하거나 새 GPU replay를 실행하지 않았다.
-CPU 단위 테스트 6개와 실제 저장 상태 95프레임/18필드의 자기 비교 및 오차 주입은 통과했다.
-이것은 물리 action replay의 checked=95/mismatched=0 증거가 아니다.
+Docker access was denied and NVML queries failed here. Isolated ps could not identify the existing replay PID,
+so no process was terminated and no new GPU replay was launched.
+Six CPU unit tests and self-comparison/error injection on actual saved states across 95 frames/18 fields passed.
+This is not evidence of physical action replay with checked=95/mismatched=0.
 
-호스트의 기존 replay 터미널에서 해당 replay만 Ctrl+C로 정리하고 종료를 확인한 뒤 실행한다.
-프로세스를 확인해야 한다면 `docker top cyclo_lab -eo pid,ppid,args`로 명령을 대조한다.
-확인되지 않은 PID나 다른 시뮬레이터를 종료하지 않는다.
+In the host's existing replay terminal, stop only that replay with Ctrl+C and confirm exit before running.
+If process identification is needed, compare commands with `docker top cyclo_lab -eo pid,ppid,args`.
+Do not terminate unidentified PIDs or other simulators.
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -539,39 +539,39 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   --num_envs 1 --select_episode_names demo_8 --headless --enable_cameras --validate_states
 ```
 
-기대되는 선택 로그는 `indices=[9] names=['demo_8']`, `EPISODE_LOADED ... frames=95`다.
-완료 기준은 `REPLAY_VALIDATION checked=95 mismatched=0 expected=95`, `APP_CLOSE END`,
-`REPLAY_EXIT status=completed code=0`이다. 비교 실패나 프레임 수 부족은 오류 종료한다.
-중단/예외에서도 진행 카운트를 출력하고 환경·파일·앱 정리를 시도한다.
+Expected selection logs: `indices=[9] names=['demo_8']`, `EPISODE_LOADED ... frames=95`.
+Completion requires `REPLAY_VALIDATION checked=95 mismatched=0 expected=95`, `APP_CLOSE END`,
+and `REPLAY_EXIT status=completed code=0`. Comparison failures or insufficient frames exit with an error.
+Interruptions/exceptions also report progress counts and attempt environment/file/app cleanup.
 
-### 실제 EpisodeData 환경 축 수정 및 프로세스 종료 확인
+### Actual EpisodeData Environment-Axis Fix and Process-Exit Checks
 
-`EpisodeData.get_state()`는 `states[state_index, None]`을 반환한다. 따라서 실제 로더를 통과하면
-저장 상태의 joint_position은 (1,25), root_pose는 (1,7), root_velocity는 (1,6)이다.
-이전 비교기는 runtime에서만 환경 축을 제거해서 전 프레임을 shape mismatch로 판단했다.
-기존 직접 HDF5 배열 인덱싱 CPU 테스트는 이 로더 동작을 재현하지 못했다.
+`EpisodeData.get_state()` returns `states[state_index, None]`. After the actual loader,
+saved joint_position is (1,25), root_pose (1,7), and root_velocity (1,6).
+The previous comparator removed the environment axis only from runtime data, marking every frame as a shape mismatch.
+Earlier CPU tests directly indexing HDF5 arrays did not reproduce this loader behavior.
 
-replay 호출에 `dataset_has_single_env_axis=True`를 명시하고 다음 조건을 모두 확인한 뒤
-저장 상태의 첫 축만 `[0]`으로 처리한다: runtime 환경 수=1/index=0, 저장 첫 축=1,
-저장 ndim=runtime 샘플 ndim+1, 나머지 shape 완전 일치. 일반 squeeze/flatten/broadcast 정렬은 없다.
-허용오차 .01, key/shape 검사와 NaN/Inf 실패 처리는 유지한다.
-`REPLAY_FIELD_ERRORS`에 에피소드/필드별 max_abs와 first_mismatch_frame(0부터)을 출력한다.
-shape/비유한 값 때문에 수치 비교가 불가능하면 max_abs는 null이다.
+Replay now explicitly passes `dataset_has_single_env_axis=True` and removes only the saved state's first axis with `[0]`
+after checking: runtime environment count=1/index=0, saved first-axis size=1,
+saved ndim=runtime sample ndim+1, and all remaining dimensions identical. No general squeeze/flatten/broadcast alignment is used.
+Tolerance .01, key/shape checks, and NaN/Inf failure handling remain.
+`REPLAY_FIELD_ERRORS` reports per-episode/field max_abs and first_mismatch_frame (zero-based).
+max_abs is null when shape/nonfinite values prevent numerical comparison.
 
-실제 vendored HDF5DatasetFileHandler → EpisodeData.get_next_state() 회귀 테스트를 추가했다.
-CPU 테스트 10개 통과. 원본 demo_8을 이 로더로 읽고 저장 배열로 runtime 형태를 재현한 검사도
-95프레임/18필드에서 통과했다. **이는 실제 물리 replay나 수치 재현 일치의 증거가 아니다.**
-Docker/NVIDIA 접근 제한으로 실제 재실행 및 기존 프로세스 PID/종료코드는 확인하지 못했다.
+A regression test using the actual vendored HDF5DatasetFileHandler → EpisodeData.get_next_state() was added.
+Ten CPU tests passed. Reading original demo_8 through this loader and reconstructing runtime shapes from saved arrays also
+passed across 95 frames/18 fields. **This does not establish actual physics replay or numerical reproducibility.**
+Docker/NVIDIA access restrictions prevented actual reruns and inspection of existing process PIDs/exit codes.
 
-`APP_CLOSE BEGIN` 뒤 셸로 돌아오는 것만으로 close() 정상 반환이나 종료코드 0을 확정할 수 없다.
-`replay_checked.py`는 한 개의 replay 자식만 실행하고 OS에서 반환받은 종료코드를 출력한다.
-기존 replay가 끝났는지 호스트에서 확인한 뒤 아래 명령을 사용한다. 다른 프로세스는 종료하지 않는다.
+Returning to the shell after `APP_CLOSE BEGIN` alone does not prove normal close() return or exit code 0.
+`replay_checked.py` launches one replay child and reports its OS-returned exit code.
+Confirm the previous replay has ended on the host, then use the command below. Do not terminate other processes.
 
 ```bash
 docker top cyclo_lab -eo pid,ppid,args
 ```
 
-기존 replay가 남아 있으면 해당 터미널에서 Ctrl+C로 종료를 확인한 다음:
+If the previous replay remains, confirm its exit with Ctrl+C in that terminal, then:
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -583,99 +583,99 @@ replay_rc=$?
 printf 'DOCKER_EXEC_EXIT=%s\n' "$replay_rc"
 ```
 
-실제 수치 검증은 REPLAY_VALIDATION checked=95/mismatched=0/expected=95로 확인한다.
-불일치가 있으면 REPLAY_FIELD_ERRORS를 확인한다. 프로세스 종료는 별도로
-REPLAY_PROCESS_EXIT의 returncode와 DOCKER_EXEC_EXIT를 확인한다.
-프로세스 코드 0만으로 수치 검증 성공을 판단하지 않는다. APP_CLOSE END가 없더라도 부모의
-REPLAY_PROCESS_EXIT가 나오면 해당 자식은 종료된 것이다 (Kit 내부 정리 완료를 보증하는 것은 아님).
+Check actual numerical validation through REPLAY_VALIDATION checked=95/mismatched=0/expected=95.
+For mismatches, inspect REPLAY_FIELD_ERRORS. Separately confirm process exit using
+REPLAY_PROCESS_EXIT returncode and DOCKER_EXEC_EXIT.
+Process code 0 alone does not establish numerical validation. Even without APP_CLOSE END, a parent
+REPLAY_PROCESS_EXIT means that child exited (not a guarantee of completed internal Kit cleanup).
 
-### 접시 속도 checkpoint와 검증 실패 종료코드
+### Plate-Velocity Checkpoints and Validation-Failure Exit Codes
 
-사용자 실기 결과: 로봇/토스터/빵의 비교 필드는 max_abs=0, 접시 pose 오차는 8.28e-5로 통과했지만
-접시 velocity 최대 오차 .06838538로 95프레임 전체 상태 검증은 실패했다. 로봇 궤적 일치와 전체 상태
-검증 성공은 구분한다. 임계값 .01 유지, 접시 필드 제외 없음.
+User runtime result: robot/toaster/bread comparison fields had max_abs=0; plate pose error 8.28e-5 passed, but
+plate velocity maximum error .06838538 failed full-state validation across 95 frames. Robot trajectory agreement is distinct from
+full-state validation. Threshold .01 is retained; plate fields are not excluded.
 
-root_velocity는 InteractiveScene.get_state → RigidObjectData.root_vel_w → root_com_vel_w이며
-월드 좌표계 COM 속도 [vx,vy,vz,wx,wy,wz], 단위 [m/s,m/s,m/s,rad/s,rad/s,rad/s]이다.
-인덱스 3,4는 각속도 x,y이다. 원본 demo_8 초기 속도는 모두 0이다.
-첫 기록 상태의 각속도는 [0.112790756,-0.031493440,-0.012129337] rad/s이다.
-이는 오차값이 아니라 기록된 실제 속도다.
+root_velocity follows InteractiveScene.get_state → RigidObjectData.root_vel_w → root_com_vel_w:
+world-frame COM velocity [vx,vy,vz,wx,wy,wz], units [m/s,m/s,m/s,rad/s,rad/s,rad/s].
+Indices 3,4 are angular velocities x,y. Original demo_8 initial velocities are all 0.
+The first recorded state's angular velocity is [0.112790756,-0.031493440,-0.012129337] rad/s.
+These are recorded actual velocities, not errors.
 
-기록 initial_state는 reset 이후, states[i]는 decimation=4인 env.step 종료 후 취득한다.
-replay도 같은 종료 시점에서 비교한다. dt=.01, render_interval=4, control_dt=.04는 기록 metadata와
-configure_replay로 대조된다. reset_to는 기록된 root_velocity를 PhysX와 내부 캐시에 쓰며,
-이 태스크의 추가 복원 처리는 articulation의 drive velocity target만 제거하고 접시 속도를 덮어쓰지 않는다.
+Recorded initial_state is captured after reset; states[i] follows env.step with decimation=4.
+Replay compares at the same endpoint. dt=.01, render_interval=4, control_dt=.04 are checked against recording metadata
+through configure_replay. reset_to writes recorded root_velocity to PhysX and internal caches;
+this task's additional restoration clears only articulation drive velocity targets, without overwriting plate velocity.
 
-현재 접시 cfg는 solver position/velocity iterations=16/4, mass=.35 kg,
-contact_offset=.001 m, rest_offset=0, max_depenetration_velocity=1 m/s이다.
-spawn 재질은 static/dynamic friction=.8/.6, restitution=0, friction combine=max이다.
-**기록에 전체 물리 cfg·접촉력·접촉 manifold/solver 내부 상태는 없다.** 현재 설정과 당시 설정이
-완전히 같았는지, 접촉 캐시 차이가 원인인지 기록만으로 확정할 수 없다. 접촉 떨림/비결정성은 결론이 아니다.
+Current plate cfg: solver position/velocity iterations=16/4, mass=.35 kg,
+contact_offset=.001 m, rest_offset=0, max_depenetration_velocity=1 m/s.
+Spawn material: static/dynamic friction=.8/.6, restitution=0, friction combine=max.
+**The recording lacks full physics cfg, contact forces, contact manifolds, and internal solver state.** It cannot establish whether current
+and recorded settings were identical or contact-cache differences caused the mismatch. Contact jitter/nondeterminism is not a conclusion.
 
-새 replay는 PLATE_CONFIGURATION과 다음 PLATE_CHECKPOINT를 출력한다:
-- after_reset_to_before_physics: 초기 기록 속도 vs 복원 후 cached/PhysX 속도, pose 및 센서 접촉력.
-- after_first_physics_step: 첫 .01초 physics step 직후 PhysX 속도. 이 시점은 HDF5 substep 기준값이 없다.
-- after_first_control_step: 4개 substep 뒤 cached/PhysX 속도 vs states[0], 성분별 절대오차.
+New replay prints PLATE_CONFIGURATION and these PLATE_CHECKPOINT entries:
+- after_reset_to_before_physics: recorded initial velocity versus restored cached/PhysX velocity, pose, and sensor contact forces.
+- after_first_physics_step: PhysX velocity immediately after the first .01-second physics step; no HDF5 substep reference exists here.
+- after_first_control_step: cached/PhysX velocity after 4 substeps versus states[0], with componentwise absolute errors.
 
-센서의 reset 직후 접촉력은 stale일 수 있으며 solver 접촉 상태 그 자체가 아니다.
-진단은 첫 env.step의 기존 sim.step 호출을 관찰만 하며 추가 physics step/상태 쓰기를 수행하지 않는다.
-실제 GPU checkpoint는 접근 제한으로 미검증이다. 원본 파일과 물리/시나리오/action은 변경하지 않았다.
+Sensor contact force immediately after reset may be stale and is not the solver contact state itself.
+Diagnostics only observe existing sim.step calls in the first env.step; they add no physics steps or state writes.
+Actual GPU checkpoints remain unverified due to access restrictions. Original files and physics/scenarios/actions were unchanged.
 
-이전 wrapper는 자식 returncode만 전달했다. Python 예외 재전파 도중 finally의 앱 close가
-프로세스를 0으로 끝내면 검증 실패가 덮일 수 있다. 사용자 로그가 이 실패 전달 문제를 확인해 준다.
-Kit 내부의 정확한 native 종료 호출 지점은 현재 접근 환경에서 확인하지 못했다.
-새 wrapper는 실행별 임시 디렉터리/nonce를 사용한 별도 판정 JSON을 검사한다.
-worker는 앱 정리 전에 판정을 원자적으로 저장한다. 부모는 자식의 raw code가 0이어도
-failed 판정/불일치/불완전 프레임은 1, 누락·손상·다른 실행 판정은 2로 종료한다.
-REPLAY_PROCESS_EXIT는 raw code, REPLAY_SUPERVISOR.effective_exit_code는 Docker에 전달할 code다.
+The previous wrapper passed through only child returncode. During Python exception propagation, finally's app close could
+terminate the process with 0 and hide validation failure. User logs confirmed this failure-reporting problem.
+The exact internal Kit native exit call could not be located with available access.
+The new wrapper checks a separate verdict JSON using a per-run temporary directory/nonce.
+The worker atomically saves its verdict before app cleanup. Even if the child's raw code is 0,
+the parent exits 1 for failed verdict/mismatches/incomplete frames, or 2 for missing/corrupt/wrong-run verdicts.
+REPLAY_PROCESS_EXIT reports raw code; REPLAY_SUPERVISOR.effective_exit_code is the code passed to Docker.
 
-기존 replay_checked.py 명령을 그대로 사용한다. 기존 replay 종료 확인 전 중복 실행하지 않는다.
-실패 사례의 기대 결과:
+Use the existing replay_checked.py command. Do not duplicate runs before confirming the previous replay exited.
+Expected result for a failure case:
 ```
 REPLAY_PROCESS_EXIT ... returncode=0
 REPLAY_SUPERVISOR {"verdict": {"status": "failed", ...}, "effective_exit_code": 1}
 DOCKER_EXEC_EXIT=1
 ```
-CPU 테스트 14개 통과: 실제 로더, 엄격한 비교, 추가 step 없는 checkpoint hook,
-실패 판정 후 실제 자식 os._exit(0)에도 부모 1 반환, 누락 판정 2 반환 등을 포함한다.
-이는 접시의 실제 물리 replay가 일치하게 됐다는 증거가 아니다.
+Fourteen CPU tests passed, including the actual loader, strict comparison, checkpoints without extra steps,
+parent exit 1 after a failed verdict even if the real child calls os._exit(0), and exit 2 for missing verdicts.
+This does not establish agreement of actual plate physics replay.
 
-### Quest 없는 접시 대조시험: reset/render 이력 및 실제 설정 근거
+### Plate Control Experiment Without Quest: Reset/Render History and Actual Configuration Evidence
 
-추가 실기 증거: 복원 직후 기록/PhysX/cache 속도는 모두 0, 첫 .01초 physics step은
-vz=-.0981/각속도 0, 첫 .04초 control step부터 기록 각속도와 차이가 생긴다.
-따라서 초기 속도 미복원/캐시 불일치로 설명할 근거는 없고 물리 진행 후 경로를 조사한다.
-로봇 궤적은 일치했지만 전체 상태 검증은 접시 속도로 실패한 상태를 유지한다.
+Additional runtime evidence: immediately restored recorded/PhysX/cached velocities are all 0; the first .01-second physics step has
+vz=-.0981/angular velocity 0; divergence from recorded angular velocity starts at the first .04-second control step.
+Thus there is no evidence for missing initial-velocity restoration/cache mismatch; investigation follows physics advancement.
+Robot trajectories matched, but full-state validation still failed due to plate velocity.
 
-소스상 확인:
-- teleop: 생성 → reset(seed) → render-only WAITING → X → reset(seed) → 기록/물리 step.
-- replay: 생성 → reset() → reset_to(초기 상태) → 물리 step. reset_to의 _reset_idx 이후
-  기록 상태를 다시 쓰고 forward/render하며 articulation drive target 처리가 추가된다.
-- Isaac Lab forward()는 articulation kinematics/fabric 갱신이고, render()는 playSimulations를
-  끈 app.update 경로다. WAITING 코드에 sim.step은 없다. 실제 시간/호출 수는 TimelineProbe로 추가 기록한다.
-- 기록 states는 4개 substep 후 record_post_step에서, replay는 env.step 반환 후 취득한다.
-  이 태스크 이벤트는 reset 이벤트뿐이다. 뒤의 command/observation 갱신이 접시 물리 상태를 쓰는 경로는 찾지 못했다.
-- demo_8 전의 실제 누적 접촉/solver 내부 이력은 HDF5에서 복원되지 않는다. 이 차이가 원인인지는 미확인이다.
-- 기록 때 overview 카메라 1개가 추가되고 replay에는 기본 3개만 있다. 렌더 부하는 다르지만
-  그 사실만으로 접시 물리 차이의 원인이라고 판단하지 않는다.
+Source inspection:
+- teleop: construction → reset(seed) → render-only WAITING → X → reset(seed) → recording/physics steps.
+- replay: construction → reset() → reset_to(initial state) → physics steps. After reset_to's _reset_idx,
+  recorded states are rewritten, forward/render run, and articulation drive targets receive additional handling.
+- Isaac Lab forward() updates articulation kinematics/fabric; render() uses app.update with playSimulations
+  disabled. WAITING contains no sim.step. TimelineProbe additionally records actual times/call counts.
+- Recorded states are taken in record_post_step after 4 substeps; replay samples after env.step returns.
+  This task has only reset events. No subsequent command/observation update path was found writing plate physics state.
+- Actual accumulated contact/internal solver history before demo_8 is not restored from HDF5. Whether this causes the difference is unknown.
+- Recording adds 1 overview camera; replay has only the default 3. Rendering loads differ,
+  but this alone does not identify the cause of plate physics differences.
 
-새 read-only 진단:
-- record/replay 공통 audit.jsonl에 reset 전후, WAITING 전후, public sim.step/forward/render 호출 수,
-  current_time/current_time_step_index(조회 가능 시), 접시 PhysX 속도를 기록한다.
-- plate/table 실제 prim과 충돌 하위 prim, 적용된 physics material binding과 USD 속성을 읽는다.
-  각 속성은 authored 여부 및 resolved 여부를 남긴다. USD schema fallback은 실제 PhysX 조회값과 구분한다.
-- 기존 plate PhysX tensor view에서 masses/inertias/COM/material properties/contact/rest offsets 등
-  조회 가능한 항목을 읽는다. 지원하지 않는 getter는 unavailable, 오류는 query_failed로 기록한다.
-- 정적 table에 기존 rigid tensor view가 없으면 USD 근거만 수집하며, engine 값을 추정하지 않는다.
-- cfg의 null은 unspecified라는 설정 의도일 뿐 0 또는 실제 PhysX 기본값으로 해석하지 않는다.
+New read-only diagnostics:
+- Shared record/replay audit.jsonl logs pre/post reset, pre/post WAITING, public sim.step/forward/render call counts,
+  current_time/current_time_step_index (when available), and plate PhysX velocities.
+- Reads actual plate/table prims and collision descendants, applied physics-material bindings, and USD attributes.
+  Records whether each attribute is authored/resolved. USD schema fallbacks are distinguished from actual PhysX queries.
+- Reads available masses/inertias/COM/material properties/contact/rest offsets and other values
+  from the existing plate PhysX tensor view. Unsupported getters are unavailable; errors are query_failed.
+- If the static table lacks an existing rigid tensor view, only USD evidence is collected; engine values are not inferred.
+- cfg null means unspecified configuration intent, not 0 or an actual PhysX default.
 
-현재 세션에서 Docker 권한/NVIDIA 조회 제한 때문에 GPU 시험은 실행하지 못했다.
-아래는 구현된 시험 절차이며 성공한 실험 결과가 아니다. 기존 실행을 먼저 확인하고 중복 실행하지 않는다.
-원본 B001_test_001에는 쓰지 않으며 새 출력 폴더가 이미 존재하면 실행을 거부한다.
+GPU experiments could not run in this session due to Docker permission/NVIDIA query restrictions.
+The following is an implemented procedure, not successful experimental results. Check existing runs first; do not duplicate them.
+Original B001_test_001 is not written to; execution is refused if the new output directory already exists.
 
-1. Quest/입력 서버 없이 기록 (기존 teleop의 초기 손목 목표 유지 제어, 열린 그리퍼/고정 lift).
-   95프레임씩 두 번, 각 명시적 reset 전에 30회 render를 수행한다.
-   외부 조작은 없으나 중력 보상/목표 유지용 IK action은 존재한다. 이는 모든 action=0 시험이 아니다.
+1. Record without Quest/input server (existing teleop initial-wrist-target hold control, open grippers/fixed lift).
+   Two runs of 95 frames each, with 30 renders before each explicit reset.
+   There is no external manipulation, but gravity-compensation/target-hold IK actions remain. This is not an all-actions=0 test.
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -685,10 +685,10 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   --episodes 2 --frames 95 --wait-renders 30 --headless
 ```
 
-기록 완료와 프로세스 종료를 확인한 뒤 진행한다. 이것은 demo_8의 이전 8개 시연 이력을 정확히 복제하지 않는다.
-새 metadata에 experiment 종류/프레임/에피소드/render 횟수를 남긴다.
+Confirm recording completion and process exit before proceeding. This does not exactly reproduce demo_8's preceding 8-demonstration history.
+New metadata records experiment type/frames/episodes/render counts.
 
-2. 새 기록만 action replay (두 에피소드의 비교 기준도 .01 그대로).
+2. Action-replay only the new recording (comparison threshold remains .01 for both episodes).
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -702,7 +702,7 @@ replay_rc=$?
 printf 'DOCKER_EXEC_EXIT=%s\n' "$replay_rc"
 ```
 
-3. 기록/재생 설정 근거와 첫 substep/control step을 CPU에서 비교한다.
+3. Compare recording/replay configuration evidence and first substep/control step on CPU.
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -711,26 +711,26 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   datasets/quest_tests/plate_noinput_001/replay_audit/audit.jsonl --episode demo_0
 ```
 
-같은 명령의 마지막을 `--episode demo_1`로 바꾸면 반복 reset 에피소드를 비교한다.
-첫 단계부터 차이나면 reset/render/설정 이력을, 첫 substep은 같고 control step부터 다르면
-substep 2–4 및 접촉 형성 경로를 추가 조사한다. property_differences가 비어도 unavailable 항목과
-solver cache까지 같았다는 뜻은 아니다. 무조작 시험에서도 재현되면 Quest의 움직임 없이도 발생한다는
-근거가 되지만, 그 자체로 접촉 비결정성을 증명하지는 않는다.
+Change the command's final argument to `--episode demo_1` to compare the repeated-reset episode.
+If divergence starts immediately, inspect reset/render/configuration history; if the first substep agrees but the control step differs,
+investigate substeps 2–4 and contact formation. Empty property_differences does not imply equality of unavailable values
+or solver caches. Reproduction without manipulation supports occurrence without Quest motion,
+but does not itself prove contact nondeterminism.
 
-CPU: 기존 replay 회귀 14개 + evidence 비교/호출 수/None 구분 3개 통과, Python 문법 검사 통과.
-실제 USD/PhysX 조회 API와 GPU 무조작 기록·재생은 실기 미검증이다.
+CPU: 14 existing replay regressions + 3 evidence-comparison/call-count/None-distinction tests passed; Python syntax passed.
+Actual USD/PhysX query APIs and GPU recording/replay without manipulation remain unverified at runtime.
 
-### 새 VR 기록 B001_test_002: 공통 audit 연결 후 단일 에피소드 비교
+### New VR Recording B001_test_002: Single-Episode Comparison with Shared Audit
 
-사용자 실기에서 무조작 2개 에피소드는 checked=190/mismatched=0/expected=190,
-effective_exit_code=0으로 통과했다. 이는 무조작 경로 통과이며 기존 VR demo_8의 접시 차이 원인 확정은 아니다.
-teleop에는 audit가 없었으므로 기록 모드(--record-dir)에만 같은 TimelineProbe,
-plate_configuration, plate_checkpoint, 첫 physics step hook을 연결했다.
-원본 데이터, 물리, 제어, 허용오차와 HTTPS/입력/영상 보호 경로는 변경하지 않았다.
-표시 페이지와 입력 서버를 이번 변경 때문에 재시작할 필요는 없다. 실행 중인 이전 teleop이 있다면
-사용자가 그 teleop만 종료하고 새 실행기를 시작한다. GPU replay와 동시 실행하지 않는다.
+In the user's runtime test, two no-manipulation episodes passed with checked=190/mismatched=0/expected=190
+and effective_exit_code=0. This validates that path, not the cause of the old VR demo_8 plate difference.
+Since teleop lacked auditing, the same TimelineProbe, plate_configuration, plate_checkpoint,
+and first-physics-step hook were added only in recording mode (--record-dir).
+Original data, physics, control, tolerances, and HTTPS/input/video protection paths were unchanged.
+This change does not require restarting the display page or input server. If an older teleop is running,
+the user exits only that teleop and starts the new launcher. Do not run alongside GPU replay.
 
-새 폴더에서 실행 (이미 존재하면 덮어쓰지 않고 중단):
+Run in a new folder (refuse rather than overwrite an existing folder):
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -742,18 +742,18 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   --record-seconds 8
 ```
 
-기존 HTTPS 서버와 Quest VR 입력 연결을 유지한다. 양손 유효 입력과 네 영상이 표시된 뒤,
-정면을 보고 양쪽 squeeze를 놓는다. X를 한 번 눌렀다 놓고 EPISODE_STARTED를 확인한다.
-한쪽 squeeze를 새로 눌러 작은 움직임을 수행한 뒤 놓는다. A로 저장하거나 8 wall seconds 자동 마감을 기다린다.
-RECORD_SAVED demo_0와 WAITING 확인 후 **X를 다시 누르지 않고 Ctrl+C**로 종료한다.
-최종 metadata의 episode_count=1, frames>0을 확인한다. 첫 진단 조회 완료 후 8초 타이머를 시작한다.
-정확한 프레임 수는 실행 속도에 따라 달라지며 95로 고정되지 않는다. 그리퍼는 열린 상태 고정이다.
+Retain the existing HTTPS server and Quest VR input connection. After both hands are valid and four images are visible,
+look forward and release both squeezes. Press/release X once and confirm EPISODE_STARTED.
+Re-engage one squeeze for a small motion, then release. Save with A or wait for automatic completion after 8 wall seconds.
+After RECORD_SAVED demo_0 and WAITING, **exit with Ctrl+C without pressing X again**.
+Confirm final metadata episode_count=1 and frames>0. The 8-second timer starts after initial diagnostic queries finish.
+Actual frame count depends on execution speed and is not fixed at 95. Grippers remain fixed open.
 
-기록 audit는 B001_test_002/record_audit/audit.jsonl에 들어간다. 각 행의 episode=demo_0으로
-WAITING 전후/reset 전후/첫 physics step/첫 control step/실제 설정 근거를 replay와 대응한다.
-실제로 export된 에피소드 수를 이름에 사용하므로 빈 기록 시도가 저장 이름을 밀어내지 않는다.
+Recording audit is stored in B001_test_002/record_audit/audit.jsonl. Filter each row by episode=demo_0
+to align pre/post WAITING, pre/post reset, first physics/control steps, and actual configuration evidence with replay.
+Names use the actual exported-episode count, so empty recording attempts do not shift saved names.
 
-teleop 종료 및 HDF5 닫힘 확인 후 이름으로 replay:
+After teleop exits and HDF5 closes, replay by name:
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -767,9 +767,9 @@ replay_rc=$?
 printf 'DOCKER_EXEC_EXIT=%s\n' "$replay_rc"
 ```
 
-replay_audit는 새 디렉터리여야 한다. 재실행 시 다른 audit 폴더 이름을 지정한다.
-checked=expected=N, mismatched=0, effective_exit_code=0, DOCKER_EXEC_EXIT=0을 확인한다.
-실패 시 REPLAY_FIELD_ERRORS와 양쪽 audit를 보존한다. 비교 명령:
+replay_audit must be a new directory. Use another audit directory for reruns.
+Check checked=expected=N, mismatched=0, effective_exit_code=0, and DOCKER_EXEC_EXIT=0.
+On failure, preserve REPLAY_FIELD_ERRORS and both audits. Comparison command:
 
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -778,61 +778,61 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   datasets/quest_tests/B001_test_002/replay_audit/audit.jsonl --episode demo_0
 ```
 
-이번 변경의 CPU 회귀 60개(Quest 43 + replay/audit 17) 및 문법 검사 통과.
-실제 새 VR 기록/재생은 사용자가 수행하며 이 작업에서는 실행하지 않았다.
+60 CPU regressions (Quest 43 + replay/audit 17) and syntax checks passed for this change.
+The user performs actual new VR recording/replay; this work did not run it.
 
-### 중앙 영상 하단 제어 상태 패널 (control-status-1)
+### Control-Status Panel Below the Central Image (control-status-1)
 
-중앙 영상·눈별 변환·저장된 캐스팅 배치는 그대로 유지하며, 기존 하단 안내 영역에
-WAITING/RUNNING, 좌우 입력 유효성, 시뮬레이터의 실제 제어 판정, squeeze 눌림/값,
-trigger 값을 표시한다. `SQ ON`은 버튼 상태일 뿐이다. `팔 조작 중`은 실행기의
-`controller.states[side].reason == active` 판정이며 실제 관절 이동량을 측정한 표시는 아니다.
-`기준 잡음`은 squeeze를 처음 눌러 기준을 잡은 프레임이다.
-상단 INPUT 주황은 입력 무효, 어두운 초록은 입력 유효, 밝은 초록은 유효 입력에서
-어느 버튼이든 pressed인 경우다. 상단 색상은 제어 활성 여부를 의미하지 않는다.
+The central image, per-eye transform, and saved casting layout remain unchanged. The existing bottom guidance area
+shows WAITING/RUNNING, left/right input validity, the simulator's actual control verdict, squeeze pressed/value,
+and trigger value. `SQ ON` is only a button state. `Arm active` reflects the launcher's
+`controller.states[side].reason == active`, not a measurement of joint displacement.
+`Anchored` identifies the frame when a new squeeze press establishes the reference.
+Top INPUT orange means invalid input; dark green means valid input; bright green means any button
+is pressed with valid input. Top colors do not indicate active control.
 
-상태는 각 JPEG의 메타데이터를 통해 전달되며 약 5 Hz로 갱신된다. 영상이 만료되면
-이전 활성 표시 대신 상태 확인 불가를 표시한다. START_BLOCKED에는 현재 미충족 조건을
-나열한다. 영상 표시 확인 없음은 오래된 영상 외에 미표시/버전 불일치도 포함할 수 있다.
-이 정보는 표시 전용이며 제어 판정이나 HDF5 관측에 입력되지 않는다.
+Status arrives through each JPEG's metadata at approximately 5 Hz. When video expires,
+status becomes unavailable instead of retaining the previous active indication. START_BLOCKED lists unmet
+conditions. Missing video-display confirmation can also mean no display/version mismatch, not just stale video.
+This information is display-only; it is not input to control decisions or HDF5 observations.
 
-적용: 현재 teleop 터미널에서 정상 종료한 후 입력 서버를 같은 옵션으로 재시작하고,
-teleop도 기존 실행 옵션 그대로 한 번 재시작한다. 다른 작업은 종료하지 않는다.
-Quest에서 VR을 나온 뒤 같은 HTTPS 주소를 새로고침하고 새 PIN으로 페어링한다.
-CLIENT BUILD와 서버 BUILD 일치, Applied XR display의 revision `control-status-1`을 확인한다.
-저장된 표시 설정은 초기화하지 않는다. VR 진입 후 X로 시작하기 전 WAITING과
-양손 상태를 확인한다. GPU/Quest 양안 가독성과 캐스팅은 실기 확인이 필요하다.
+Apply by exiting the current teleop normally, restarting the input server with the same options,
+and restarting teleop once with its existing options. Do not stop other jobs.
+Exit VR, reload the same HTTPS address, and pair with the new PIN.
+Check matching CLIENT BUILD/server BUILD and Applied XR display revision `control-status-1`.
+Do not reset saved display preferences. After entering VR, inspect WAITING and both-hand status
+before starting with X. GPU/Quest binocular readability and casting require runtime checks.
 
-### overview-status-2: 상태 패널과 양팔 재현 진단
+### overview-status-2: Status Panel and Bimanual Reproduction Diagnostics
 
-2026-11-03 조사 당시 bridge는 서버 `preview-v3-4c75fc835c8d`, Quest 페이지
-`preview-v3-bb6990bfcc4c / casting-fit-3`, `reload_required`를 보고했다.
-즉 이전 페이지가 실행 중이었고 영상 확인은 버전 검사에서 차단됐다.
-같은 조사 시점에는 왼손 meta-fixed-hand, 오른손 소스 없음이었다. 이 순간값은 과거
-양손 컨트롤러 조작 때의 원인을 입증하지 않는다. 당시 증거는
-`logs/quest_diagnostics/status_investigation/*_before.json`에 보존했다.
+During the 2026-11-03 investigation, the bridge reported server `preview-v3-4c75fc835c8d`, Quest page
+`preview-v3-bb6990bfcc4c / casting-fit-3`, and `reload_required`.
+An old page was therefore running, and version checks blocked video confirmation.
+At that inspection instant, the left source was meta-fixed-hand and the right source absent. This snapshot does not
+establish the cause during earlier two-controller operation. Evidence was preserved in
+`logs/quest_diagnostics/status_investigation/*_before.json`.
 
-상태 패널은 이제 FRONT OVERVIEW 영상 내부 상단에 겹쳐 그린다. 영상 위치·배율은
-변경하지 않는다. 메타데이터 없음/오래됨도 텍스트로 표시한다. 패널 첫 줄의 C/S는
-client/server build이며, Applied XR display의 status_panel에는 실제 canvas 좌표와
-rendered, metadata_received/fresh, input_seq가 남는다. 이전 절의 control-status-1은 구버전이다.
+The status panel now overlays the top of FRONT OVERVIEW. Image position/scale
+remain unchanged. Missing/stale metadata is also displayed. C/S on the first line means
+client/server build; Applied XR display status_panel records actual canvas coordinates,
+rendered, metadata_received/fresh, and input_seq. The previous control-status-1 section describes an older version.
 
-`--diagnostic-log NEW_PATH.jsonl`은 HDF5와 분리된 표시/제어 진단이다. WAITING은 약 5 Hz,
-RUNNING은 매 제어 단계, 시작/종료 요청도 기록한다. 각 decision 행에는:
-- Quest seq/session, source handedness/candidates/pose 판정/원시 buttons, 서버 정규화 결과
-- 입력을 읽은 순간의 age와 실제 제어 판정 시점 age, visibility, client/server build
-- Quest가 보고한 프레임 경과 시간(동기화된 절대 시각 아님), 서버 영상 guard, loop_gap/step_ms
-- 시작 전후 lifecycle, 요청 버튼, 이전/현재 제어 reason, ready/anchor/basis, safety_epoch
-- 물리 step 전 measured 위치, 목표 위치, home 거리/회전, 목표 추종 오차
-가 함께 저장된다. 원시 진단 필드는 제어 입력으로 사용하지 않는다. home_distance가 0.05m에
-이르는 것과 목표 추종 오차는 별도 현상이며, 그 값만으로 IK 실패를 단정하지 않는다.
+`--diagnostic-log NEW_PATH.jsonl` records display/control diagnostics separately from HDF5: approximately 5 Hz in WAITING,
+every control step in RUNNING, and start/stop requests. Each decision row includes:
+- Quest seq/session, source handedness/candidates/pose verdict/raw buttons, and server-normalized results
+- Input age at read time and actual control-decision time, visibility, client/server builds
+- Quest-reported frame age (not a synchronized absolute timestamp), server video guard, loop_gap/step_ms
+- Lifecycle before/after start, requesting button, previous/current control reason, ready/anchor/basis, safety_epoch
+- Pre-physics-step measured position, target position, home distance/rotation, and tracking error
+These are recorded together. Raw diagnostic fields are not control inputs. Reaching home_distance 0.05 m
+is distinct from target tracking error and alone does not establish IK failure.
 
-적용은 기존 teleop과 입력 서버를 각각 해당 터미널에서 정상 종료·재시작한 뒤,
-Quest VR을 종료하고 같은 HTTPS 주소를 **새로고침**해야 한다. 재진입만으로는 이전 JS가
-교체되지 않는다. 필요하면 기존 Quest 탭을 닫고 주소를 다시 연다(사이트 데이터 삭제 불필요).
-서버 재시작 후 새 PIN으로 페어링하고 build 일치를 먼저 확인한다.
+Apply by normally exiting/restarting teleop and input server in their respective terminals,
+then leaving Quest VR and **reloading** the same HTTPS address. VR re-entry alone does not
+replace old JS. If needed, close the existing Quest tab and reopen the address (no site-data deletion needed).
+After server restart, pair with the new PIN and verify matching builds first.
 
-짧은 재현(시연 저장 없음):
+Short reproduction (no demonstration recording):
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
 QUEST_RUN="arms_$(date +%Y%m%d_%H%M%S)"
@@ -846,46 +846,46 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   --diagnostic-log "/workspace/cyclo_lab/logs/quest_diagnostics/$QUEST_RUN/decisions.jsonl" \
   2>&1 | tee "logs/quest_diagnostics/$QUEST_RUN/teleop.log"
 ```
-WAITING에서 양 컨트롤러를 들고 squeeze/trigger를 좌우 차례로 눌렀다 놓아 원시 값만 확인한다.
-양쪽 squeeze를 모두 놓고 정면을 본 채 X를 눌러 시작한다. RUNNING과 양쪽 준비를 확인할 때까지
-계속 놓고 있다가 왼쪽 squeeze를 누른 채 2~3cm 이동 후 놓는다. 오른쪽도 동일하게 시험한다.
-각 단계 2~3초씩 유지한다. 팔 조작 중인데 움직임이 없으면 값을 더 크게 밀지 말고 그대로
-2초 기다린 뒤 놓는다. A로 WAITING, 마지막 Ctrl+C로 정상 종료한다. 고정 5cm/15도와
-원래 240초 episode timeout은 그대로다. HDF5를 생성하지 않으며 기존 기록을 수정하지 않는다.
+In WAITING, hold both controllers and press/release left then right squeeze/trigger to inspect raw values only.
+Release both squeezes, look forward, and press X. Keep them released until RUNNING and both hands ready,
+then hold left squeeze, move 2–3 cm, and release. Repeat for the right hand.
+Hold each stage for 2–3 seconds. If control is active but motion absent, do not increase displacement;
+wait 2 seconds, then release. A returns to WAITING; Ctrl+C exits normally. Fixed 5 cm/15° bounds
+and the original 240-second episode timeout remain. No HDF5 is created and existing recordings are untouched.
 
-### compact-status-3: 영상과 겹치지 않는 두 줄 상태
+### compact-status-3: Two Status Lines Without Video Overlap
 
-overview-status-2의 영상 내부 overlay를 제거했다. 기존 상단 진단 영역에 고정 24px 글꼴로
-첫 줄은 WAITING/RUNNING, 좌우 실제 제어 상태, SQ/TR 원시 값(소수점 한 자리)을 표시한다.
-둘째 줄은 시작을 막는 핵심 이유만 표시한다. 메타데이터 미수신/영상 만료도 최대 두 줄로 표시한다.
-영상 크기·위치·종횡비와 저장된 캐스팅 중심·배율은 유지한다. 중앙 십자는 영상 가림을 피하려고
-그리지 않으며, 선택된 모서리/바깥 테두리 진단은 유지한다.
+The overview-status-2 in-video overlay was removed. The existing top diagnostic area uses a fixed 24 px font;
+the first line shows WAITING/RUNNING, actual left/right control status, and raw SQ/TR values (one decimal place).
+The second line shows only the main blocking reason. Missing metadata/stale video also use at most two lines.
+Image size/position/aspect ratio and saved casting center/scale are retained. The central crosshair is omitted
+to avoid obscuring video; selected corner/outer-border diagnostics remain.
 
-build/revision, 지연, 전체 차단 사유와 원시 상태는 페이지의 접힌 **상세 진단**에서 확인한다.
-VR을 종료한 뒤 펼치면 최근 VR 수신 상태를 볼 수 있다. 새 컨트롤러 버튼 매핑은 없다.
-이번 변경은 hud.js/index.html과 표시 테스트·문서에 한정된다. 입력·제어·물리·기록 코드 변경은 없다.
+Build/revision, latency, all blocking reasons, and raw status are in the page's collapsed **Detailed diagnostics**.
+Expand after exiting VR to inspect the latest received VR status. No new controller-button mapping was added.
+Changes are limited to hud.js/index.html, display tests, and documentation. Input/control/physics/recording code is unchanged.
 
-적용: squeeze를 놓고 VR에서 나온 다음 입력 서버만 기존 명령으로 정상 재시작한다.
-Quest 페이지를 새로고침하고 새 PIN으로 페어링 후 VR에 다시 들어간다. teleop 시뮬레이터 재시작은
-필요 없다. 표시 설정 초기화도 필요 없다. 실제 양안 가독성/캐스팅 잘림은 Quest에서 확인해야 한다.
+Apply by releasing squeeze, exiting VR, and normally restarting only the input server with the existing command.
+Reload the Quest page, pair with the new PIN, and re-enter VR. No teleop simulator restart
+or display-preference reset is needed. Actual binocular readability/casting clipping must be checked on Quest.
 
-### head-wrists-4: HEAD + 양손목, 컨트롤러 연결 표시
+### head-wrists-4: HEAD + Both Wrists and Controller Connectivity
 
-Quest 기본 화면은 상단 큰 HEAD와 하단 동일 너비의 LEFT WRIST / RIGHT WRIST로 구성된다.
-기존 960×936 합성 영상에서 완전한 300×300 카메라 타일을 표시 단계에서 분리해 그린다.
-HEAD 원본은 정사각형이므로 넓은 상단 영역에 좌우 여백을 둔다. 영상 일부를 잘라 채우거나
-늘리지 않는다. FRONT OVERVIEW는 VR 표시에서만 제외하며 센서·기록·전송 원본은 보존한다.
-확대해도 기존 스트림보다 해상도가 높아지는 것은 아니다.
+The default Quest view has a large HEAD image above equal-width LEFT WRIST / RIGHT WRIST images.
+Complete 300×300 camera tiles are extracted at display time from the existing 960×936 composite.
+Since HEAD is square, the wide upper area has side margins. Images are neither cropped to fill
+nor stretched. FRONT OVERVIEW is excluded only from VR display; sensors/recording/transmission sources remain.
+Enlargement does not increase resolution beyond the existing stream.
 
-HEAD 위 상태 바는 좌우 연결 여부만 표시한다(초록/회색 + 텍스트). 실제 Touch Plus 소스가
-현재 존재하고, 같은 source_id의 입력 패킷이 서버에서 수락되었으며, ACK와 그 패킷의
-클라이언트 입력 시각이 모두 250ms 이내일 때 연결됨이다. 손 입력은 제외한다. pose 무효,
-WAITING, squeeze 해제, 영상 미수신은 그 자체로 연결 끊김을 의미하지 않는다. 이 표시는
-제어 활성 여부가 아니다. 제어·안전 판정은 기존 그대로이며 상세 진단과 로그에서 확인한다.
+The status bar above HEAD shows only left/right connectivity (green/gray plus text). Connected requires a current actual Touch Plus source,
+an input packet accepted by the server with the same source_id, and both ACK and that packet's
+client input timestamp within 250 ms. Hand input is excluded. Invalid pose,
+WAITING, released squeeze, or missing video alone does not imply disconnection. This is not
+an active-control indication. Control/safety decisions remain unchanged and appear in detailed diagnostics/logs.
 
-이번 변경은 HUD/페이지 표시 및 테스트·문서뿐이다. teleop 재시작은 불필요하다.
-입력 서버는 시작 시 build를 고정하므로 재시작이 필요하다. 기존 서버 터미널에서 Ctrl+C로
-정상 종료 후 아래를 실행한다(별도 cert/key를 사용했다면 기존 옵션을 유지).
+Changes affect only HUD/page display, tests, and documentation. Teleop restart is unnecessary.
+The input server fixes its build at startup and requires restart. Exit normally with Ctrl+C in its terminal,
+then run below (retain existing options if using separate cert/key files).
 
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
@@ -894,79 +894,79 @@ python3 scripts/quest_diagnostic/server.py \
   --bridge-dir /home/mj/nrf_humanoid/cyclo_lab/logs/quest_teleop
 ```
 
-Quest에서 squeeze를 놓고 VR을 종료한다. 서버 재시작 후 기본 주소
-`https://192.168.10.116:8765/`를 새로고침하고 새 PIN으로 Pair한다. 상세 진단에서 CLIENT BUILD와
-서버 BUILD 및 revision head-wrists-4를 확인하고 VR에 재진입한다. 기존 탭에서 VR만 재진입하면
-이미 메모리에 있는 JS가 유지되므로 반드시 페이지를 새로고침한다. 필요하면 탭을 닫고 기본
-주소를 다시 연다. 긴 URL, 수동 query, 사이트 데이터 삭제, 표시 설정 초기화는 필요 없다.
+Release squeeze and exit Quest VR. After restarting the server, reload the default address
+`https://192.168.10.116:8765/` and Pair with the new PIN. In detailed diagnostics, verify CLIENT BUILD,
+server BUILD, and revision head-wrists-4, then re-enter VR. Re-entering VR in the old tab retains
+in-memory JS, so reload the page. If needed, close the tab and reopen the default
+address. Long URLs, manual queries, site-data deletion, and display-preference resets are unnecessary.
 
-실제 GET 핸들러의 `/`, build query가 붙은 세 JS 경로, `/version`, Cache-Control:no-store를
-소켓 없는 CPU 테스트로 검증한다. 실행 환경의 소켓 생성 제한 때문에 새 HTTP/TLS 서버를
-띄운 실통신 시험은 수행하지 않았다. 실제 Quest 가독성/캐스팅 범위는 실기 확인이 필요하다.
+Socket-free CPU tests exercise the actual GET handler for `/`, the three build-query JS paths, `/version`, and Cache-Control:no-store.
+A real HTTP/TLS communication test with a new server was not run because socket creation was restricted.
+Actual Quest readability/casting bounds require runtime checks.
 
-### head-wrists-5: 내부 여백 축소와 안쪽 연결 상태 바
+### head-wrists-5: Reduced Inner Margins and Inset Connectivity Bar
 
-조사 시 packet.xr_display는 head-wrists-4 / status_panel.rendered=true, y=52.48을 보고했다.
-상태 바 생성은 확인됐지만 실제 캐스팅 crop 영역은 확인되지 않았다. 새 상태 바는
-1024×1024 canvas의 x=108,y=96,w=808,h=40으로 내려 상단 여유를 둔다. 수신 이력이 없으면
-회색 '확인 중', 수신 후 판단은 기존 연결 판정을 사용한다. 알려진 입력 만료는 연결 안 됨이다.
+During inspection, packet.xr_display reported head-wrists-4 / status_panel.rendered=true, y=52.48.
+Bar creation was confirmed, but actual casting crop bounds were not. The new bar moves down to
+x=108,y=96,w=808,h=40 on the 1024×1024 canvas, leaving top clearance. Without receipt history,
+it shows gray 'Checking'; afterward it uses the existing connectivity decision. Known expired input means disconnected.
 
-HEAD는 (272,144)에 480×480, 좌우 WRIST는 (108,648)/(588,648)에 각각 328×328이다.
-이전 기본 배치의 약 462×462 / 257×257에서 확대했다. 제목은 HEAD 옆의 빈 공간 및
-영상 사이의 24px 간격에 두고 영상에 겹치지 않는다. 하단에는 48px 여유가 있다.
-전체 XR 배율·중심은 유지한다. 세 영상의 크기·간격은 이 고정 내부 배치를 사용하며
-기존 Inner margin 저장값은 이 레이아웃에는 적용하지 않는다. 센서/원본/제어는 변경하지 않는다.
+HEAD is 480×480 at (272,144); left/right WRIST are each 328×328 at (108,648)/(588,648).
+These increase from approximately 462×462 / 257×257 in the previous default layout. Labels occupy empty space beside HEAD
+and the 24 px image gap, without overlapping images. Bottom clearance is 48 px.
+Overall XR scale/center are retained. The three images use this fixed internal sizing/spacing;
+stored Inner margin does not apply to this layout. Sensors/source images/control are unchanged.
 
-미리보기: `logs/quest_diagnostics/layout_preview_v5/preview.html`을 PC 브라우저로 연다.
-현재 HUD 코드를 직접 사용하는 독립 HTML이며 카메라는 캡처 당시 프리뷰, 연결 상태는 예시다.
-실제 Quest 광학/캐스팅 crop을 재현한 것은 아니다. sandbox 제한으로 Chrome 스크린샷 실행은
-실패했으며 CPU 모의 렌더링과 HTML 구성만 검증했다.
+Preview: open `logs/quest_diagnostics/layout_preview_v5/preview.html` in a PC browser.
+This standalone HTML uses current HUD code directly, captured preview cameras, and example connectivity states.
+It does not reproduce actual Quest optics/casting crop. Chrome screenshot execution failed under sandbox restrictions;
+only CPU mocked rendering and HTML composition were validated.
 
-입력 서버는 build 갱신을 위해 정상 재시작 필요, teleop은 재시작 불필요하다.
-기본 HTTPS 주소에서 페이지 새로고침·새 PIN 페어링·VR 재진입 순서로 적용한다.
+The input server requires normal restart to refresh the build; teleop does not.
+Apply by reloading the default HTTPS page, pairing with a new PIN, and re-entering VR.
 
-### native-preview-rec-6: 원본 크기 전송과 실제 REC
+### native-preview-rec-6: Native-Resolution Transmission and Actual REC State
 
-원본 HEAD/LEFT WRIST/RIGHT WRIST는 런타임 stats와 B001_test_002 HDF5에서 모두 244×244 RGB다.
-기존 경로는 244→300(Pillow RGB 기본 BICUBIC)→960×936 합성 JPEG Q75(실측 4:2:0)→
-Quest 타일 300→HEAD480/WRIST328→1024 HUD 텍스처→눈별 viewport다. 텍스트는 HUD에 직접
-그려져 JPEG를 거치지 않는다. 저장된 .5 배율과 1680×1760 viewport에서는 HUD 1024가
-눈별 약840px로 표시되므로 HEAD는 약394px, 손목은 약269px다. Meta 재인코딩/crop은 미측정이다.
+Original HEAD/LEFT WRIST/RIGHT WRIST are 244×244 RGB in both runtime stats and B001_test_002 HDF5.
+Previous path: 244→300 (Pillow RGB default BICUBIC)→960×936 composite JPEG Q75 (measured 4:2:0)→
+Quest 300 tile→HEAD480/WRIST328→1024 HUD texture→per-eye viewport. Text is drawn directly on the HUD,
+without JPEG encoding. At saved .5 scale and 1680×1760 viewport, the 1024 HUD
+occupies approximately 840 px per eye, yielding HEAD approximately 394 px and wrists approximately 269 px. Meta re-encoding/crop is unmeasured.
 
-새 경로는 244px 전체 타일을 리사이즈 없이 768×256 atlas에 넣고 JPEG Q90/4:4:4로 전송한다.
-원본 타일 영역은 (6,6)/(262,6)/(518,6), 모두 244×244. Quest에서는 기존과 동일한 480/328px에
-한 번 확대한다. 샤프닝 없음. 센서·FOV·학습 관측·HDF5는 그대로다. overview 센서와 수집도
-유지하지만 표시하지 않는 overview 픽셀은 새 프리뷰에 전송하지 않는다. 기존 960×936 프리뷰도
-클라이언트가 읽을 수 있으나 새 선명도 개선과 실제 REC는 teleop 재시작이 필요하다.
+The new path packs full 244 px tiles without resizing into a 768×256 atlas, transmitted as JPEG Q90/4:4:4.
+Source tile origins are (6,6)/(262,6)/(518,6), all 244×244. Quest enlarges once to the same 480/328 px
+as before. No sharpening. Sensors/FOV/training observations/HDF5 are unchanged. Overview sensor/acquisition
+remain, but undisplayed overview pixels are omitted from the new preview. Clients can still read the old 960×936 preview,
+but the clarity improvement and actual REC state require teleop restart.
 
-REC는 DiagnosticRecorder.active만 읽는다(start에서 true, export/finish에서 false).
-RUNNING/record-dir 여부로 추정하지 않는다. 상태 프레임 만료 또는 recording 필드 없는
-구버전 producer는 '확인 중'이다. 세 영상과 연결 표시의 위치/크기는 유지한다.
+REC reads only DiagnosticRecorder.active (true at start, false at export/finish).
+It is not inferred from RUNNING or record-dir. Expired status frames or an older producer without recording
+show 'Checking'. Three-image and connectivity-indicator positions/sizes remain unchanged.
 
-같은 저장 원본 48프레임을 읽기 전용으로 비교한 결과는
-`logs/quest_diagnostics/quality_native_v6/report.json`과 `comparison.html`에 있다.
-표시 크기로 bilinear 확대하는 CPU 모델 PSNR 평균은 HEAD 42.12→47.96dB,
-LEFT 46.15→54.62dB, RIGHT 46.21→54.57dB. 실제 Quest 광학 측정은 아니다.
-CPU 합성+인코딩 중앙값은 기존10.37ms/새0.45ms, 새 전송량 중앙값21,139bytes였다.
-이 비교의 기존 overview는 검정 대체이므로 기존 전체 전송량/시간은 실시간 동등 비교가 아니다.
-변경 전 실제 bridge 3초 샘플에서는 새프레임10개, 프레임 간격 중앙값316ms, step150ms,
-전송량65,506bytes였다(live_before.json). 변경 후 실제 GPU/Quest 속도·지연은 미검증이다.
-`preview.json.timings.encoding`에 encode_ms/bytes/quality, Quest preview_status에
-bytes/decode_ms/fetch_decode_ms/frame_age_ms가 남아 적용 후 비교할 수 있다. 보호 timeout은 그대로다.
+Read-only comparison of the same 48 saved source frames is recorded in
+`logs/quest_diagnostics/quality_native_v6/report.json` and `comparison.html`.
+CPU-model mean PSNR with bilinear enlargement to display size: HEAD 42.12→47.96 dB,
+LEFT 46.15→54.62 dB, RIGHT 46.21→54.57 dB. These are not actual Quest optical measurements.
+Median CPU composition+encoding: previous 10.37 ms/new 0.45 ms; new median payload 21,139 bytes.
+Previous overview pixels were replaced with black in this comparison, so previous total payload/time is not a live-equivalent comparison.
+A pre-change actual bridge sample over 3 seconds showed 10 new frames, median frame interval 316 ms, step 150 ms,
+and payload 65,506 bytes (live_before.json). Post-change actual GPU/Quest speed/latency remain unverified.
+`preview.json.timings.encoding` records encode_ms/bytes/quality; Quest preview_status records
+bytes/decode_ms/fetch_decode_ms/frame_age_ms for post-application comparison. Protection timeouts are unchanged.
 
-244×244 자체의 세부정보 한계는 남는다. 더 높은 원본이 필요하면 학습 카메라를 바꾸는 대신
-별도 관찰 전용 고해상도 카메라를 검토할 수 있으나, GPU 비용과 FOV/pose 일치 검증이 필요하며
-이번에는 추가하지 않았다.
+The inherent detail limit of 244×244 remains. If higher source resolution is needed, a separate observation-only
+high-resolution camera could be considered instead of changing training cameras, but GPU cost and FOV/pose matching require validation;
+it was not added here.
 
-적용: 현재 teleop 정상 종료 → 입력 서버 정상 재시작 → 아래 teleop 실행 → Quest 페이지
-새로고침/새 PIN 페어링/VR 진입. 기록하지 않는 화질 확인 명령:
+Apply: exit current teleop normally → restart input server normally → run teleop below → reload Quest page,
+pair with new PIN, enter VR. Quality-check command without recording:
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
 python3 scripts/quest_diagnostic/server.py \
   --host 192.168.10.116 --port 8765 \
   --bridge-dir /home/mj/nrf_humanoid/cyclo_lab/logs/quest_teleop
 ```
-별도 터미널:
+In another terminal:
 ```bash
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   scripts/quest_diagnostic/teleop_toast.py \
@@ -974,7 +974,7 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   --operator operator_B --scenario_index 1 --seed 1 \
   --headless --keep-open --enable-grippers
 ```
-REC 실기 확인이 필요한 경우 위 teleop을 정상 종료한 뒤 아래를 대신 실행한다(중복 실행 금지).
+For actual REC verification, exit the above teleop normally, then run the following instead (no duplicate runs).
 ```bash
 QUEST_REC="B001_rec_status_$(date +%Y%m%d_%H%M%S)"
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -985,79 +985,79 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
   --record-dir "/workspace/cyclo_lab/datasets/quest_tests/$QUEST_REC" \
   --record-seconds 8
 ```
-WAITING NO REC → 양 squeeze 해제 후 X → 실제 기록 시작 후 빨간 REC → A 또는 8초 종료 후
-NO REC. 새 테스트 폴더에만 저장하며 기존 기록은 유지한다. 실제 REC/Quest 확인은 사용자가 수행한다.
+WAITING NO REC → release both squeezes and press X → red REC after actual recording starts → A or 8-second completion →
+NO REC. Save only to a new test folder; preserve existing recordings. The user performs actual REC/Quest checks.
 
-### practice-timing-7: 제한 있는 연습 범위와 양쪽 그리퍼 테스트 기록
+### practice-timing-7: Bounded Practice Workspace and Both-Gripper Test Recording
 
-이번 기능은 실제 토스트 연습을 위한 코드 준비 단계다. Quest 양팔/그리퍼 접촉, 확장 범위의
-IK 도달성, 새 VR 에피소드의 물리 replay는 아직 미검증이다. CPU 검증을 GPU 실기 검증으로
-해석하면 안 된다. 기존 시나리오·physics dt .01/decimation4/control dt .04/render_interval4,
-학습/기록 카메라 해상도·FOV·관측과 15D action 형식은 유지한다.
+This feature prepares code for actual toast practice. Quest bimanual/gripper contact, expanded-workspace
+IK reachability, and physics replay of new VR episodes remain unverified. CPU validation must not be
+interpreted as GPU runtime validation. Existing scenarios, physics dt .01/decimation4/control dt .04/render_interval4,
+training/recording camera resolution/FOV/observations, and 15D action format remain unchanged.
 
-조사 시 최신 `B001_rec_status_20261103_194138/dataset.hdf5`는 writer lock이 잡혀 있었다.
-원본 lock을 우회하거나 파일을 수정하지 않고, 크기/mtime이 복사 전후 안정적인 별도 스냅샷을
-읽었다. `logs/quest_diagnostics/practice_audit/latest_record_report.json` 기준 demo_0..8:
-50/51/6/50/50/50/50/50/49 = 406프레임, demo_2만 manual_stop, 나머지 short_test_duration.
-앱 exit_reason은 없고 sidecar는 아직 초기 값이므로 앱 정상 종료/종료코드는 확인되지 않았다.
-HDF5의 에피소드 export와 프로그램 종료는 별개다. 원본을 최종 확인하려면 사용자 터미널에서
-정상 종료한 뒤 읽어야 한다. 기존 기록의 양 그리퍼 명령은 모두 +1(열림)이었다.
+At inspection, the latest `B001_rec_status_20261103_194138/dataset.hdf5` held a writer lock.
+Without bypassing the original lock or modifying the file, a separate snapshot whose size/mtime were stable across copying
+was read. Per `logs/quest_diagnostics/practice_audit/latest_record_report.json`, demo_0..8 had
+50/51/6/50/50/50/50/50/49 = 406 frames; only demo_2 was manual_stop, the rest short_test_duration.
+No app exit_reason existed and the sidecar remained at initial values, so normal app exit/exit code were unconfirmed.
+HDF5 episode export is separate from program exit. For final inspection of the original, read it after
+normal shutdown in the user's terminal. Both gripper commands in existing recordings were always +1 (open).
 
-8초 제한은 time.monotonic 기반 wall time이다. 이 실행의 8초 에피소드는 약 49~51 control
-steps = 1.96~2.04 simulation seconds, 대략 0.24배속이었다. 새 --record-seconds 0은 A/원래
-환경 종료 조건까지 기록한다. 기본값8은 보존한다. 원래 240 simulation-second timeout도 유지한다.
+The 8-second limit is time.monotonic wall time. In this run, an 8-second episode produced approximately 49–51 control
+steps = 1.96–2.04 simulation seconds, about 0.24× real time. New --record-seconds 0 records until A/original
+environment termination. Default 8 remains, as does the original 240 simulation-second timeout.
 
-성능 표본은 WAITING과 RUNNING을 구분한다. 실시간 WAITING 8초 표본은 40 preview frames,
-median 생성간격200ms, render-only step17.3ms, encode0.91ms, Quest fetch+decode31.9ms,
-decode2.7ms, frame age206ms였다. 기존 RUNNING 기록의 0.24배속과 혼동하지 않는다.
-기존 로그만으로 physics/render/관측의 분담이나 Quest photon latency는 알 수 없다.
-새 PerformanceProbe는 추가 physics/render/GPU synchronization 없이 원래 호출을 한 번씩
-위임하고 wall time을 측정한다. 렌더/physics/관측은 GPU 비동기 처리 때문에 inclusive CPU
-시간이며 합산 GPU profile이 아니다. 수신→process_action/첫 apply_action/첫 physics 진입을
-같은 host monotonic clock으로 기록한다. Quest→서버 단방향 지연은 시계 동기화가 없어 미측정이다.
+Performance samples distinguish WAITING and RUNNING. An 8-second live WAITING sample had 40 preview frames,
+median production interval 200 ms, render-only step 17.3 ms, encode 0.91 ms, Quest fetch+decode 31.9 ms,
+decode 2.7 ms, and frame age 206 ms. Do not confuse this with the previous RUNNING recording at 0.24× real time.
+Existing logs alone cannot separate physics/render/observation costs or establish Quest photon latency.
+The new PerformanceProbe delegates each original call once and measures wall time without extra physics/render/GPU synchronization.
+Render/physics/observation timings are inclusive CPU times due to asynchronous GPU processing,
+not an additive GPU profile. Receipt→process_action/first apply_action/first physics entry use
+the same host monotonic clock. Quest→server one-way latency is unmeasured without clock synchronization.
 
-표시 개선: producer 상한을 --preview-hz 15(1~25 조절)로, 브라우저 poll을100ms로 변경했다.
-실제 속도는 env.step/네트워크에 제한된다. 더 느린 step에서는 15FPS를 보장하지 않는다.
-보이지 않는 overview CPU 읽기/복사는 생략하지만 센서와 설정은 보존한다. WAITING 렌더는
-프리뷰가 필요한 때만 실행한다. RUNNING의 physics/render/관측 계산은 생략하지 않는다.
-현재 스냅샷은 pose를 읽은 뒤 제어 직전에 다시 읽어 오래된 reset 전 입력을 쓰지 않는다.
-기존250ms 입력/1s 영상/250ms loop-gap 차단과 source 교체 재해제 요구는 유지한다.
+Display improvements: producer cap changed to --preview-hz 15 (adjustable 1–25), browser polling to 100 ms.
+Actual rate is limited by env.step/network; 15 FPS is not guaranteed with slower steps.
+Undisplayed overview CPU reads/copies are skipped while retaining its sensor/configuration. WAITING renders
+only when a preview is needed. RUNNING physics/render/observation computation is not skipped.
+The input snapshot is reread immediately before control after reading poses, avoiding stale pre-reset input.
+Existing 250 ms input/1 s video/250 ms loop-gap guards and release requirements on source changes remain.
 
-연습 프리셋(`--control-profile practice`):
-- 초기 손목 기준 구형 이동 범위 .55m / 회전120도, 위치 배율 .5 / 회전 배율 .75.
-- 고정 workspace(로봇 root 좌표) x=[.1,.85], y=[-.85,.85], z=[1.02,1.8]m.
-- 목표는 측정 손목보다 최대4cm/15도만 앞서도록 추가 제한. 기존8cm 추종 오류 종료도 유지.
-- action 보정 속도 .10m/simulation-second, .8rad/simulation-second. wall 속도는 sim 배속에 비례.
+Practice preset (`--control-profile practice`):
+- Spherical translation range .55 m / rotation 120° from initial wrist; position scale .5 / rotation scale .75.
+- Fixed workspace (robot-root frame): x=[.1,.85], y=[-.85,.85], z=[1.02,1.8] m.
+- Additional target-lead limit: at most 4 cm/15° ahead of measured wrist. Existing 8 cm tracking-error termination remains.
+- Action correction speed .10 m/simulation-second, .8 rad/simulation-second. Wall-clock speed scales with simulation rate.
 - --max-translation(.01~.75), --max-rotation-deg(1~180), --position-scale(.05~1),
-  --rotation-scale(.05~1.5), --linear-speed(.01~.15), --angular-speed(.05~1.5)로 조절 가능.
-- 기본 diagnostic 프리셋은 기존5cm/15도/.25/.5와 속도를 유지한다. 무제한 옵션은 없다.
+  Adjustable via --rotation-scale(.05–1.5), --linear-speed(.01–.15), --angular-speed(.05–1.5).
+- Default diagnostic preset retains the existing 5 cm/15°/.25/.5 and speed settings. No unlimited option.
 
-B001 초기 오른손목은 기록 obs에서 (.36094,-.39541,1.44191)m, 빵 중심은
-약(.45,-.46~-.31,1.0932)m이다. 손목~중심 거리 .360~.369m, 왼손 미러 기준은 .795~.929m다.
-이 수치는 grasp offset이나 IK 충돌 해법을 증명하지 않는다. .55m 범위는 오른손 접근과 중앙
-handover를 위한 범위이며 왼손이 선반의 빵까지 직접 닿는 범위가 아니다. 오른손으로 접근·집기,
-중앙에서 왼손 인계 후 토스터 접근을 연습한다. WORKSPACE_RESET 로그는 매 reset의 실제
-양손목·빵 중심 root 좌표와 거리를 남긴다. 목표 제한 도달과 IK 추종 오차는 diagnostic log로 구분한다.
+Recorded B001 observations place the initial right wrist at (.36094,-.39541,1.44191) m and bread centers
+approximately (.45,-.46–-.31,1.0932) m. Wrist-to-center distances are .360–.369 m; mirrored left-wrist distances are .795–.929 m.
+These values do not establish grasp offsets or collision-free IK solutions. The .55 m range supports right-hand approach and central
+handover, not direct left-hand reach to rack bread. Practice right-hand approach/grasp,
+central handover to the left, then toaster approach. WORKSPACE_RESET logs actual root-frame
+wrist/bread-center coordinates and distances at every reset. Diagnostic logs distinguish target limits from IK tracking error.
 
-기록의 gripper 금지는 최초 진단용 validate_recording_args 제한이었으며 물리/action 제약이
-아니었다. 이를 제거했다(--preview-only 기록은 여전히 금지). 현재 trigger0..1은 gripper
-+1..-1로, action index12/13에 독립 저장된다. CoupledGripperPositionAction은 +1→joint0,
--1→joint1.10의 연속 개방량을 사용한다. squeeze 활성 중에만 변경되고 해제 시 마지막 목표를 유지한다.
-실제 DiagnosticRecorder + vendored HDF5 writer/loader + get_next_action + 실제 task의
-그리퍼 분리/처리 메서드를 사용한 21프레임 CPU 시험이 통과했다. 결과는
-`logs/quest_diagnostics/practice_audit/gripper_contract/`이며 synthetic CPU fixture다.
-물리 replay용 데이터가 아니므로 실제 demo로 제출하지 않는다. 새 실제 데이터는 기존과 같이
-quest_tests의 diagnostic 데이터이며 success=False, task_success_observed를 별도로 보존한다.
+The recording gripper prohibition was an initial diagnostic validate_recording_args restriction, not a physics/action constraint.
+It was removed (--preview-only recording remains forbidden). Trigger 0..1 now maps to gripper
++1..-1, stored independently at action indices 12/13. CoupledGripperPositionAction uses continuous opening with +1→joint0,
+-1→joint1.10. Targets change only while squeeze is active and remain held on release.
+A 21-frame CPU test passed using the actual DiagnosticRecorder, vendored HDF5 writer/loader, get_next_action,
+and actual task gripper splitting/processing methods. Results are in
+`logs/quest_diagnostics/practice_audit/gripper_contract/` and use synthetic CPU fixtures.
+These are not physics-replay data and must not be submitted as actual demonstrations. New actual recordings remain
+quest_tests diagnostic data with success=False and separately preserved task_success_observed.
 
-적용: 기존 teleop을 해당 터미널 Ctrl+C로 정상 종료하고 종료코드를 확인한다. 다른 작업은 종료하지
-않는다. 입력 서버도 기존 터미널에서 정상 종료 후 아래를 실행한다. 별도 cert/key가 있으면 유지한다.
+Apply by exiting existing teleop normally with Ctrl+C in its terminal and checking the exit code. Do not stop other jobs.
+Exit the input server normally in its own terminal, then run below. Retain separate cert/key options if used.
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
 python3 scripts/quest_diagnostic/server.py \
   --host 192.168.10.116 --port 8765 \
   --bridge-dir /home/mj/nrf_humanoid/cyclo_lab/logs/quest_teleop
 ```
-무기록 연습(별도 터미널, 이전 teleop 종료 후 하나만 실행):
+Practice without recording (separate terminal, one run after the previous teleop exits):
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
 QUEST_RUN="practice_$(date +%Y%m%d_%H%M%S)"
@@ -1073,7 +1073,7 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
 QUEST_EXIT=${PIPESTATUS[0]}
 echo "DOCKER_EXEC_EXIT=$QUEST_EXIT"
 ```
-실제 양팔/그리퍼 테스트 기록(위 연습 종료 후 대신 실행; 새 디렉터리):
+Actual bimanual/gripper test recording (run instead after practice exits; new directory):
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
 QUEST_RECORD="B001_practice_$(date +%Y%m%d_%H%M%S)"
@@ -1090,20 +1090,20 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
 QUEST_EXIT=${PIPESTATUS[0]}
 echo "DOCKER_EXEC_EXIT=$QUEST_EXIT"
 ```
-Quest 기본 HTTPS 주소 새로고침→새 PIN→VR. 양 squeeze를 놓고 정면을 본 상태에서 X.
-오른쪽 squeeze를 누르고 작은 이동부터 확인한다. trigger 해제=열기, 누름=닫기(squeeze 활성 중).
-입력/영상 손실 후 양 squeeze를 놓고 재입력한다. A는 물리 진행 중지·WAITING(기록 중이면 저장).
-X는 같은 시나리오 reset 후 새 에피소드이며 resume이 아니다. 첫 새 기록은 5~10초 동작 후 A로
-마감해 action replay를 먼저 검증한다. 실제 잡기/인계 성공은 별도 실기 확인이다.
+Reload the default Quest HTTPS address→new PIN→VR. Release both squeezes, look forward, then press X.
+Hold right squeeze and start with small movements. Trigger release=open, press=close (while squeeze is active).
+After input/video loss, release both squeezes and re-engage. A stops physics advancement and enters WAITING (saving if recording).
+X resets the same scenario for a new episode, not a resume. For the first new recording, act for 5–10 seconds, then use A
+to finish and validate action replay first. Actual grasp/handover success requires separate runtime verification.
 
-RUNNING 중 별도 PC 터미널에서 read-only 측정:
+Read-only measurement from another PC terminal during RUNNING:
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
 python3 scripts/quest_diagnostic/sample_performance.py \
   --bridge-dir logs/quest_teleop --seconds 15 \
   --output "logs/quest_diagnostics/performance_$(date +%Y%m%d_%H%M%S).json"
 ```
-기록한 teleop을 정상 종료한 뒤 같은 터미널의 QUEST_RECORD 변수로 replay한다.
+After recorded teleop exits normally, replay using QUEST_RECORD in the same terminal.
 ```bash
 set -o pipefail
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -1118,81 +1118,81 @@ echo "DOCKER_EXEC_EXIT=$QUEST_REPLAY_EXIT"
 EOF の代わりに終了コード0・checked=expected・mismatched=0を確認する。許容差0.01や
 接皿フィールド除外は変更していない。実機GPUでこの新記録を再生する検証は未実施。
 
-### practice-response-8: 선택 가능한 제한과 해제 시 목표 취소
+### practice-response-8: Selectable Limits and Target Cancellation on Release
 
-이 절은 이전 practice 프리셋 설명을 대체한다. HEAD/WRIST/연결/REC 배치는 그대로다.
-원본 scenario/physics dt/관절·actuator/IK/camera/학습 관측/HDF5 형식은 변경하지 않았다.
-GPU 접근은 현재 도구의 Docker socket 권한 거부로 불가했다. 기존 GPU 실행 로그는 분석했지만
-새 코드의 GPU 응답/무접촉 개도/실기 기록/replay는 수행하지 못했다. CPU 검증을 대체 증거로
-쓰지 않는다. 다른 프로젝트 작업이나 실행 중인 서버/teleop은 종료하지 않았다.
+This section supersedes the previous practice-preset description. HEAD/WRIST/connectivity/REC layout is unchanged.
+Original scenarios, physics dt, joints/actuators/IK/cameras/training observations/HDF5 format were unchanged.
+GPU access was blocked by Docker socket permissions in the current tools. Existing GPU logs were analyzed,
+but new-code GPU response, contact-free opening, runtime recording/replay could not be tested. CPU validation is not
+substitute evidence. Other project jobs and running servers/teleop were not stopped.
 
-`logs/quest_diagnostics/practice_20261103_202046/decisions.jsonl` RUNNING만 분석:
-510단계, 유효 인접 구간 simulation20.24s/wall85.23s=0.23747배속. 중앙값 step164.22ms,
+Analysis restricted to RUNNING in `logs/quest_diagnostics/practice_20261103_202046/decisions.jsonl`:
+510 steps; valid adjacent intervals simulation 20.24 s/wall 85.23 s=0.23747× real time. Median step 164.22 ms,
 physics_call61.47ms, apply_action30.62ms, render_call22.06ms, observations9.65ms,
-scene_update10.32ms, process_action4.83ms. 비동기 GPU 비용이 뒤 호출에 나타날 수 있는
-inclusive CPU wall timing이며 GPU 전용 프로파일이 아니다. 무기록 실행이므로 실제 기록 비용은
-미측정이다(이번 버전은 recorder pre/post/export hook 시간도 추가 계측).
+scene_update 10.32 ms, process_action 4.83 ms. These are inclusive CPU wall timings where asynchronous GPU work
+may appear in subsequent calls, not a GPU-only profile. Recording cost is unmeasured because this run did not record
+(this version additionally instruments recorder pre/post/export hooks).
 
-수신→process27.71ms/첫 apply33.34ms/첫 physics 진입43.81ms. preview167.68ms,
-readback0.72ms, encode0.87ms, Quest fetch+decode36.4ms(그중decode2.7ms), frame age157.67ms.
-Quest clock과 host clock은 동기화하지 않았으므로 단방향 네트워크/입력→광자 지연은 알 수 없다.
-이 로그의 active 제어 샘플은0이었다. 유효 source의 squeeze는 모두0, 대부분 나머지는
-hand source 제외/기준 대기였다. 따라서 속도 포화율·active 추종오차·그리퍼 실제 응답을
-계산할 자료가 없다. 이것은 사용자가 다른 시점에 조작하지 않았다는 뜻이 아니다.
-결과는 `logs/quest_diagnostics/response_v8/before.json`에 보존했다.
+Receipt→process 27.71 ms/first apply 33.34 ms/first physics entry 43.81 ms. Preview 167.68 ms,
+readback 0.72 ms, encode 0.87 ms, Quest fetch+decode 36.4 ms (including decode 2.7 ms), frame age 157.67 ms.
+Quest/host clocks were not synchronized, so one-way network/input-to-photon latency is unknown.
+This log contained 0 active-control samples. All valid-source squeeze values were 0; most remaining samples
+were excluded hand sources or awaiting reference. Thus velocity saturation, active tracking error, and actual gripper response
+cannot be computed. This does not imply the user never operated at other times.
+Results are preserved in `logs/quest_diagnostics/response_v8/before.json`.
 
-기존 speed cap은 목표 생성 속도가 아니라 action()에서 `오차를 speed*simulation_dt로 절단`
-하는 보정 제한이었다. .10m/sim-second × .237배속 ≈ .0237m/wall-second다.
-기존 practice는 squeeze 해제 후에도 남은 목표를 action()으로 계속 추종했다.
-새 practice는 release/중간 squeeze/무효입력/영상만료/loop-gap/source교체 시 목표를 현재 측정
-자세로 갱신하고 팔 Cartesian action을0으로 보낸다. 실제 물리 관성이나 기존 null-space 자세
-보정까지 순간 정지시킨다는 뜻은 아니다. 재clutch 첫 프레임도 측정 자세 기준으로 anchor를
-잡아 과거 목표를 되살리지 않는다. diagnostic의 기존 목표 유지 동작은 보존했다.
+The old speed cap did not limit target-generation speed; action() instead `clipped error to speed*simulation_dt`.
+Thus .10 m/sim-second × .237× real time ≈ .0237 m/wall-second.
+Previous practice continued tracking the remaining target through action() after squeeze release.
+New practice updates targets to the current measured pose on release/intermediate squeeze/invalid input/video expiry/loop gap/source change,
+and sends arm Cartesian action 0. This does not instantaneously stop physical inertia or existing null-space posture
+correction. The first re-clutch frame also anchors to measured pose rather than restoring old targets.
+Diagnostic mode retains its existing target-hold behavior.
 
-새 옵션(새 제한 해제 옵션은 practice에서만 허용; diagnostic 사용 시 오류):
-- --no-home-limits: 초기 기준 .55m/120도 한계만 제거. --max-translation/--max-rotation-deg와 중복 금지.
-- --no-speed-limits: teleop 선속도/각속도 action 보정 cap 제거. --linear-speed/--angular-speed와 중복 금지.
-- --workspace off: 임의의 table box를 사용하지 않음. 기본table은 이전 box 유지.
-- --no-target-lead: 병진/회전 선행 cap 제거. 첫 실기 비교에서는 권장하지 않으며 선행값 옵션과 중복 금지.
-- --max-target-lead .01~.5m(기본 .12), --max-angular-lead-deg 1~120(기본45).
-- --position-scale .05~1(기본 practice1/diagnostic.25), --rotation-scale .05~1.5(기본 practice1/diagnostic.5).
-- 유한 home 옵션 .01~.75m / 1~180도; 유한 speed 옵션 .01~.15m/sim-second / .05~1.5rad/sim-second.
-- --tracking-stall-seconds .5~10 wall seconds, 기본2.
+New options (new limit-disabling options are allowed only in practice; diagnostic mode raises an error):
+- --no-home-limits: removes only initial-reference .55 m/120° limits; incompatible with --max-translation/--max-rotation-deg.
+- --no-speed-limits: removes teleop linear/angular action-correction caps; incompatible with --linear-speed/--angular-speed.
+- --workspace off: omits the arbitrary table box. Default table retains the previous box.
+- --no-target-lead: removes translation/rotation lead caps. Not recommended for the first runtime comparison; incompatible with lead-value options.
+- --max-target-lead .01–.5 m (default .12), --max-angular-lead-deg 1–120 (default 45).
+- --position-scale .05–1 (default practice 1/diagnostic .25), --rotation-scale .05–1.5 (default practice 1/diagnostic .5).
+- Finite home options .01–.75 m / 1–180°; finite speed options .01–.15 m/sim-second / .05–1.5 rad/sim-second.
+- --tracking-stall-seconds .5–10 wall seconds, default 2.
 
-practice의 추종오차는 >8cm 또는 >30도여도 즉시 종료하지 않는다. 목표가 약2cm/5도 이내로
-유지되고, 오차 결합척도(distance + .1*angle)가2mm 이상 줄어들지 않는 상태가 지정 wall time과
-최소5제어샘플 동안 지속되면 해당 에피소드를 마감하고 WAITING으로 전환한다. 계속 진전하는
-정상 지연과 구분한다. >.6m 또는 >170도는 큰 불연속으로 해당 목표를 IK에 보내기 전에 중지한다.
-A는 즉시 WAITING, 새 X는 reset이다. 250ms 입력/loop-gap, 영상 freshness, Touch Plus 판정,
-재연결 squeeze 재해제, 관절·구동 한계, IK는 유지한다. 유효한 목표가 무한정 도달 가능하다는 뜻이 아니다.
+Practice no longer exits immediately for tracking error >8 cm or >30°. If the target remains within approximately 2 cm/5°,
+and combined error (distance + .1*angle) fails to decrease by at least 2 mm for the specified wall time
+and at least 5 control samples, the episode ends and enters WAITING. This distinguishes stalls from ordinary lag
+with continuing progress. Discontinuities >.6 m or >170° stop control before that target reaches IK.
+A immediately enters WAITING; a new X resets. The 250 ms input/loop-gap guard, video freshness, Touch Plus check,
+squeeze release after reconnection, joint/actuator limits, and IK remain. Valid targets are not necessarily indefinitely reachable.
 
-그리퍼는 기존 CoupledGripperPositionAction으로 연속 제어다. trigger 0/.25/.5/.75/1 →
-action +1/+.5/0/-.5/-1 → 각 linkage joint 목표0/.275/.55/.825/1.10rad.
-master 설정: 속도2.2rad/s, effort30, stiffness100, damping4.
-slave 설정: effort20, task에서 stiffness100/damping4로 설정. slave velocity_limit_sim=None을
-무한대나 특정 PhysX 속도로 해석하지 않는다. 시작 로그 GRIPPER_CONFIGURATION에 runtime
-joint velocity limit buffer와 설정을 구분해 남긴다. 물리 속도/접촉은 그대로다.
-squeeze 해제 중 마지막 gripper 목표 유지. practice 재clutch에서는 현재 trigger를 첫 프레임에
-반영한다(이전 버전은 첫 anchor 다음 프레임). action 의미/학습·replay index는 바꾸지 않는다.
+Grippers retain continuous control through CoupledGripperPositionAction: trigger 0/.25/.5/.75/1 →
+action +1/+.5/0/-.5/-1 → each linkage-joint target 0/.275/.55/.825/1.10 rad.
+Master settings: velocity 2.2 rad/s, effort 30, stiffness 100, damping 4.
+Slave settings: effort 20, task stiffness 100/damping 4. Slave velocity_limit_sim=None is not interpreted as
+infinite or a specific PhysX velocity. Startup GRIPPER_CONFIGURATION distinguishes runtime
+joint-velocity-limit buffers from configuration values. Physical velocity/contact settings are unchanged.
+The last gripper target is held while squeeze is released. Practice re-clutch applies the current trigger on the first frame
+(previously the frame after anchoring). Action semantics/training/replay indices are unchanged.
 
-진단에는 최대2Hz로 양쪽8관절 실제각/목표각/속도를 한 번에 읽는다. 매 프레임 새 GPU 동기화를
-추가하지 않는다. 이는 관절 기반 개도이며 mm 단위 손가락 간격 측정이 아니다. trace의 기존
-측정 손목과 새 measured_sample_monotonic, target_generated_monotonic, action, limits_hit로
-명령/측정 시점을 비교할 수 있다. recorder hook 시간도 추가했다. CPU action/기록/로더
-21프레임 왕복은 `logs/quest_diagnostics/response_v8/gripper_contract/`에 있으며 synthetic fixture다.
-GPU demonstration으로 제출하지 않는다.
+Diagnostics read actual/target angles and velocities for all 8 joints across both grippers together at at most 2 Hz, without
+adding GPU synchronization every frame. This is joint-based opening, not finger-gap measurement in mm. Trace fields
+for existing measured wrists plus measured_sample_monotonic, target_generated_monotonic, action, and limits_hit
+support command/measurement timing comparison. Recorder-hook timings were also added. The CPU action/recording/loader
+21-frame round trip in `logs/quest_diagnostics/response_v8/gripper_contract/` uses synthetic fixtures.
+Do not submit it as a GPU demonstration.
 
-적용 시 기존 teleop·서버를 각각 해당 터미널에서 Ctrl+C로 정상 종료한다. 아래 GPU 명령은
-동시에 실행하지 않는다. 다른 프로젝트는 유지한다.
+To apply, normally stop existing teleop/server with Ctrl+C in their respective terminals. Do not run the GPU commands below
+concurrently. Keep other projects running.
 
-입력 서버:
+Input server:
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
 python3 scripts/quest_diagnostic/server.py \
   --host 192.168.10.116 --port 8765 \
   --bridge-dir /home/mj/nrf_humanoid/cyclo_lab/logs/quest_teleop
 ```
-무기록 연습:
+Practice without recording:
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
 QUEST_RUN="response_$(date +%Y%m%d_%H%M%S)"
@@ -1210,7 +1210,7 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
 QUEST_EXIT=${PIPESTATUS[0]}
 echo "DOCKER_EXEC_EXIT=$QUEST_EXIT"
 ```
-짧은 테스트 기록(위 실행 종료 후 새 경로):
+Short test recording (new path after the above run exits):
 ```bash
 cd /home/mj/nrf_humanoid/cyclo_lab
 QUEST_RECORD="B001_response_$(date +%Y%m%d_%H%M%S)"
@@ -1229,20 +1229,20 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
 QUEST_EXIT=${PIPESTATUS[0]}
 echo "DOCKER_EXEC_EXIT=$QUEST_EXIT"
 ```
-Quest 기본주소 https://192.168.10.116:8765/ 새로고침→새 PIN→VR. 양쪽 grip(squeeze)을 놓고
-정면에서 X. 한쪽씩 squeeze를 누른 채2~3cm 이동→놓고2초→다른 위치에서 재clutch→양쪽 반복.
-오류가 없을 때10~20cm 이동으로 확장. 물체와 접촉하지 않는 위치에서 trigger를 단계적으로
-눌러 중간값을2초 유지하고 squeeze 해제/재입력도 확인. 정확한5개 raw값 시험은 CPU만 통과했다.
-VR을 잠시 종료해 입력 만료 후 복구 시 재해제가 필요한지 확인. A로 종료·저장, Ctrl+C로 앱 종료.
-중간 목표가 남아 뒤늦게 이동하는지와 실제 개도는 이 실기 결과로 확인해야 한다.
+Reload Quest's default https://192.168.10.116:8765/→new PIN→VR. Release both grip(squeeze) buttons,
+look forward, and press X. One hand at a time: squeeze and move 2–3 cm→release for 2 seconds→re-clutch elsewhere→repeat for both sides.
+If no errors occur, expand to 10–20 cm. Away from object contact, press trigger incrementally,
+hold intermediate values for 2 seconds, and test squeeze release/re-engagement. Exact 5-value raw-input tests passed only on CPU.
+Briefly exit VR; verify release is required after input expiry/recovery. A finishes/saves; Ctrl+C exits the app.
+These runtime results must establish whether residual targets cause delayed motion and confirm actual opening.
 
-실행이 끝난 trace 분석(무기록이면 QUEST_RECORD 대신 QUEST_RUN):
+Analyze the completed trace (use QUEST_RUN instead of QUEST_RECORD without recording):
 ```bash
 python3 scripts/quest_diagnostic/analyze_response.py \
   --log "logs/quest_diagnostics/$QUEST_RECORD/decisions.jsonl" \
   --output "logs/quest_diagnostics/$QUEST_RECORD/analysis.json"
 ```
-teleop/HDF5 종료 후 실제 action replay:
+Actual action replay after teleop/HDF5 shutdown:
 ```bash
 set -o pipefail
 docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
@@ -1254,4 +1254,4 @@ docker exec -it -w /workspace/cyclo_lab cyclo_lab /isaac-sim/python.sh \
 QUEST_REPLAY_EXIT=${PIPESTATUS[0]}
 echo "DOCKER_EXEC_EXIT=$QUEST_REPLAY_EXIT"
 ```
-실측 before/after 비교와 checked=expected/mismatched=0/종료코드0은 아직 충족되지 않았다.
+Measured before/after comparison and checked=expected/mismatched=0/exit code 0 have not yet been achieved.

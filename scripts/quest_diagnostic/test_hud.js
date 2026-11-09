@@ -46,7 +46,7 @@ function runHUDRenderTests(){
  const iy=images[0][6];
  assert(panel.y>=0&&panel.y+panel.h<iy&&panel.x>=0&&panel.x+panel.w<=1024,'status overlaps image or leaves panel');
  assert(draw.info.status_panel.lines<=2,'compact status grew beyond two lines');
- assert(texts.some(t=>t[0]==='왼쪽: 확인 중'),'missing connectivity hides bar');
+ assert(texts.some(t=>t[0]==='Left: Checking'),'missing connectivity hides bar');
  draw(views,layer,hands,'ACK OK',image,true,210,{stage:'decoded'},'test-build');
  assert(draw.info.status_panel?.rendered,'panel diagnostics lost between canvas updates');
  assert(viewports[0].join()==='0,0,1400,1600'&&viewports[1].join()==='1500,40,1450,1550','framebuffer/eye mix-up');
@@ -57,7 +57,7 @@ function runHUDRenderTests(){
  assert(images[1][7]===images[2][7]&&images[0][7]>images[1][7],'HEAD not large or wrists unequal');
  assert(['TL','TR','BL','BR'].every(n=>texts.some(t=>t[0]===n))&&events.some(e=>e[0]==='border'),'missing calibration marks');
  assert(!draw(views,layer,hands,'ACK OK',image,false,400,{stage:'stale'},'test-build'),'stale preview acknowledged');
- assert(texts.some(t=>t[0].includes('영상 수신 대기')),'stale video hidden');
+ assert(texts.some(t=>t[0].includes('Waiting for video')),'stale video hidden');
  const nativeStart=images.length;
  assert(draw(views,layer,hands,'ACK OK',{width:768,height:256},true,500,{stage:'decoded'},'test-build',{recording:true},{}),'native preview not acknowledged');
  assert(images.slice(nativeStart).length===3&&images.slice(nativeStart).every(a=>a[3]===244&&a[4]===244),'native draw used legacy crop');
@@ -85,7 +85,7 @@ function runHUDPersistenceTests(){
  raw='{broken';assert(loadHUDPreferences(storage).state.mode==='casting','bad JSON fallback');count++;
  raw=JSON.stringify({schema:99});assert(loadHUDPreferences(storage).state.profiles.casting.centerX===.24,'schema fallback');count++;
  const denied={getItem(){throw Error('blocked');},setItem(){throw Error('quota');}};
- assert(loadHUDPreferences(denied).status.includes('실패')&&saveHUDPreferences(state,denied).includes('실패'),'storage denial hidden');count++;
+ assert(loadHUDPreferences(denied).status.includes('Failed')&&saveHUDPreferences(state,denied).includes('Failed'),'storage denial hidden');count++;
  return count;
 }
 
@@ -113,14 +113,14 @@ function runControlStatusTests(){
  const status={version:1,episode_state:'WAITING',live:true,hands:{left:h,right:{...h}},start_blocked:true,
    start_blockers:['input_stale','preview_unconfirmed','left:squeeze_held','right:squeeze_held']};
  let lines=teleopStatusLines(status,true).join('');
- assert(lines.includes('WAITING')&&lines.includes('SQ ON 1.00')&&!lines.includes('팔 조작 중'),'button misrepresented as control');
- assert(['START_BLOCKED','입력 오래됨','최신 영상 표시 확인 없음','좌 squeeze','우 squeeze'].every(s=>lines.includes(s)),'lost blocking condition');
+ assert(lines.includes('WAITING')&&lines.includes('SQ ON 1.00')&&!lines.includes('Arm active'),'button misrepresented as control');
+ assert(['START_BLOCKED','Stale/missing input','Fresh video display unconfirmed','L Release squeeze','R Release squeeze'].every(s=>lines.includes(s)),'lost blocking condition');
  status.episode_state='RUNNING';h.active=true;h.control_reason='active';
- assert(teleopStatusLines(status,true).join('').includes('좌 입력 유효 | 팔 조작 중'),'actual verdict missing');
- assert(!teleopStatusLines(status,false).join('').includes('좌 입력 유효 | 팔 조작 중'),'stale active verdict');
- assert(teleopStatusLines(null,true)[0].includes('미수신'),'old producer invents state');
+ assert(teleopStatusLines(status,true).join('').includes('L Input Valid | Arm active'),'actual verdict missing');
+ assert(!teleopStatusLines(status,false).join('').includes('L Input Valid | Arm active'),'stale active verdict');
+ assert(teleopStatusLines(null,true)[0].includes('received'),'old producer invents state');
  status.live=false;
- assert(teleopStatusLines(status,true)[1].includes('입력 끊김'),'input loss hidden by button');
+ assert(teleopStatusLines(status,true)[1].includes('Input lost'),'input loss hidden by button');
  return 6;
 }
 
@@ -130,12 +130,12 @@ function runCompactStatusTests(){
  const s={version:1,episode_state:'WAITING',live:true,hands:{left:h,right:{...h}},
    start_blockers:['left:squeeze_held','right:squeeze_held','left:invalid']};
  let rows=compactStatusLines(s,true);
- assert(rows.length===2&&rows[0].includes('좌 대기 SQ1.0/TR0.7')&&!rows[0].includes('조작 중'),'buttons imply movement');
- assert(rows[1].includes('왼손·오른손')&&!rows[1].includes('invalid'),'blocking summary');
+ assert(rows.length===2&&rows[0].includes('L Waiting SQ1.0/TR0.7')&&!rows[0].includes('Active'),'buttons imply movement');
+ assert(rows[1].includes('Left hand·Right hand')&&!rows[1].includes('invalid'),'blocking summary');
  s.episode_state='RUNNING';h.active=true;
  rows=compactStatusLines(s,true);
- assert(rows.length===1&&rows[0].includes('좌 조작 중')&&rows[0].includes('우 준비'),'actual control not shown');
- assert(compactStatusLines(s,false).length<=2&&!compactStatusLines(s,false).join('').includes('좌 조작 중'),'stale active status');
+ assert(rows.length===1&&rows[0].includes('L Active')&&rows[0].includes('R Ready'),'actual control not shown');
+ assert(compactStatusLines(s,false).length<=2&&!compactStatusLines(s,false).join('').includes('L Active'),'stale active status');
  assert(compactStatusLines(null,true).length<=2,'missing status too long');
  assert(!rows.join('').match(/build|revision|ms|focus/),'detail leaked into compact view');
  return 6;
@@ -177,10 +177,10 @@ function runNativeRecordingTests(){
  const old=cameraTiles(false),native=cameraTiles(true);
  assert(native.every((t,i)=>t.destination.join()===old[i].destination.join()),'layout changed');
  assert(native.every(t=>t.source[2]===244&&t.source[3]===244)&&native[2].source[0]===518,'native ROI cropped');
- assert(recordingBadge({episode_state:'RUNNING'},true).text==='확인 중','RUNNING inferred recording');
+ assert(recordingBadge({episode_state:'RUNNING'},true).text==='Checking','RUNNING inferred recording');
  assert(recordingBadge({episode_state:'RUNNING',recording:false},true).text==='NO REC','disabled recorder shows REC');
  assert(recordingBadge({episode_state:'WAITING',recording:true},true).text==='● REC','recorder verdict overridden');
- assert(recordingBadge({recording:true},false).text==='확인 중','stale REC retained');
- assert(recordingBadge(null,true).text==='확인 중','missing status not explicit');
+ assert(recordingBadge({recording:true},false).text==='Checking','stale REC retained');
+ assert(recordingBadge(null,true).text==='Checking','missing status not explicit');
  return 7;
 }

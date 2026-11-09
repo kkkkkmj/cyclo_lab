@@ -58,7 +58,7 @@ def main():
       cameras={name:{key:statistics.mean(r[key] for r in rows if r['camera']==name) for key in
        ['legacy_display_psnr_db','native_display_psnr_db','native_pixel_psnr_db']} for name in names},rows=rows)
     (args.output/'report.json').write_text(json.dumps(report,indent=2))
-    html='<meta charset="utf-8"><title>Same frame preview comparison</title><style>body{background:#182330;color:white;font:18px sans-serif} img{width:328px;height:328px}td{text-align:center}</style><p>B001_test_002/demo_0 frame 0 · 원본 / 기존 전송 / 새 전송 · 동일 프레임 CPU 비교 (Quest 실기 아님)</p><table><tr><th>카메라</th><th>원본 244</th><th>기존 300 Q75</th><th>새 원본 크기 Q90 4:4:4</th></tr>'
+    html='<meta charset="utf-8"><title>Same frame preview comparison</title><style>body{background:#182330;color:white;font:18px sans-serif} img{width:328px;height:328px}td{text-align:center}</style><p>B001_test_002/demo_0 frame 0 · Original / previous transmission / new transmission · same-frame CPU comparison (not a Quest runtime test)</p><table><tr><th>Camera</th><th>Original 244</th><th>Previous 300 Q75</th><th>New native resolution Q90 4:4:4</th></tr>'
     for name in names:html+='<tr><td>'+name+'</td>'+''.join('<td><img src="'+name+'_'+suffix+'.png"></td>' for suffix in ['original','legacy','native'])+'</tr>'
     (args.output/'comparison.html').write_text(html+'</table>')
     print(json.dumps({k:v for k,v in report.items() if k!='rows'},indent=2))

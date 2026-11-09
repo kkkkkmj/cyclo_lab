@@ -1,4 +1,4 @@
-> 과거 안내/생성 기록 보존본입니다. 현재 공유 안내는 [Changes](../../../CHANGES.md)와 [현재 시나리오](../../../scenario_delivery/README.md)를 따르세요. 아래 개인 경로·실행 결과는 당시 기록이며 최신 설정을 뜻하지 않습니다.
+> Archived guidance/generation record. For current shared instructions, see [Changes](../../../CHANGES.md) and the [current scenarios](../../../scenario_delivery/README.md). Personal paths and execution results below are historical records, not current settings.
 
 # Toast Task — 100 Scenarios
 

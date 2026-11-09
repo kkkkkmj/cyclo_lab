@@ -1,6 +1,6 @@
-# 전체 100개 배정표
+# Assignments for All 100 Scenarios
 
-| operator | 그룹 | 상위 순번 | 그룹 순번 | scenario ID | +Y → −Y 순서 |
+| operator | Group | Operator index | Group index | scenario ID | +Y → −Y order |
 |---|---|---:|---:|---|---|
 | operator_A | operator_A_1 | 1 | 1 | toast_v20261108_097 | bread_shelf > plate > toaster |
 | operator_A | operator_A_1 | 2 | 2 | toast_v20261108_076 | bread_shelf > toaster > plate |

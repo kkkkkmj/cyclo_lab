@@ -30,8 +30,6 @@ The baseline column below refers to the fixed commit above.
 | Bread carriage | Lower limit/lowering target −45 mm; upper limit/rising target +15 mm; travel 60 mm | Lower limit/lowering target remains −45 mm; upper limit/rising target +35 mm; travel 80 mm |
 | Bread-related success | Both bread_0/1 on the plate, with bread_2/3 remaining on the bread rack; no per-ID heating evidence | At least one fully heated slice must satisfy the plate-placement criteria under the same ID; remaining-slice retention requirement removed |
 | Plate-local XY check | Entire bread outline within the plate radius minus 0.5 mm | Bread geometry center at a plate-local XY radius **less than 20 mm** |
-| Left/right master/slave stiffness and damping gains | Already stiffness=100, damping=4 in this environment | Final values **unchanged**; explicitly specified in the environment configuration, with added Quest configuration/readback validation |
-| Left/right master joint1 velocity limit | 2.2 rad/s | 6.5 rad/s |
 | Scenarios | No fixed 100-scenario delivery or group selection | Added 100 new scenarios, A/B and four-subgroup selection, and layout diagrams while preserving the existing list |
 | Recording/replay | Existing Isaac Lab recorder/replay | Added scenario provenance, per-slice heating state, diagnostic HDF5, and review tools |
 

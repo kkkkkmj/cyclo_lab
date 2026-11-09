@@ -356,8 +356,10 @@ def analyze(log, dataset, output):
             'Input/control evidence remains available without HDF. Missing joints are null, not zero.',
             'A clean final JSON line does not establish run completion.'])
     (out/'interruptions.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2))
-    lines=['|로그 episode|시작s|지속s|상태|SQ median|action max|HDF 관절|', '|---|---|---|---|---|---|---|']
-    for z in candidates:lines.append(f"|{z['log_episode']}|{z['start_s']:.3f}|{z['duration_s']:.3f}|{z['reason']}|{z['squeeze']['median']}|{z['action_max_abs']}|{z['joints']['status']} ({z['joints']['matched_samples']}/{z['samples']})|")
+    lines=['|Log episode|Start s|Duration s|Status|SQ median|action max|HDF joints|', '|---|---|---|---|---|---|---|']
+    # Preserve legacy JSON status enums for existing recordings/consumers; translate report labels only.
+    status_labels = {'확인 불가': 'Unavailable', '부분 확인': 'Partially verified', '확인됨': 'Verified'}
+    for z in candidates:lines.append(f"|{z['log_episode']}|{z['start_s']:.3f}|{z['duration_s']:.3f}|{z['reason']}|{z['squeeze']['median']}|{z['action_max_abs']}|{status_labels[z['joints']['status']]} ({z['joints']['matched_samples']}/{z['samples']})|")
     (out/'candidates.md').write_text('\n'.join(lines)+'\n')
     if not unchanged:raise RuntimeError('Source changed during analysis; output is not a stable snapshot. See provenance.')
     return summary

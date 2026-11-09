@@ -150,6 +150,8 @@ class Delivery(unittest.TestCase):
         relocation=json.loads((ROOT/'docs/toast_quest/SCENARIO_RELOCATION.json').read_text())
         for name,digest in relocation['retained_files_sha256'].items():
             self.assertEqual(gen.sha(DELIVERY/name),digest,name)
+        for name, hashes in relocation['translated_display_files'].items():
+            self.assertEqual(gen.sha(DELIVERY/name), hashes['current_sha256'], name)
         self.assertEqual(gen.sha(DELIVERY/'inputs/generation_history.json'),relocation['generation_history_sha256'])
         history=json.loads((DELIVERY/'inputs/generation_history.json').read_text())
         for key,digest in history['source_sha256'].items():

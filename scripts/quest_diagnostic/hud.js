@@ -24,7 +24,7 @@ function loadHUDPreferences(storage){
     if(!raw){
       // A new key applies the requested preset once. Subsequent loads restore edits.
       // Retain the old v1 key untouched; it must not override this migration.
-      return {state:fallback,status:'새 기본 배치(v2) 한 번 적용 — '+saveHUDPreferences(fallback,storage)};
+      return {state:fallback,status:'New default layout (v2) applied once — '+saveHUDPreferences(fallback,storage)};
     }
     const data=JSON.parse(raw);
     if(data.schema!==2||!['normal','casting'].includes(data.mode)||!data.profiles)throw Error('invalid saved settings');
@@ -34,15 +34,15 @@ function loadHUDPreferences(storage){
       fallback.profiles[mode]=hudSettings({...v,mode});
     }
     fallback.mode=data.mode;
-    return {state:fallback,status:'저장된 표시 설정 복원됨'};
-  }catch(error){return {state:fallback,status:'저장 설정 읽기 실패; 기본값 사용: '+String(error)};}
+    return {state:fallback,status:'Saved display settings restored'};
+  }catch(error){return {state:fallback,status:'Failed to load saved settings; using defaults: '+String(error)};}
 }
 function saveHUDPreferences(state,storage){
   try{
     if(storage===undefined)storage=globalThis.localStorage;
     storage.setItem(HUD_STORAGE_KEY,JSON.stringify(state));
-    return '표시 설정 저장됨 — 같은 주소에서 새로고침/VR 재진입 후 유지';
-  }catch(error){return '표시 설정 저장 실패 (현재 VR에는 적용 가능): '+String(error);}
+    return 'Display settings saved — retained across reloads/VR sessions at this address';
+  }catch(error){return 'Failed to save display settings (usable in the current VR session): '+String(error);}
 }
 function hudTransform(viewport,settings) {
   const {width:w,height:h}=viewport;
@@ -55,63 +55,63 @@ function hudTransform(viewport,settings) {
 }
 // Pure presentation of the simulator's verdict; button state never implies control activation.
 function teleopStatusLines(status,fresh){
-  if(!fresh)return ['상태 확인 불가 — 영상 오래됨/수신 중단', '이전 팔 조작 중 표시는 무효', '입력·영상 복구 후 squeeze 해제 → 다시 누르기'];
-  if(!status||status.version!==1)return ['제어 상태 미수신 — teleop 실행기/서버 버전 확인', '입력 유효 또는 버튼 눌림만으로 팔 조작 중을 판단하지 않음'];
-  const reasons={ready:'준비',active:'팔 조작 중',anchored:'기준 잡음',waiting:'대기',episode_waiting:'대기',
-    release_then_squeeze:'squeeze 해제 후 재입력',input_not_live:'입력 끊김',preview_not_live:'영상 확인 없음',
-    loop_gap:'제어 주기 지연',new_reference_release_buttons:'새 기준: squeeze 해제',
-    look_forward_release_both_squeezes:'정면 보기·양 squeeze 해제',controller_jump_release:'입력 급변: squeeze 해제'};
-  const rows=[`${status.episode_state} ${status.preview_only?'영상 확인 전용':''} | X 시작 / A 종료·대기 | 실제 제어 판정`];
+  if(!fresh)return ['Status unavailable — stale/interrupted video', 'Previous arm-active indication is invalid', 'After input/video recovery, release squeeze → press again'];
+  if(!status||status.version!==1)return ['No control status received — check teleop launcher/server versions', 'Valid input or a pressed button alone does not establish active arm control'];
+  const reasons={ready:'Ready',active:'Arm active',anchored:'Anchored',waiting:'Waiting',episode_waiting:'Waiting',
+    release_then_squeeze:'Release squeeze, then press again',input_not_live:'Input lost',preview_not_live:'Video unconfirmed',
+    loop_gap:'Control loop delayed',new_reference_release_buttons:'New reference: release squeeze',
+    look_forward_release_both_squeezes:'Look forward; release both squeezes',controller_jump_release:'Input jump: release squeeze'};
+  const rows=[`${status.episode_state} ${status.preview_only?'Preview only':''} | X start / A stop·wait | Control verdict`];
   const number=v=>Number.isFinite(v)?v.toFixed(2):'--';
   for(const side of ['left','right']){
     const h=status.hands[side];
-    const control=!status.live?'입력 끊김':!h.valid?'입력 무효':status.preview_only?'조작 비활성':status.episode_state==='WAITING'?'대기':
-      h.active?'팔 조작 중':(reasons[h.control_reason]||h.control_reason);
+    const control=!status.live?'Input lost':!h.valid?'Invalid input':status.preview_only?'Control disabled':status.episode_state==='WAITING'?'Waiting':
+      h.active?'Arm active':(reasons[h.control_reason]||h.control_reason);
     const sq=h.raw_squeeze||{pressed:h.squeeze_pressed,value:h.squeeze},tr=h.raw_trigger||{value:h.trigger};
-    rows.push(`${side==='left'?'좌':'우'} 입력 ${h.valid?'유효':'무효'} | ${control} | SQ ${sq.pressed?'ON':'OFF'} ${number(sq.value)} / TR ${number(tr.value)}`);
+    rows.push(`${side==='left'?'L':'R'} Input ${h.valid?'Valid':'Invalid'} | ${control} | SQ ${sq.pressed?'ON':'OFF'} ${number(sq.value)} / TR ${number(tr.value)}`);
   }
   const age=v=>Number.isFinite(v)?Math.round(v)+'ms':'--';
-  rows.push(`입력 ${age(status.input_age_ms)} | focus ${status.visibility||'--'} | 영상 ${age(status.preview?.frame_age_ms)} | ACK ${status.preview_ok?'OK':status.compatibility==='reload_required'?'버전 불일치':'미확인'}`);
+  rows.push(`Input ${age(status.input_age_ms)} | focus ${status.visibility||'--'} | Video ${age(status.preview?.frame_age_ms)} | ACK ${status.preview_ok?'OK':status.compatibility==='reload_required'?'Version mismatch':'Unconfirmed'}`);
   if(status.preview_only){
-    rows.push('영상 확인 전용: 로봇 조작 비활성 / X로 시작 가능');
+    rows.push('Preview only: robot control disabled / X can start');
   }else if(status.episode_state==='WAITING'){
-    const labels={input_stale:'입력 오래됨/없음',quest_not_visible:'Quest 포커스 없음',input_not_live:'통신 무효',
-      preview_unconfirmed:'최신 영상 표시 확인 없음(오래됨/미표시)',invalid:'입력 무효',not_touch_plus:'Touch Plus 아님',
-      buttons_invalid:'버튼/매핑 무효',squeeze_held:'squeeze 해제 필요'};
+    const labels={input_stale:'Stale/missing input',quest_not_visible:'Quest not focused',input_not_live:'Invalid connection',
+      preview_unconfirmed:'Fresh video display unconfirmed (stale/not displayed)',invalid:'Invalid input',not_touch_plus:'Not Touch Plus',
+      buttons_invalid:'Invalid buttons/mapping',squeeze_held:'Release squeeze'};
     const blocks=status.start_blockers.map(code=>{const parts=code.split(':');return parts.length===2?
-      (parts[0]==='left'?'좌 ':'우 ')+(labels[parts[1]]||parts[1]):(labels[code]||code);});
-    const message=blocks.length?(status.start_blocked?'START_BLOCKED: ':'시작 조건: ')+blocks.join(' · '):'시작 조건 충족 — X를 새로 눌러 시작';
+      (parts[0]==='left'?'L ':'R ')+(labels[parts[1]]||parts[1]):(labels[code]||code);});
+    const message=blocks.length?(status.start_blocked?'START_BLOCKED: ':'Start conditions: ')+blocks.join(' · '):'Ready to start — press X again';
     // Wrap, never truncate a blocking condition. The common two-hand case fits two lines.
     for(let i=0;i<message.length;i+=56)rows.push(message.slice(i,i+56));
-  }else rows.push('SQ: squeeze 눌림·값 / TR: trigger 값 — 버튼 ON ≠ 팔 제어 활성');
+  }else rows.push('SQ: squeeze state/value / TR: trigger value — button ON ≠ active arm control');
   return rows;
 }
 // Compact view has at most two lines; full reasons remain in the page's details view.
 function compactStatusLines(status,fresh){
-  if(!fresh)return ['상태 확인 불가 — 영상 오래됨', '입력·영상 복구 후 squeeze 해제 → 다시 누르기'];
-  if(!status||status.version!==1)return ['제어 상태 미수신', '실행기·서버 연결 확인 / 상세 보기'];
-  const names={ready:'준비',active:'조작 중',anchored:'기준 설정',waiting:'대기',episode_waiting:'대기',
-    release_then_squeeze:'재해제 필요',input_not_live:'입력 끊김',preview_not_live:'영상 대기',
-    loop_gap:'주기 지연',new_reference_release_buttons:'재해제 필요',
-    look_forward_release_both_squeezes:'기준 대기',controller_jump_release:'입력 급변'};
+  if(!fresh)return ['Status unavailable — stale video', 'After input/video recovery, release squeeze → press again'];
+  if(!status||status.version!==1)return ['No control status received', 'Check launcher/server connection / see details'];
+  const names={ready:'Ready',active:'Active',anchored:'Anchored',waiting:'Waiting',episode_waiting:'Waiting',
+    release_then_squeeze:'Release again',input_not_live:'Input lost',preview_not_live:'Waiting for video',
+    loop_gap:'Loop delayed',new_reference_release_buttons:'Release again',
+    look_forward_release_both_squeezes:'Awaiting reference',controller_jump_release:'Input jump'};
   const value=v=>Number.isFinite(v)?v.toFixed(1):'--';
   const sides=['left','right'].map(side=>{
     const h=status.hands[side];
-    const state=!status.live?'입력 끊김':!h.valid?'입력 무효':status.preview_only?'비활성':
-      status.episode_state==='WAITING'?'대기':h.active?'조작 중':names[h.control_reason]||'차단';
-    return `${side==='left'?'좌':'우'} ${state} SQ${value(h.raw_squeeze?.value??h.squeeze)}/TR${value(h.raw_trigger?.value??h.trigger)}`;
+    const state=!status.live?'Input lost':!h.valid?'Invalid input':status.preview_only?'Disabled':
+      status.episode_state==='WAITING'?'Waiting':h.active?'Active':names[h.control_reason]||'Blocked';
+    return `${side==='left'?'L':'R'} ${state} SQ${value(h.raw_squeeze?.value??h.squeeze)}/TR${value(h.raw_trigger?.value??h.trigger)}`;
   });
   const rows=[`${status.episode_state} | ${sides.join(' | ')}`];
   if(status.episode_state==='WAITING'&&!status.preview_only&&status.start_blockers?.length){
     const blocks=status.start_blockers;
     let reason;
-    if(status.compatibility==='reload_required')reason='페이지 새로고침 필요';
-    else if(blocks.includes('input_stale'))reason='입력 오래됨';
-    else if(blocks.includes('quest_not_visible'))reason='Quest 포커스 없음';
-    else if(blocks.includes('preview_unconfirmed'))reason='최신 영상 확인 필요';
-    else if(blocks.some(b=>b.endsWith(':squeeze_held')))reason='squeeze 해제: '+['left','right'].filter(s=>blocks.includes(s+':squeeze_held')).map(s=>s==='left'?'왼손':'오른손').join('·');
-    else reason='양손 Touch Plus 입력 확인';
-    rows.push('시작 차단: '+reason+' · 상세는 페이지에서');
+    if(status.compatibility==='reload_required')reason='Reload page';
+    else if(blocks.includes('input_stale'))reason='Stale input';
+    else if(blocks.includes('quest_not_visible'))reason='Quest not focused';
+    else if(blocks.includes('preview_unconfirmed'))reason='Confirm fresh video';
+    else if(blocks.some(b=>b.endsWith(':squeeze_held')))reason='Release squeeze: '+['left','right'].filter(s=>blocks.includes(s+':squeeze_held')).map(s=>s==='left'?'Left hand':'Right hand').join('·');
+    else reason='Check both Touch Plus inputs';
+    rows.push('Start blocked: '+reason+' · See page for details');
   }
   return rows;
 }
@@ -134,7 +134,7 @@ function controllerConnected(hand,received,network){
   return network==='ACK OK'&&touch(hand)&&touch(received)&&hand.source_id===received.source_id;
 }
 function recordingBadge(status,fresh){
-  if(!fresh||typeof status?.recording!=='boolean')return {text:'확인 중',color:'#a3aab3'};
+  if(!fresh||typeof status?.recording!=='boolean')return {text:'Checking',color:'#a3aab3'};
   return status.recording?{text:'● REC',color:'#ff6565'}:{text:'NO REC',color:'#a3aab3'};
 }
 /* A small, head-fixed diagnostic panel, not immersive simulation streaming. */
@@ -178,7 +178,7 @@ function makeHUD(gl, options={}) {
           c.drawImage(image,...tile.source,...tile.destination);
       }
       if(!image||!previewFresh||!supported){
-        c.fillStyle='#adbecd';c.fillText('영상 수신 대기',300,360);
+        c.fillStyle='#adbecd';c.fillText('Waiting for video',300,360);
       }
       const panel={x:108,y:96,w:808,h:40};
       const connections={left:receivedHands===null?null:controllerConnected(hands.left,receivedHands.left,network),
@@ -188,7 +188,7 @@ function makeHUD(gl, options={}) {
       c.font='26px sans-serif';
       ['left','right'].forEach((side,i)=>{
         c.fillStyle=connections[side]?'#61e993':'#a3aab3';
-        c.fillText(`${i===0?'왼쪽':'오른쪽'}: ${connections[side]===null?'확인 중':connections[side]?'연결됨':'연결 안 됨'}`,panel.x+16+i*300,panel.y+29);
+        c.fillText(`${i===0?'Left':'Right'}: ${connections[side]===null?'Checking':connections[side]?'Connected':'Disconnected'}`,panel.x+16+i*300,panel.y+29);
       });
       const recording=recordingBadge(teleop,previewFresh);
       c.fillStyle=recording.color;c.fillText(recording.text,panel.x+634,panel.y+29);
