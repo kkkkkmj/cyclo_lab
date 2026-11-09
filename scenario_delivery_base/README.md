@@ -309,3 +309,39 @@ python3 scripts/tools/build_toast_overview_cards.py \
   --delivery scenario_delivery_base \
   --table-source scenario_delivery_base/inputs/table_frame.json
 ```
+
+
+### PNG layout sheets
+
+These are **schematic top views, not simulation screenshots**. +X points up and +Y points left.
+Every card has identical coordinate bounds and pixel scale, including the 100-card overview.
+Orange denotes the toaster, blue the plate, green the four-groove rack, and beige the four bread slices.
+The images depict the saved initial configurations; they do not constitute physical validation.
+
+| Image | Layout | Resolution |
+|---|---|---|
+| [operator_A_1](images/operator_A_1.png) | 25 cards, 5 × 5 | 8000 × 3520 px |
+| [operator_A_2](images/operator_A_2.png) | 25 cards, 5 × 5 | 8000 × 3520 px |
+| [operator_B_1](images/operator_B_1.png) | 25 cards, 5 × 5 | 8000 × 3520 px |
+| [operator_B_2](images/operator_B_2.png) | 25 cards, 5 × 5 | 8000 × 3520 px |
+| [All 100](images/overview_100.png) | 100 cards, 10 × 10 | 16000 × 6920 px |
+| [Individual PNGs](images/individual/) | One file per scenario ID | 1600 × 680 px each |
+
+Cards run left to right, then top to bottom, in group-index order. The overview orders groups A_1,
+A_2, B_1, B_2. Download large sheets to inspect them at full resolution.
+For example, [B_1 / 1](images/individual/toast_base_20261109_025.png) uses ID `toast_base_20261109_025`.
+
+From the checkout root, use the CPU Python environment described under [Reproduction](#reproduction),
+with Matplotlib and Pillow additionally installed:
+
+```bash
+export TOAST_PYTHON=python3
+"$TOAST_PYTHON" -m pip install matplotlib==3.10.8 pillow==12.2.0
+"$TOAST_PYTHON" scripts/tools/render_base_scenario_pngs.py \
+  --delivery scenario_delivery_base --output scenario_delivery_base/images
+```
+
+The renderer rebuilds the shared HTML geometry in a temporary directory, verifies it against the saved
+cards and current assets, and checks all 700 pose CSV rows and 100 assignments before rendering.
+It does not modify the manifest, assignments, poses or existing HTML. PNG metadata records the selected
+IDs, manifest hash and common coordinate bounds; individual PNGs also contain the exact object poses.
