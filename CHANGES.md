@@ -1,93 +1,106 @@
 # Changes
 
-## ① 브랜치 목적
+## ① Branch Purpose
 
-`toast-quest`는 FFW BG2 양팔 토스트 환경을 Quest WebXR로 조작하고, 배치를 바꿔 시연을
-수집하기 위한 공유 브랜치다. 대상 task는 `Cyclo-Make-Toast-FFW-BG2-Bimanual-IK-Rel-v2`다.
-`toast-quest`는 Git 브랜치 이름이며 task의 `-v2` 등록 버전과 구분한다. Quest 실행기는 이 ID를
-고정 사용하며 등록 환경 클래스는 `MakeToastFFWBG2BimanualEnv`, 설정 클래스는
-`MakeToastFFWBG2BimanualServeEnvCfg`다.
-4홈 빵 거치대, 현재 동작·성공 조건, Quest 서버/클라이언트, 새 시나리오 100개와 검사 도구를 포함한다.
+`toast-quest` is a shared branch for teleoperating the FFW BG2 bimanual toast environment through
+Quest WebXR and collecting demonstrations across different object configurations. The task ID is
+`Cyclo-Make-Toast-FFW-BG2-Bimanual-IK-Rel-v2`. `toast-quest` is the Git branch name, distinct from
+the task registration version `-v2`. The Quest launcher uses this fixed ID, registered with environment
+class `MakeToastFFWBG2BimanualEnv` and configuration class `MakeToastFFWBG2BimanualServeEnvCfg`.
+The branch includes a four-groove bread rack, the current behavior and task success criteria, the Quest
+server/client, 100 new scenarios, and validation tools.
 
-원본 비교 기준은 `badajhong/cyclo_lab`의 **`5f5086d11f664494119086de30a9e925b12022ad`** (`add readme of toast`, 2026-11-02)로 고정했다. 최초 작업 커밋 `761c8ac`의 부모와 브랜치 생성 reflog가 이 커밋을 가리킨다.
+The comparison baseline is fixed at **`5f5086d11f664494119086de30a9e925b12022ad`** (`add readme of toast`, 2026-11-02) in `badajhong/cyclo_lab`. Both the parent of the first development commit, `761c8ac`, and the branch-creation reflog point to this commit.
 
-분야별 실제 파일 변경과 기준 근거는 [원본 비교 기록](docs/toast_quest/BASELINE.md)에 정리했다.
+File changes by category and the evidence for this baseline are documented in the
+[baseline comparison](docs/toast_quest/BASELINE.md).
 
-## ② 기존 환경 대비 변경 전/후
+## ② Changes from the Baseline Environment
 
-현재 `toast-quest` 브랜치의 토스트 환경 코드 기준이다. 아래 ‘기존’ 열은 위 고정 커밋과 비교한다.
+This description reflects the toast environment code on the current `toast-quest` branch.
+The baseline column below refers to the fixed commit above.
 
-| 항목 | 기존 `5f5086d` | 현재 toast-quest |
+| Feature | Baseline `5f5086d` | Current toast-quest |
 |---|---|---|
-| 조작 | 기존 양팔 IK·그리퍼와 recorder 도구 | Quest WebXR 양손 입력·clutch·trigger 조작, 상태/HUD·4카메라 미리보기 추가 |
-| 거치대 | RoboDojo bread_shelf, 양팔 환경 scale (2,1,1) | native 230×130×45 mm 4홈 rack, scale (1,1,1), 네 빵 상대 pose 갱신 |
-| 자동 시작 | bread_0와 bread_1이 각각 다른 슬롯에 적재 + 레버 95% 진입 | 네 빵 중 하나 이상 정상 적재 + 레버 90% 진입 |
-| 가열 | 하강 완료 후 5초 | 하강 완료 후 4초, 시뮬레이션 시간 기준 |
-| LED | cycle 상태 LED 없음 | 하강·가열 ON, 상승 시작부터 OFF |
-| 캐리지 | 하한/하강 −45 mm, 상한/상승 +15 mm, 이동 60 mm | 하한/하강 −45 mm 유지, 상한/상승 +35 mm, 이동 80 mm |
-| 빵 성공 | bread_0/1 모두 접시, bread_2/3 거치대 유지; 개별 가열 ID 증거 없음 | 가열을 완료한 동일 ID 빵 하나 이상 접시 조건 충족; 여분 빵 잔류 조건 제거 |
-| 접시 XY 판정 | 빵 외곽 전체가 접시 반경−0.5 mm 안 | 빵 형상 중심의 접시 로컬 XY 반경 **20 mm 미만** |
-| 좌우 master/slave gain | 대상 환경에서 이미 stiffness=100, damping=4 | 최종값 **동일**, 환경 설정에 명시·Quest 설정/readback 검증 추가 |
-| 좌우 master joint1 속도 상한 | 2.2 rad/s | 6.5 rad/s |
-| 시나리오 | 고정 100개 delivery/그룹 선택 없음 | 기존 목록을 보존하고 새 100개, A/B 및 네 하위 그룹 선택·배치도 추가 |
-| 기록·재생 | 기존 Isaac Lab recorder/replay | 시나리오 provenance, 빵별 가열 상태, 진단 HDF5·검수 도구 추가 |
+| Control | Existing bimanual IK, gripper control, and recorder tools | Added Quest WebXR input from both controllers, clutch/trigger control, status/HUD, and previews from 4 cameras |
+| Bread rack | RoboDojo bread_shelf, scaled to (2,1,1) in the bimanual environment | Native 230×130×45 mm four-groove bread rack at scale (1,1,1), with updated relative poses for all four bread slices |
+| Automatic activation | bread_0 and bread_1 loaded in separate slots, with the toaster lever crossing the 95% activation threshold | At least one of the four slices correctly loaded, with normalized lever depression crossing the 90% activation threshold |
+| Heating | 5 seconds after lowering completes | 4 seconds after lowering completes, measured in simulation time |
+| LED | No cycle-status LED | ON during lowering/heating; OFF from the start of rising |
+| Bread carriage | Lower limit/lowering target −45 mm; upper limit/rising target +15 mm; travel 60 mm | Lower limit/lowering target remains −45 mm; upper limit/rising target +35 mm; travel 80 mm |
+| Bread-related success | Both bread_0/1 on the plate, with bread_2/3 remaining on the bread rack; no per-ID heating evidence | At least one fully heated slice must satisfy the plate-placement criteria under the same ID; remaining-slice retention requirement removed |
+| Plate-local XY check | Entire bread outline within the plate radius minus 0.5 mm | Bread geometry center at a plate-local XY radius **less than 20 mm** |
+| Left/right master/slave stiffness and damping gains | Already stiffness=100, damping=4 in this environment | Final values **unchanged**; explicitly specified in the environment configuration, with added Quest configuration/readback validation |
+| Left/right master joint1 velocity limit | 2.2 rad/s | 6.5 rad/s |
+| Scenarios | No fixed 100-scenario delivery or group selection | Added 100 new scenarios, A/B and four-subgroup selection, and layout diagrams while preserving the existing list |
+| Recording/replay | Existing Isaac Lab recorder/replay | Added scenario provenance, per-slice heating state, diagnostic HDF5, and review tools |
 
-## ③ 현재 최종 설정과 성공 조건
+## ③ Current Settings and Task Success Criteria
 
-- **토스터:** phase 0에서 정상 적재와 레버 비율 ≥0.90의 새 진입이 함께 필요하다.
-  누른 채 나중에 빵을 넣으면 재진입 전까지 시작하지 않는다.
-  하강 최소 0.60초, 목표 −45 mm 오차 <1.5 mm, 실제 속도 <0.01 m/s가 충족된 뒤
-  4초 가열을 시작한다. phase 1/2에서 LED ON, phase 0/3/4에서 OFF다.
-- **상승:** 0.80초 보간으로 +35 mm를 명령한다. 완료는 최소 0.92초 및 실제 위치 오차
-  <1.5 mm를 요구한다. 캐리지 속도 제한 0.12 m/s는 유지됐으며 새 명령 곡선 최대속도
-  0.15 m/s와 같지 않다. 실제 완료가 늦어질 수 있다.
-- **가열 증거:** 가열 진입 때 정상 적재된 빵 중 가열 동안 계속 적재 판정을 통과한 ID를
-  기록한다. 중간 이탈/재삽입 또는 늦은 투입은 그 사이클의 증거가 되지 않는다.
-  reset에서 초기화하며, 개별 증거가 없는 과거 기록 복원으로 가열 성공을 추정하지 않는다.
-- **빵 관련 성공:** `bread_0`~`bread_3` 중 동일 ID가 가열 완료 및 접시 조건을 모두 만족해야 한다.
-  형상 중심의 접시 로컬 XY 반경 <20 mm, 형상 전체 로컬 Z가 −2 mm 초과/50 mm 미만,
-  기울기 `abs(R[2,2])>0.94`, 선속도 <0.15 m/s다. 이 판정은 접시 접촉력 검사가 아니다.
-- **전체 성공:** 위 빵 조건 외에도 접시 upright `R[2,2]>0.985`, 초기 XY에서 이동 <25 mm,
-  환경 기준 접시 X>0.419 m, phase 4·레버 복귀, 양 손목 standby 오차 <40 mm,
-  기존 gripper 판정 <0.15 및 lift 절댓값 <20 mm를 요구한다. 여분 빵이 없어도 빵 성공은
-  가능하지만 다른 빵 낙하 등 기존 종료 조건은 별도로 적용된다.
-- **그리퍼:** 좌우 master joint1·slave joint2/3/4 모두 100/4. master 속도 상한 6.5 rad/s,
-  effort 30; slave effort 20, 속도는 USD 값을 상속한다. 6.5는 실제 도달 속도가 아닌 상한이다.
-  폐기된 `--gripper-slave-gains-official`은 사용하지 않는다.
-- **Quest:** 아래 명령은 practice profile의 이동·회전 목표 배율 1:1이다. 기본 home 범위
-  0.55 m/120°, action 보정 제한 0.10 m/시뮬레이션초·0.8 rad/시뮬레이션초,
-  목표 선행 0.12 m/45° 등을 유지한다. 실제 VR 추종 속도는 이 배율과 다르며
-  IK·관절 제한·접촉·시뮬레이션/렌더 주기에 좌우된다.
+- **Toaster:** In phase 0, correct loading must coincide with a new crossing of the activation threshold,
+  normalized lever depression ≥0.90. Loading bread while holding the toaster lever down does not
+  activate the cycle until the threshold is crossed again. Heating runs for 4 seconds after lowering
+  has lasted at least 0.60 seconds, measured position is within <1.5 mm of the −45 mm commanded
+  target, and measured speed is <0.01 m/s. The LED is ON in phase 1/2 and OFF in phase 0/3/4.
+- **Rising:** The commanded target is interpolated to +35 mm over 0.80 seconds. Completion requires
+  at least 0.92 seconds and measured position error <1.5 mm. The bread carriage velocity limit remains
+  0.12 m/s, distinct from the new command trajectory's peak velocity of 0.15 m/s. Actual completion
+  may take longer.
+- **Heating evidence:** The system records IDs of slices correctly loaded at heating entry that
+  continuously satisfy the loading check throughout heating. Removal/reinsertion or late insertion
+  does not qualify for that cycle. Evidence is cleared on reset; restoring a legacy recording without
+  per-slice evidence does not imply successful heating.
+- **Bread-related success:** The same ID among `bread_0`–`bread_3` must satisfy both heating-completion
+  and plate-placement criteria: geometry center at a plate-local XY radius <20 mm, the entire geometry
+  at plate-local Z greater than −2 mm and less than 50 mm, orientation `abs(R[2,2])>0.94`, and linear
+  speed <0.15 m/s. This is not a plate contact-force check.
+- **Overall task success:** In addition to the bread criteria, the plate must be upright with
+  `R[2,2]>0.985`, displaced by <25 mm from its initial XY position, and at environment-frame X>0.419 m.
+  The cycle must be in phase 4 with the toaster lever returned, both wrists must have standby-position
+  error <40 mm, and the existing gripper check <0.15 and absolute lift value <20 mm must hold.
+  Bread-related success can hold without the remaining slices, but existing termination conditions,
+  such as another slice falling, still apply separately.
+- **Grippers:** Left/right master joint1 and slave joint2/3/4 all use stiffness and damping gains of
+  100/4. The master joint velocity limit is 6.5 rad/s with effort 30; slave effort is 20, and slave
+  velocity limits are inherited from the USD. The value 6.5 is a limit, not an achieved velocity.
+  Do not use the retired `--gripper-slave-gains-official` option.
+- **Quest:** The commands below use the practice profile with 1:1 translational/rotational target
+  scaling. They retain the default home range of 0.55 m/120°, action correction limits of
+  0.10 m per simulation second and 0.8 rad per simulation second, and target lead limits of
+  0.12 m/45°. Actual robot tracking under VR control is distinct from input scaling and depends on
+  IK, joint limits, contact, and simulation/render update periods.
 
-진단 JSON/JSONL·CSV·RGB는 학습용 시연이 아니다. 선택적 `--record-dir`의 HDF5는
-`data/demo_*/{actions,obs,states,initial_state,processed_actions}`와 metadata/manifest snapshot을
-저장하지만 **diagnostic=true, success=false**인 진단 경로다. 기존 recorder 형식과 같아도
-검수된 성공 학습 데이터로 분류하면 안 된다. action replay와 saved-state 영상도 구분해야 하며,
-영상 재생만으로 물리 재현 성공을 주장하지 않는다. 아래 실행 예시는 무기록 조작이다.
+Diagnostic JSON/JSONL, CSV, and RGB outputs are not training demonstrations. The optional `--record-dir`
+HDF5 output stores `data/demo_*/{actions,obs,states,initial_state,processed_actions}` plus metadata and a
+manifest snapshot, but is a diagnostic recording with **diagnostic=true, success=false**. Even though
+it uses the existing recorder format, it must not be classified as validated successful demonstration
+data for training. Action replay and saved-state video are also distinct; video playback alone does
+not demonstrate successful physics replay. The examples below run teleoperation without recording.
 
-## ④ 필요한 환경·의존성
+## ④ System Requirements and Dependencies
 
-Linux 데스크톱, NVIDIA GPU/드라이버, NVIDIA Container Toolkit, Docker Compose v2,
-Git LFS, Python 3, 호스트 OpenSSL이 필요하다. GUI에는 X11/Xauthority 접근이 필요하다.
-Quest와 PC는 HTTPS 연결 가능한 네트워크를 사용한다.
+A Linux desktop, NVIDIA GPU/drivers, NVIDIA Container Toolkit, Docker Compose v2, Git LFS, Python 3,
+and host OpenSSL are required. GUI operation requires X11/Xauthority access. Quest and the PC must
+be on a network that permits HTTPS connectivity.
 
-| 의존성 | 준비 방식 |
+| Dependency | Setup |
 |---|---|
-| Isaac Sim | Docker build가 `nvcr.io/nvidia/isaac-sim:5.1.0` 다운로드 |
-| Isaac Lab 및 third_party | v2.3.0 계열 소스 snapshot이 Git에 직접 포함. 현재 gitlink 0개이며 submodule update는 no-op |
-| RoboDojo 물체 | manifest에 고정된 revision `63fcc045f2e974902eb7800d29de48004cf86016`; 다운로더가 크기/SHA256 검증 |
-| 새 거치대 | `rack.usda`와 상대 참조 `bread_slot.usdz` 모두 LFS. USDZ 내부 mesh 포함, 별도 텍스처 없음 |
-| PackingTable 및 재질 | Isaac Sim asset cloud root의 `/Isaac/Props/PackingTable/packing_table.usd`와 참조 파일. 클라우드 접근 또는 사용자 설정 asset root/cache 필요 |
-| Python 패키지 | Dockerfile/constraints에서 설치. 일부 선택 패키지는 범위 또는 미고정 버전이므로 이미지 전체의 완전한 재현성은 미보장 |
+| Isaac Sim | The Docker build downloads `nvcr.io/nvidia/isaac-sim:5.1.0` |
+| Isaac Lab and third_party | A v2.3.0-series source snapshot is tracked directly in Git. There are currently 0 gitlinks, so submodule update is a no-op |
+| RoboDojo objects | Revision `63fcc045f2e974902eb7800d29de48004cf86016` is pinned in the manifest; the downloader verifies file size/SHA256 |
+| New bread rack | Both `rack.usda` and its relative reference `bread_slot.usdz` are in LFS. The USDZ includes meshes; there are no separate textures |
+| PackingTable and materials | `/Isaac/Props/PackingTable/packing_table.usd` and its references under the Isaac Sim asset cloud root. Cloud access or a user-configured asset root/cache is required |
+| Python packages | Installed through the Dockerfile/constraints. Some optional packages have version ranges or unpinned versions, so full image reproducibility is not guaranteed |
 
-다른 개인 폴더에서 파일을 복사할 필요는 없지만 **외부 asset 다운로드까지 없는 오프라인 패키지는 아니다**.
-자세한 버전은 [의존성 목록](docs/toast_quest/DEPENDENCIES.md), 물체 출처는
-[asset manifest](source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/asset_manifest.json)에 있다.
+No files need to be copied from other personal directories, but **this is not an offline package that
+eliminates external asset downloads**. Detailed versions are listed in the
+[dependency inventory](docs/toast_quest/DEPENDENCIES.md), and object sources are recorded in the
+[asset manifest](source/cyclo_lab/cyclo_lab/manager_based/manipulation/make_toast/asset_manifest.json).
 
-## ⑤ Clone·submodule·LFS·설치
+## ⑤ Clone, Submodules, LFS, and Installation
 
-NVIDIA EULA에 동의하는 환경에서 실행한다(`docker/.env.base`의 `ACCEPT_EULA=Y`).
-clone 위치는 사용자가 선택한다. `REPO`는 그 checkout 루트이며 새 터미널에서도 다시 지정한다.
+Run these commands only where the NVIDIA EULA is accepted (`ACCEPT_EULA=Y` in `docker/.env.base`).
+Choose your clone location. `REPO` denotes the checkout root and must be set again in each new terminal.
 
 ```bash
 git clone --branch toast-quest https://github.com/kkkkkmj/cyclo_lab.git cyclo_lab_toast_quest
@@ -101,14 +114,16 @@ docker compose --project-name cyclo_lab_mj --env-file docker/.env.base \
   -f docker/docker-compose.yaml -f docker/compose.mj.yaml --profile base build cyclo_lab
 ```
 
-`.gitmodules`의 원본 URL 정보는 보존하지만, 현재 포함된 소스를 최신 upstream main으로 교체하지 않는다.
-`scripts/run_mj.sh`는 checkout을 `/workspace/cyclo_lab`에 mount하고 해당 소스를 우선 사용한다.
-`cyclo_lab_mj` 프로젝트의 별도 transient container이며 원본 컨테이너에 exec하지 않는다.
+The original URL information in `.gitmodules` is preserved; do not replace the included sources with
+upstream's latest main. `scripts/run_mj.sh` mounts this checkout at `/workspace/cyclo_lab` and prioritizes
+its sources. It runs a separate transient container in the `cyclo_lab_mj` project rather than executing
+inside the original container.
 
-## ⑥ GUI 환경 확인
+## ⑥ Inspect the Environment in the GUI
 
-새 터미널에서는 첫 줄을 실제 clone 경로로 바꾼다. `DISPLAY`와 `XAUTHORITY`는 현재
-데스크톱 세션 값으로 설정한다. `:0`/`$HOME/.Xauthority`는 예시 기본값이며 로그인 환경에 따라 다르다.
+In a new terminal, replace the first line with your actual clone path. Set `DISPLAY` and `XAUTHORITY`
+to match your desktop session. `:0`/`$HOME/.Xauthority` are example defaults and depend on your login
+configuration.
 
 ```bash
 export REPO=/path/to/cyclo_lab_toast_quest
@@ -120,12 +135,13 @@ bash scripts/run_mj.sh --gui scripts/tools/view_make_toast_scenario.py \
   --scenario_group operator_A_1 --group_index 1
 ```
 
-R로 같은 배치를 reset한다. GUI와 다음 Quest 시뮬레이션은 GPU 자원 여유를 확인하고 하나씩 실행한다.
+Press R to reset the same initial object configuration. Check available GPU resources and run the
+GUI and the Quest simulation below one at a time.
 
-## ⑦ Quest 서버와 로봇 조작
+## ⑦ Quest Server and Robot Teleoperation
 
-**서버 터미널:** `REPO`는 clone 경로, `QUEST_HOST`는 Quest에서 접근 가능한 PC LAN IP/호스트명,
-`QUEST_PORT`는 미사용 포트로 바꾼다. PC 방화벽에서 해당 HTTPS 연결을 허용한다.
+**Server terminal:** Set `REPO` to the clone path, `QUEST_HOST` to a PC LAN IP/hostname reachable from
+Quest, and `QUEST_PORT` to an unused port. Allow this HTTPS connection through the PC firewall.
 
 ```bash
 export REPO=/path/to/cyclo_lab_toast_quest
@@ -137,13 +153,14 @@ python3 scripts/quest_diagnostic/server.py \
   --bridge-dir "$REPO/logs/quest_toast_quest"
 ```
 
-Quest Browser에서 설정한 `https://<QUEST_HOST>:<QUEST_PORT>/`에 접속하고 인증서를 확인한 뒤
-터미널 PIN으로 Pair한다. 기본 인증서/개인키는 `~/.local/state/cyclo-quest-tls`에 자동 생성한다.
-사용자 인증서를 쓰려면 위 명령에 `--cert /인증서/경로 --key /개인키/경로`를 추가한다.
-개인키는 Git에 넣지 않는다. Secure context/WebXR/immersive-vr와 client/server build를 확인한다.
+In Quest Browser, open the configured `https://<QUEST_HOST>:<QUEST_PORT>/`, confirm the certificate,
+and Pair using the terminal PIN. The default certificate/private key is generated automatically under
+`~/.local/state/cyclo-quest-tls`. To use your own certificate, append
+`--cert /path/to/certificate --key /path/to/private_key` to the command above.
+Keep private keys out of Git. Check the secure context, WebXR/immersive-vr, and client/server builds.
 
-**조작 터미널:** GUI viewer를 사용자가 종료한 뒤 실행한다. 서버는 유지한다.
-서버의 호스트 bridge와 아래 컨테이너 bridge는 같은 디렉터리다.
+**Teleoperation terminal:** Close the GUI viewer before running the following commands. Keep the server
+running. The server's host bridge and the container bridge below refer to the same directory.
 
 ```bash
 export REPO=/path/to/cyclo_lab_toast_quest
@@ -158,11 +175,13 @@ bash scripts/run_mj.sh scripts/quest_diagnostic/teleop_toast.py \
   --position-scale 1 --rotation-scale 1
 ```
 
-VR 진입 후 상태·최신 영상·양손 입력을 확인하고 양쪽 squeeze를 놓아 기준을 잡는다.
-X(키보드 n)는 같은 시나리오 reset 후 시작, squeeze를 누른 손은 팔 목표 제어,
-trigger는 그리퍼 제어(놓으면 열기, 누르면 닫기), A(키보드 s)는 WAITING으로 전환한다.
-practice에서 squeeze 해제/입력·영상 무효 시 팔 목표를 측정 자세에 맞추며, 그리퍼는 마지막 목표를 유지한다.
-물리 관성까지 순간 정지한다는 의미는 아니다. 입력 복구 뒤 squeeze를 놓고 다시 잡는다.
-미리보기는 overview/head/좌·우 wrist 네 카메라와 상태/HUD를 제공한다. 캐스팅 정렬·실제 가독성은 미검증이다.
+After entering VR, check status, fresh images, and input from both controllers, then release both squeeze
+buttons to establish the reference. X (keyboard n) resets the same scenario and starts control; holding
+squeeze controls that arm's target. The trigger controls the gripper (release to open, press to close),
+and A (keyboard s) switches to WAITING. In the practice profile, releasing squeeze or receiving invalid
+input/images aligns arm targets with measured poses, while grippers retain their last targets. This
+does not imply an instantaneous stop of physical motion due to inertia. After input recovers, release
+and re-engage squeeze. The preview provides four cameras—overview/head/left and right wrist—plus
+status/HUD. Casting alignment and actual readability remain unverified.
 
-그룹·순번 선택과 배치도 사용법은 [시나리오 안내](scenario_delivery/README.md)를 따른다.
+See the [scenario guide](scenario_delivery/README.md) for group/index selection and layout diagrams.

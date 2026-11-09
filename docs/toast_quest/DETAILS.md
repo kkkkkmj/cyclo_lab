@@ -17,5 +17,5 @@ history의 코드·호스트 경로·개인 로그 위치는 과거 기록으로
 파일 목록이 아니며, 과거 gain 설명은 [고정 기준 비교](BASELINE.md)의 정정과 함께 읽는다.
 CPU 검사, 과거 +15 mm PhysX 측정, 현재 +35 mm/VR 미검증 상태는 서로 구분한다.
 
-상승 목표 +15 → +35 mm의 현재 설정은 [Changes](../../CHANGES.md#③-현재-최종-설정과-성공-조건)를 따른다.
+상승 목표 +15 → +35 mm의 현재 설정은 [Changes](../../CHANGES.md#③-current-settings-and-task-success-criteria)를 따른다.
 개인 측정 원본과 도구는 로컬 백업으로 이동했으며 공유 실행의 의존 파일이 아니다.
