@@ -183,3 +183,7 @@ and re-engage squeeze. The preview provides four cameras—overview/head/left an
 status/HUD. Casting alignment and actual readability remain unverified.
 
 See the [scenario guide](scenario_delivery/README.md) for group/index selection and layout diagrams.
+
+An additional [fixed-base 100-scenario set](scenario_delivery_base/README.md) uses the current default
+Toaster → Plate → Bread Rack order with independent ±20 mm XY and ±5° yaw proposals, static rejection
+checks, and four groups of 25. The original scenario delivery and default selection remain unchanged.

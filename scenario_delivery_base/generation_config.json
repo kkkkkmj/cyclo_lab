@@ -1,0 +1,191 @@
+{
+  "seed": 20261109,
+  "assignment_seed": 20261110,
+  "groups": [
+    "operator_A_1",
+    "operator_A_2",
+    "operator_B_1",
+    "operator_B_2"
+  ],
+  "object_order": [
+    "toaster",
+    "plate",
+    "bread_shelf"
+  ],
+  "card_title": "100 Toast Scenarios — Fixed Toaster / Plate / Bread Rack Order",
+  "reference_selection": "Current environment default already has T>P>S; use it unchanged as the sole reference, not any existing scenario",
+  "reference_poses": {
+    "toaster": {
+      "position_m": [
+        0.55,
+        0.23,
+        1.0818
+      ],
+      "quaternion_wxyz": [
+        0.2588190451,
+        0.0,
+        0.0,
+        0.9659258263
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "bread_shelf": {
+      "position_m": [
+        0.44999998807907104,
+        -0.25,
+        1.0382000207901
+      ],
+      "quaternion_wxyz": [
+        0.7071067690849304,
+        0.0,
+        0.0,
+        -0.7071067690849304
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "plate": {
+      "position_m": [
+        0.43,
+        0.035,
+        1.004222776
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.5,
+        1.5,
+        0.22
+      ]
+    },
+    "bread_0": {
+      "position_m": [
+        0.45024989307907104,
+        -0.334392445,
+        1.0825513596553051
+      ],
+      "quaternion_wxyz": [
+        0.5,
+        0.5,
+        0.5,
+        -0.5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "bread_1": {
+      "position_m": [
+        0.45024989307907104,
+        -0.274392445,
+        1.0825513596553051
+      ],
+      "quaternion_wxyz": [
+        0.5,
+        0.5,
+        0.5,
+        -0.5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "bread_2": {
+      "position_m": [
+        0.45024989307907104,
+        -0.21439244500000001,
+        1.0825513596553051
+      ],
+      "quaternion_wxyz": [
+        0.5,
+        0.5,
+        0.5,
+        -0.5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "bread_3": {
+      "position_m": [
+        0.45024989307907104,
+        -0.15439244500000002,
+        1.0825513596553051
+      ],
+      "quaternion_wxyz": [
+        0.5,
+        0.5,
+        0.5,
+        -0.5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "reference_yaw_degrees": {
+    "toaster": 150.0,
+    "plate": 0.0,
+    "bread_shelf": -90.0
+  },
+  "delta_x_m": [
+    -0.02,
+    0.02
+  ],
+  "delta_y_m": [
+    -0.02,
+    0.02
+  ],
+  "delta_yaw_degrees": [
+    -5.0,
+    5.0
+  ],
+  "sampling": "Independent uniform proposals for all 9 deltas; reject invalid full configurations. Accepted distribution is conditional, not uniformly distributed after rejection.",
+  "frame": "Environment-local XY; yaw about environment +Z, left-multiplied; quaternion wxyz; metres",
+  "fixed": "Z, roll, pitch, scale and rack-relative bread poses; no cumulative perturbations",
+  "mesh_bound_expansion_m": 0.001,
+  "extra_table_edge_margin_m": 0.0,
+  "minimum_pair_gap_m": 0.0,
+  "gap_comparison": "strictly greater than",
+  "baseline_static_failures": [
+    "plate_outside_tabletop"
+  ],
+  "allocation": {
+    "assignment_seed": 20261110,
+    "iterations": 50000,
+    "initial_score": 1630.4659375435272,
+    "final_score": 133.34339796207814,
+    "method": "Seeded 25-per-group allocation; within-set label swaps balance standardized signed deltas, second moments (0.35) and quartile occupancy (1.5)",
+    "feature_names": [
+      "toaster_dx_m",
+      "toaster_dy_m",
+      "toaster_yaw_deg",
+      "plate_dx_m",
+      "plate_dy_m",
+      "plate_yaw_deg",
+      "bread_shelf_dx_m",
+      "bread_shelf_dy_m",
+      "bread_shelf_yaw_deg"
+    ],
+    "difficulty_equivalence": "NOT_PROVEN"
+  }
+}

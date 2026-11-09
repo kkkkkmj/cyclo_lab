@@ -1,5 +1,5 @@
 """Offline SVG card visualization; no scenario, asset or verification edits."""
-import csv,json,hashlib,html
+import argparse,csv,json,hashlib,html
 from pathlib import Path
 import numpy as np
 from pxr import Usd,UsdGeom
@@ -41,16 +41,16 @@ def svgpath(geom):
  def ring(points):return 'M'+' L'.join(f'{-y*1000:.3f},{-x*1000:.3f}' for x,y in points)+'Z'
  return ''.join(ring(p.exterior.coords)+''.join(ring(i.coords) for i in p.interiors) for p in polys if p.geom_type=='Polygon')
 
-def main():
- manifest=OUT/'manifest.json';assign=OUT/'assignments.csv';data=json.loads(manifest.read_text());rows=list(csv.DictReader(assign.open()))
+def build(delivery=OUT, table_source=SOURCE):
+ delivery=Path(delivery);table_source=Path(table_source)
+ manifest=delivery/'manifest.json';assign=delivery/'assignments.csv';data=json.loads(manifest.read_text());rows=list(csv.DictReader(assign.open()))
  assert len(rows)==len(data['scenarios'])==100 and len({r['scenario_id'] for r in rows})==100
  byid={e['id']:e for e in data['scenarios']};assert set(byid)=={r['scenario_id'] for r in rows}
  for r in rows:
-  assert r['scenario_id'].startswith('toast_v20261108_')
   for key in ('operator','scenario_group','operator_index','group_index'):assert str(byid[r['scenario_id']][key])==r[key]
  for g in data['generation']['groups']:assert sorted(int(r['group_index']) for r in rows if r['scenario_group']==g)==list(range(1,26))
  # Independent authored world mesh snapshot, with current same table configuration.
- table=json.loads(SOURCE.read_text());assert 'pos=[0.7, -0.1, 0.0]' in table['table_initial_state']
+ table=json.loads(table_source.read_text());assert 'pos=[0.7, -0.1, 0.0]' in table['table_initial_state']
  cfg=(ROOT/'source/cyclo_lab/cyclo_lab/manager_based/manipulation/pick_place/config/ffw_bg2/pick_place_env_cfg.py').read_text()
  assert 'pos=[0.70, -0.1, 0.0]' in cfg and 'rot=[-0.70710678, 0.0, 0.0, 0.70710678]' in cfg and 'scale=(1.0, 1.0, 1.0)' in cfg
  lo,hi=np.asarray(table['frame_bounds_m'])
@@ -75,10 +75,18 @@ def main():
  for row in rows:
   e=byid[row['scenario_id']];shapes={n:svgpath(moved(local[n],n,p)) for n,p in e['poses'].items()}
   top=svgpath(moved(toplocal,'bread_shelf',e['poses']['bread_shelf']))
-  payload.append(dict(id=e['id'],operator=e['operator'],group=e['scenario_group'],index=e['group_index'],operator_index=e['operator_index'],order=e['order_positive_to_negative_y'],shapes=shapes,rack_top=top))
- meta=dict(manifest_sha256=sha(manifest),assignments_sha256=sha(assign),asset_sha256={str(p.relative_to(ROOT)):sha(p) for p in paths.values()},table_snapshot=str(SOURCE.relative_to(ROOT)),table_snapshot_sha256=sha(SOURCE),frame_bounds_m=[lo.tolist(),hi.tolist()],table_support=list(support.exterior.coords),table_check='Current pose/scale matched to local authored world mesh snapshot; tabletop independently matches manifest support polygon. Frame is mesh AABB, not support.',viewBox=view)
+  payload.append(dict(id=e['id'],operator=e['operator'],group=e['scenario_group'],index=e['group_index'],operator_index=e['operator_index'],order=e['order_positive_to_negative_y'],poses=e['poses'],shapes=shapes,rack_top=top))
+ meta=dict(manifest_sha256=sha(manifest),assignments_sha256=sha(assign),asset_sha256={str(p.relative_to(ROOT)):sha(p) for p in paths.values()},table_snapshot=str(table_source.relative_to(delivery)) if table_source.is_relative_to(delivery) else str(table_source.relative_to(ROOT)),table_snapshot_sha256=sha(table_source),frame_bounds_m=[lo.tolist(),hi.tolist()],table_support=list(support.exterior.coords),table_check='Current pose/scale matched to local authored world mesh snapshot; tabletop independently matches manifest support polygon. Frame is mesh AABB, not support.',viewBox=view)
  template=Path(__file__).with_name('toast_overview_cards_template.html').read_text()
+ template=template.replace('v20261108_current_100',html.escape(data.get('delivery_version','v20261108_current_100')))
+ template=template.replace('100 Toast Scenarios — Current Environment Layouts',html.escape(data['generation'].get('card_title','100 Toast Scenarios — Current Environment Layouts')))
  output=template.replace('__DATA__',json.dumps(payload,separators=(',',':'))).replace('__META__',json.dumps(meta,separators=(',',':'))).replace('__FRAME__',svgpath(frame)).replace('__SUPPORT__',svgpath(support)).replace('__VIEWBOX__',view)
- (OUT/'overview_cards.html').write_text(output)
- print(json.dumps(dict(count=len(payload),frame_bounds=meta['frame_bounds_m'],output=str(OUT/'overview_cards.html')),indent=2))
+ (delivery/'overview_cards.html').write_text(output)
+ print(json.dumps(dict(count=len(payload),frame_bounds=meta['frame_bounds_m'],output=str(delivery/'overview_cards.html')),indent=2))
+def main():
+ parser=argparse.ArgumentParser(description=__doc__)
+ parser.add_argument('--delivery',type=Path,default=OUT)
+ parser.add_argument('--table-source',type=Path,default=SOURCE)
+ args=parser.parse_args();build(args.delivery,args.table_source)
+
 if __name__=='__main__':main()
