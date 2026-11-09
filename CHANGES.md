@@ -188,6 +188,11 @@ An additional [fixed-base 100-scenario set](scenario_delivery_base/README.md) us
 Toaster → Plate → Bread Rack order with independent ±20 mm XY and ±5° yaw proposals, static rejection
 checks, and four groups of 25. The original scenario delivery and default selection remain unchanged.
 
+A separate [fixed-base PTB set](scenario_delivery_base_ptb/README.md) adds 100 Plate → Toaster → Bread Rack
+scenarios with independent ±20 mm XY / ±5° yaw variations, four groups of 25, and HTML/PNG layout cards.
+Its reference accommodates the full variation range in static authored-geometry checks; PhysX/Quest
+stability and robot reachability remain unverified. The two existing sets and default manifest are unchanged.
+
 
 The status area above HEAD now separates controller connectivity, REC / NO REC, and the episode result.
 A large green SUCCESS, STOPPED, TRACKING STALL, or the actual termination reason remains visible in

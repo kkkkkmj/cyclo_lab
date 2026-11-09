@@ -1,0 +1,34 @@
+{
+  "table_support": {
+    "kind": "AUTHORED_COLLISION_FACES",
+    "status": "EXTRACTED",
+    "top_z_m": 0.994051338865205,
+    "convex_surface_polygons_xy": [
+      [
+        [
+          0.34185771195479986,
+          -1.3182152940334442
+        ],
+        [
+          1.0581422189548466,
+          -1.3182153185508185
+        ],
+        [
+          1.058142302350314,
+          1.1182152910532106
+        ],
+        [
+          0.3418577953502673,
+          1.118215315570585
+        ]
+      ]
+    ],
+    "mesh_paths": [
+      "/World/envs/env_0/PackingTable/SM_CratePacking_Table_A1/SM_HeavyDutyPackingTable_C02_01/Geometry/M_HeavyDutyPackingTable_C01_TableTop"
+    ]
+  },
+  "provenance": {
+    "source_file": "scenario_delivery/inputs/geometry_evidence.json",
+    "source_sha256": "6cc1ea599daeb8484f67c3009dc42c38ce24ea7410605f8f2a148deb3bc8f752"
+  }
+}

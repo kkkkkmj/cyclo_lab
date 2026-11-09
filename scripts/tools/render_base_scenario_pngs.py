@@ -88,7 +88,9 @@ def sheet(cards, output, name, columns, meta):
 
 def generate(delivery, output):
     manifest=json.loads((delivery/'manifest.json').read_text())
-    assert manifest['delivery_version']=='base_20261109_100', 'Expected the fixed-base delivery'
+    assert manifest['schema_version']==2 and manifest['generation'].get('reference_poses'), 'Expected a fixed-reference delivery'
+    order=manifest['generation']['object_order']
+    assert len(order)==3 and set(order)=={'toaster','plate','bread_shelf'}, 'Invalid fixed object order'
     original=(delivery/'overview_cards.html').read_text()
     original_cards=embedded(original,'scenario-data')
     # Build in isolation: no checked-in HTML, poses or assignment files are written.
@@ -111,6 +113,7 @@ def generate(delivery, output):
     for c in cards:
         e=entries[c['id']]
         assert c['poses']==e['poses'] and c['group']==e['scenario_group'] and c['index']==e['group_index']
+        assert c['order']==e['order_positive_to_negative_y']==order, 'Card/manifest fixed order mismatch'
     # Reuse the exact frame/support paths inserted by the shared HTML builder.
     frame=re.search(r'<path d="([^"]+)" fill="#f3f5f1"',html).group(1)
     support=re.search(r'<path d="([^"]+)" fill="#e8ede4"',html).group(1)

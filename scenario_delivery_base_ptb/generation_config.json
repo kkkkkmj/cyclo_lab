@@ -1,0 +1,258 @@
+{
+  "seed": 2026110901,
+  "assignment_seed": 2026110902,
+  "id_prefix": "toast_base_ptb_20261109_",
+  "groups": [
+    "operator_A_1",
+    "operator_A_2",
+    "operator_B_1",
+    "operator_B_2"
+  ],
+  "object_order": [
+    "plate",
+    "toaster",
+    "bread_shelf"
+  ],
+  "card_title": "100 Toast Scenarios — Fixed Plate / Toaster / Bread Rack Order",
+  "reference_selection": "Reuse generate_current_toast_scenarios.build_poses with PTB order and zero jitter: object X anchors (plate .49, toaster .55, rack .46) and rank Y anchors (+.4, 0, -.4). Continuous full-range authored-geometry bounds pass before sampling; no environment default is changed.",
+  "reference_poses": {
+    "plate": {
+      "position_m": [
+        0.49,
+        0.4,
+        1.004222776
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.5,
+        1.5,
+        0.22
+      ]
+    },
+    "toaster": {
+      "position_m": [
+        0.55,
+        0.0,
+        1.0818
+      ],
+      "quaternion_wxyz": [
+        0.2588190450974359,
+        0.0,
+        0.0,
+        0.9659258262904309
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "bread_shelf": {
+      "position_m": [
+        0.46,
+        -0.4,
+        1.0382000207901
+      ],
+      "quaternion_wxyz": [
+        0.7071067811865475,
+        0.0,
+        0.0,
+        -0.7071067811865475
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "bread_0": {
+      "position_m": [
+        0.460249905,
+        -0.484392445,
+        1.0825513596553051
+      ],
+      "quaternion_wxyz": [
+        0.5,
+        0.5,
+        0.5,
+        -0.5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "bread_1": {
+      "position_m": [
+        0.460249905,
+        -0.424392445,
+        1.0825513596553051
+      ],
+      "quaternion_wxyz": [
+        0.5,
+        0.5,
+        0.5,
+        -0.5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "bread_2": {
+      "position_m": [
+        0.460249905,
+        -0.364392445,
+        1.0825513596553051
+      ],
+      "quaternion_wxyz": [
+        0.5,
+        0.5,
+        0.5,
+        -0.5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "bread_3": {
+      "position_m": [
+        0.460249905,
+        -0.30439244500000007,
+        1.0825513596553051
+      ],
+      "quaternion_wxyz": [
+        0.5,
+        0.5,
+        0.5,
+        -0.5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "reference_yaw_degrees": {
+    "plate": 0.0,
+    "toaster": 150.0,
+    "bread_shelf": -90.0
+  },
+  "baseline_semantics": "manifest.baseline/baseline_bread retain environment-default calibration for loader guards; generation.reference_poses is the single PTB sampling reference, not the environment default.",
+  "delta_x_m": [
+    -0.02,
+    0.02
+  ],
+  "delta_y_m": [
+    -0.02,
+    0.02
+  ],
+  "delta_yaw_degrees": [
+    -5.0,
+    5.0
+  ],
+  "sampling": "Independent uniform proposals for all nine offsets from one fixed reference; reject invalid whole configurations. Report the finite accepted distribution explicitly; rejection can condition it.",
+  "frame": "Environment-local XY; yaw about environment +Z, left-multiplied; quaternion wxyz; metres",
+  "fixed": "Z, roll, pitch, scale and rack-relative bread poses; no cumulative perturbations",
+  "mesh_bound_expansion_m": 0.001,
+  "extra_table_edge_margin_m": 0.0,
+  "minimum_pair_gap_m": 0.0,
+  "gap_comparison": "strictly greater than",
+  "reference_variation_envelope": {
+    "method": "Continuous yaw extrema of every authored bound vertex, including interior stationary angles; XY translation intervals; axis-aligned envelopes include the rack and all four breads. Containment/separation of these envelopes is conservative for the entire proposal range.",
+    "envelope_xy_m": {
+      "plate": [
+        [
+          0.3717324859205872,
+          0.2819270827698183
+        ],
+        [
+          0.6080753137771024,
+          0.5182692105465877
+        ]
+      ],
+      "toaster": [
+        [
+          0.40102001472039916,
+          -0.14447304740574946
+        ],
+        [
+          0.7019494377552257,
+          0.14373221478496329
+        ]
+      ],
+      "bread_shelf": [
+        [
+          0.3650959881252804,
+          -0.5403559618007757
+        ],
+        [
+          0.5549040118747197,
+          -0.2596440381992243
+        ]
+      ]
+    },
+    "all_envelopes_inside_table": true,
+    "minimum_table_clearance_m": {
+      "plate": 0.029874711105600367,
+      "toaster": 0.05916225272526758,
+      "bread_shelf": 0.02323823993712983
+    },
+    "pair_gap_lower_bounds_m": {
+      "plate/toaster": 0.13819486798485503,
+      "plate/bread_shelf": 0.5415711209690426,
+      "toaster/bread_shelf": 0.11517099079347486
+    },
+    "origin_order_margin_lower_bounds_m": {
+      "plate/toaster": 0.36000000000000004,
+      "toaster/bread_shelf": 0.36000000000000004
+    },
+    "plate_success_x_margin_lower_bound_m": 0.05099999999999999,
+    "reference_static_failures": [],
+    "reference_checks": {
+      "pair_gaps_m": {
+        "plate/toaster": 0.1821945224557442,
+        "plate/bread_shelf": 0.5859386957501993,
+        "toaster/bread_shelf": 0.1836090632542999
+      },
+      "minimum_bread_gap_m": 0.04828105754686351,
+      "tabletop_clearance_m": {
+        "plate": 0.049875126739148956,
+        "toaster": 0.08004992079560612,
+        "bread_shelf": 0.05214224990046944
+      },
+      "plate_success_x_margin_m": 0.07100000000000001,
+      "scope": "Authored mesh/collider conservative XY bounds expanded 1 mm; no cooked PhysX or robot reachability validation"
+    },
+    "scope": "Static authored geometry only; not PhysX stability, robot reachability, or manipulation clearance"
+  },
+  "allocation": {
+    "assignment_seed": 2026110902,
+    "iterations": 50000,
+    "initial_score": 1520.4925909546123,
+    "final_score": 122.94634922781306,
+    "method": "Seeded 25-per-group allocation; within-set label swaps balance standardized signed deltas, second moments (0.35) and quartile occupancy (1.5)",
+    "feature_names": [
+      "plate_dx_m",
+      "plate_dy_m",
+      "plate_yaw_deg",
+      "toaster_dx_m",
+      "toaster_dy_m",
+      "toaster_yaw_deg",
+      "bread_shelf_dx_m",
+      "bread_shelf_dy_m",
+      "bread_shelf_yaw_deg"
+    ],
+    "difficulty_equivalence": "NOT_PROVEN"
+  }
+}
